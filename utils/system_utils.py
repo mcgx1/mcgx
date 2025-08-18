@@ -264,16 +264,30 @@ class SystemUtils:
         try:
             for conn in psutil.net_connections(kind='inet'):
                 try:
+                    # 获取进程信息
+                    process_info = "N/A"
+                    if conn.pid:
+                        try:
+                            process = psutil.Process(conn.pid)
+                            process_info = f"{process.name()} (PID: {conn.pid})"
+                        except (psutil.NoSuchProcess, psutil.AccessDenied):
+                            process_info = f"PID: {conn.pid}"
+                    
                     connections.append({
                         'fd': conn.fd,
                         'family': str(conn.family),
                         'type': str(conn.type),
-                        'laddr': f"{conn.laddr.ip}:{conn.laddr.port}" if conn.laddr else 'N/A',
-                        'raddr': f"{conn.raddr.ip}:{conn.raddr.port}" if conn.raddr else 'N/A',
+                        'laddr': {
+                            'ip': conn.laddr.ip if conn.laddr else '',
+                            'port': conn.laddr.port if conn.laddr else 0
+                        } if conn.laddr else None,
+                        'raddr': {
+                            'ip': conn.raddr.ip if conn.raddr else '',
+                            'port': conn.raddr.port if conn.raddr else 0
+                        } if conn.raddr else None,
                         'status': conn.status,
                         'pid': conn.pid,
-                        'uids': list(conn.uids) if conn.uids else [],
-                        'gids': list(conn.gids) if conn.gids else []
+                        'process': process_info
                     })
                 except Exception as e:
                     logger.warning(f"处理网络连接时出错: {e}")

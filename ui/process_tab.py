@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableWidget,
                             QLineEdit, QComboBox, QMessageBox, QProgressBar,
                             QSplitter, QGroupBox, QFormLayout)
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
-from PyQt5.QtGui import QColor, QFont, QIcon
+from PyQt5.QtGui import QColor, QFont, QIcon, QPixmap, QImage
 import psutil
 import logging
 import os
@@ -70,8 +70,8 @@ class ProcessTab(QWidget):
         
         # 创建进程表格
         self.process_table = QTableWidget()
-        self.process_table.setColumnCount(7)
-        self.process_table.setHorizontalHeaderLabels(['PID', '进程名', '状态', 'CPU%', '内存(MB)', '用户', '路径'])
+        self.process_table.setColumnCount(8)  # 增加图标列
+        self.process_table.setHorizontalHeaderLabels(['图标', 'PID', '进程名', '状态', 'CPU%', '内存(MB)', '用户', '路径'])
         self.process_table.setEditTriggers(QTableWidget.NoEditTriggers)
         self.process_table.setSelectionBehavior(QTableWidget.SelectRows)
         self.process_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -139,6 +139,97 @@ class ProcessTab(QWidget):
         self.refresh_timer.timeout.connect(self.load_process_data)
         self.refresh_timer.start(5000)  # 每5秒刷新一次
         
+    def get_process_icon(self, pid):
+        """
+        获取进程图标
+        
+        Args:
+            pid (int): 进程ID
+            
+        Returns:
+            QIcon: 进程图标，如果无法获取则返回空图标
+        """
+        if not WIN32_AVAILABLE:
+            return QIcon()
+            
+        try:
+            # 通过PID获取进程可执行文件路径
+            try:
+                proc = psutil.Process(pid)
+                exe_path = proc.exe()
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess) as e:
+                logger.debug(f"无法获取进程exe路径 (PID: {pid}): {e}")
+                return QIcon()
+            except Exception as e:
+                logger.debug(f"获取进程exe路径时发生未知错误 (PID: {pid}): {e}")
+                return QIcon()
+                
+            if not exe_path or not os.path.exists(exe_path):
+                logger.debug(f"进程exe文件不存在: {exe_path}")
+                return QIcon()
+            
+            # 尝试从指定路径提取图标
+            large, small = win32gui.ExtractIconEx(exe_path, 0)
+            
+            # 如果无法提取图标，尝试使用系统默认图标
+            if not large and not small:
+                logger.debug(f"无法从 {exe_path} 提取图标，尝试从 shell32.dll 获取默认图标")
+                large, small = win32gui.ExtractIconEx("shell32.dll", 0)
+                if not large and not small:
+                    logger.debug(f"无法从 shell32.dll 提取默认图标")
+                    return QIcon()
+            
+            # 优先使用大图标，否则使用小图标
+            hIcon = None
+            if large:
+                hIcon = large[0]
+            elif small:
+                hIcon = small[0]
+            
+            if not hIcon:
+                logger.debug(f"无法获取有效图标句柄: {exe_path}")
+                return QIcon()
+            
+            # 创建设备上下文和位图
+            hdcScreen = win32gui.GetDC(None)
+            hdc = win32ui.CreateDCFromHandle(hdcScreen)
+            hbmp = win32ui.CreateBitmap()
+            hbmp.CreateCompatibleBitmap(hdc, 32, 32)
+            hdc = hdc.CreateCompatibleDC()
+            hdc.SelectObject(hbmp)
+            
+            # 绘制图标到位图
+            hdc.DrawIcon((0, 0), hIcon)
+            
+            # 将位图转换为QPixmap
+            bitmap_bits = hbmp.GetBitmapBits(True)
+            qimage = QImage(bitmap_bits, 32, 32, QImage.Format_ARGB32)
+            qpixmap = QPixmap(qimage)
+            
+            # 清理资源
+            try:
+                if large:
+                    for handle in large:
+                        win32gui.DestroyIcon(handle)
+                if small:
+                    for handle in small:
+                        win32gui.DestroyIcon(handle)
+                hdc.DeleteDC()
+                win32gui.ReleaseDC(None, hdcScreen)
+            except Exception as e:
+                logger.warning(f"清理图标资源时出错: {e}")
+            
+            # 如果图标无效则返回空图标
+            if qpixmap.isNull():
+                logger.debug(f"获取的图标为空或无效: {exe_path}")
+                return QIcon()
+                
+            logger.debug(f"成功获取图标: {exe_path}")
+            return QIcon(qpixmap)
+        except Exception as e:
+            logger.debug(f"获取进程图标时出错: {e}")
+            return QIcon()
+        
     def load_process_data(self):
         """加载进程数据"""
         try:
@@ -152,13 +243,21 @@ class ProcessTab(QWidget):
             processes = []
             for proc in psutil.process_iter(['pid', 'name', 'status', 'cpu_percent', 'memory_info', 'username']):
                 try:
+                    # 获取进程exe路径
+                    exe_path = "N/A"
+                    try:
+                        exe_path = proc.exe()
+                    except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                        pass
+                    
                     processes.append({
                         'pid': proc.info['pid'],
                         'name': proc.info['name'],
                         'status': proc.info['status'],
                         'cpu_percent': proc.info['cpu_percent'],
                         'memory_mb': round(proc.info['memory_info'].rss / (1024 * 1024), 2) if proc.info['memory_info'] else 0,
-                        'username': proc.info['username']
+                        'username': proc.info['username'],
+                        'exe': exe_path
                     })
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     continue
@@ -171,6 +270,14 @@ class ProcessTab(QWidget):
                 row = self.process_table.rowCount()
                 self.process_table.insertRow(row)
                 
+                # 图标列
+                icon_item = QTableWidgetItem()
+                icon = self.get_process_icon(proc['pid'])
+                icon_item.setIcon(icon)
+                icon_item.setFlags(icon_item.flags() & ~Qt.ItemIsEditable)
+                icon_item.setTextAlignment(Qt.AlignCenter)
+                self.process_table.setItem(row, 0, icon_item)
+                
                 # 创建表格项
                 pid_item = QTableWidgetItem(str(proc['pid']))
                 name_item = QTableWidgetItem(proc['name'])
@@ -178,7 +285,7 @@ class ProcessTab(QWidget):
                 cpu_item = QTableWidgetItem(f"{proc['cpu_percent']:.1f}")
                 memory_item = QTableWidgetItem(f"{proc['memory_mb']:.1f}")
                 user_item = QTableWidgetItem(proc['username'] or 'N/A')
-                path_item = QTableWidgetItem("N/A")  # 路径需要额外获取
+                path_item = QTableWidgetItem(proc['exe'])
                 
                 # 设置对齐方式
                 pid_item.setTextAlignment(Qt.AlignCenter)
@@ -195,13 +302,16 @@ class ProcessTab(QWidget):
                     cpu_item.setForeground(QColor('blue'))
                 
                 # 添加到表格
-                self.process_table.setItem(row, 0, pid_item)
-                self.process_table.setItem(row, 1, name_item)
-                self.process_table.setItem(row, 2, status_item)
-                self.process_table.setItem(row, 3, cpu_item)
-                self.process_table.setItem(row, 4, memory_item)
-                self.process_table.setItem(row, 5, user_item)
-                self.process_table.setItem(row, 6, path_item)
+                self.process_table.setItem(row, 1, pid_item)
+                self.process_table.setItem(row, 2, name_item)
+                self.process_table.setItem(row, 3, status_item)
+                self.process_table.setItem(row, 4, cpu_item)
+                self.process_table.setItem(row, 5, memory_item)
+                self.process_table.setItem(row, 6, user_item)
+                self.process_table.setItem(row, 7, path_item)
+            
+            # 设置图标列的宽度
+            self.process_table.setColumnWidth(0, 32)
             
             # 发送刷新信号
             self.process_refreshed.emit(len(processes))
@@ -232,14 +342,14 @@ class ProcessTab(QWidget):
             QMessageBox.warning(self, "警告", "请先选择一个进程")
             return
             
-        # 获取选中行的PID
+        # 获取选中行的PID (注意列索引已改变)
         row = selected_rows[0].row()
-        pid_item = self.process_table.item(row, 0)
+        pid_item = self.process_table.item(row, 1)  # PID列现在是第1列
         if not pid_item:
             return
             
         pid = int(pid_item.text())
-        process_name = self.process_table.item(row, 1).text()
+        process_name = self.process_table.item(row, 2).text()  # 进程名列现在是第2列
         
         # 确认对话框
         reply = QMessageBox.question(
@@ -289,7 +399,7 @@ class ProcessTab(QWidget):
             return
             
         row = selected_rows[0].row()
-        pid = int(self.process_table.item(row, 0).text())
+        pid = int(self.process_table.item(row, 1).text())  # PID列现在是第1列
         
         try:
             # 获取进程详细信息

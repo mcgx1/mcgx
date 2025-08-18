@@ -472,3 +472,459 @@ AttributeError: 'PopupBlockerTab' object has no attribute 'init_ui'
 2025-08-18 22:03:11,113 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
 2025-08-18 22:03:11,113 - ui.main_window - INFO - 应用程序已关闭
 2025-08-18 22:03:11,120 - root - INFO - 应用程序正常退出
+2025-08-18 22:57:50,475 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 22:57:50,491 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 22:57:50,495 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 22:57:50,497 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 22:57:50,497 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 22:57:50,500 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 22:57:50,503 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 22:57:50,503 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 22:57:50,503 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 22:57:50,505 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 22:57:50,507 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 22:57:50,507 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 22:57:50,508 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 22:57:50,508 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 22:57:50,509 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 22:57:50,509 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 22:57:50,523 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 22:57:50,525 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 22:57:52,069 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 22:57:52,776 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 22:57:52,778 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 22:57:52,781 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 22:57:52,782 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 22:57:52,782 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 22:57:52,784 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 22:57:52,787 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 22:57:52,787 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 22:57:52,788 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 22:57:52,789 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 22:57:52,791 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 22:57:52,791 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 22:57:52,791 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 22:57:52,791 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 22:57:52,792 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 22:57:52,792 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 22:57:52,804 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 22:57:52,806 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 22:57:52,808 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 22:57:53,170 - root - INFO - 应用程序启动完成，总耗时: 0.95秒 (应用初始化: 0.80秒)
+2025-08-18 22:58:01,731 - ui.network_tab - INFO - 网络行为分析: 没有网络连接
+2025-08-18 22:58:03,632 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,632 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,632 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,632 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,632 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,632 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,633 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,633 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,633 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,633 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,634 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,634 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,634 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,635 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,635 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,635 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,636 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,636 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,636 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,637 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,637 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,637 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,638 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,638 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,638 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,639 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,639 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,640 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,641 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,641 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,641 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,642 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,642 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,642 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,643 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,643 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,643 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,643 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,643 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,644 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,644 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,644 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,644 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,645 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,645 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,645 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,645 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,646 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,647 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,647 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,647 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,648 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,648 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,648 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,649 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,649 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,649 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,649 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,650 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,650 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,650 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,650 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,651 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,651 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,651 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,651 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,651 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,652 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,652 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,652 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,654 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,654 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,654 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,654 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,655 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,655 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,655 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,655 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,656 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,656 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,656 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,656 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,657 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,657 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,657 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,658 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,658 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,658 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,659 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,659 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,659 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,659 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,660 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,660 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,660 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,660 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,660 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,661 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,661 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,661 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,662 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,662 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,662 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,662 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,663 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,663 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,663 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,664 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,664 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,664 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,664 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,665 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,665 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,665 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,665 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,666 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,666 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,666 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,667 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,667 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,667 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,669 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,669 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,670 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,670 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,671 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,671 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,671 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,672 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,672 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,672 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,673 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,673 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,673 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,673 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,673 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,674 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,674 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,674 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,674 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,674 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,675 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,675 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,675 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:03,676 - ui.network_tab - INFO - 网络连接刷新完成，共 0 个连接
+2025-08-18 22:58:06,349 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,349 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,350 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,351 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,351 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,352 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,352 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,352 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,352 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,353 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,353 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,354 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,354 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,355 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,355 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,355 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,355 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,356 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,356 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,356 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,356 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,357 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,357 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,357 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,357 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,358 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,358 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,358 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,358 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,359 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,359 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,359 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,359 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,360 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,360 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,360 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,360 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,360 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,361 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,361 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,361 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,362 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,362 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,362 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,362 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,362 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,363 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,363 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,363 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,363 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,364 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,364 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,365 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,365 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,365 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,365 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,365 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,366 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,367 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,367 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,367 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,367 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,368 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,368 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,368 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,368 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,369 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,369 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,369 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,371 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,372 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,372 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,373 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,373 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,373 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,373 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,373 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,374 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,374 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,374 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,374 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,374 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,375 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,375 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,375 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,375 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,375 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,376 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,376 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,376 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,377 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,377 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,377 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,377 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,377 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,378 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,378 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,378 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,378 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,378 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,378 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,379 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,379 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,379 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,379 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,379 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,380 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,380 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,380 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,380 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,380 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,381 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,381 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,381 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,381 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,381 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,382 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,383 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,383 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,383 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,383 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,383 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,384 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,384 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,384 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,385 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,385 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,386 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,386 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,387 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,387 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,387 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,387 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,387 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,388 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,388 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,388 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,388 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,389 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,389 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,389 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,389 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,389 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,390 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 22:58:06,390 - ui.network_tab - INFO - 网络连接刷新完成，共 0 个连接
+2025-08-18 23:01:28,751 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:01:28,753 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:01:28,757 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:01:28,758 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:01:28,758 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:01:28,760 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:01:28,764 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:01:28,764 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:01:28,764 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:01:28,766 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:01:28,768 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:01:28,768 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:01:28,769 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:01:28,769 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:01:28,770 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:01:28,770 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:01:28,783 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:01:28,785 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:01:30,862 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:01:31,812 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:01:31,814 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:01:31,816 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:01:31,818 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:01:31,818 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:01:31,820 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:01:31,823 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:01:31,823 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:01:31,823 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:01:31,825 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:01:31,827 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:01:31,827 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:01:31,827 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:01:31,827 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:01:31,828 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:01:31,828 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:01:31,840 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:01:31,843 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:01:31,844 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:01:32,202 - root - INFO - 应用程序启动完成，总耗时: 1.11秒 (应用初始化: 0.97秒)
+2025-08-18 23:01:34,596 - ui.network_tab - INFO - 网络连接刷新完成，共 173 个连接
+2025-08-18 23:01:36,793 - ui.network_tab - INFO - 网络行为分析结果:
+================================================================================
+总连接数: 173
+监听连接数: 0
+外连数: 173
+可疑连接数: 0
+
+外连 (前20个):
+----------------------------------------
+ 1. ESTABLISHED - 1:127.0.0.1 -> 6264:127.0.0.1 () [11980]
+ 2. LISTEN - 1:127.0.0.1 -> 2719: () []
+ 3. ESTABLISHED - 1:192.168.3.62 -> 11924:104.208.16.89 () [443]
+ 4. ESTABLISHED - 1:192.168.3.62 -> 11858:111.48.46.170 () [57001]
+ 5. NONE - 2:0.0.0.0 -> 27036: () []
+ 6. TIME_WAIT - 1:127.0.0.1 -> 11912:127.0.0.1 () [443]
+ 7. TIME_WAIT - 1:127.0.0.1 -> 11942:127.0.0.1 () [443]
+ 8. NONE - 2:192.168.159.1 -> 137: () []
+ 9. LISTEN - 1::: -> 135: () []
+10. NONE - 2:192.168.3.62 -> 137: () []
+11. ESTABLISHED - 1:192.168.3.62 -> 11862:111.48.46.170 () [57001]
+12. CLOSE_WAIT - 1:2409:8a44:2215:d3c0:8103:66b9:8c10:9933 -> 11249:2409:8c44:1:ff07:37::8 () [443]
+13. LISTEN - 1:127.0.0.1 -> 1001: () []
+14. ESTABLISHED - 1:192.168.3.62 -> 11590:111.48.46.170 () [57001]
+15. LISTEN - 1:127.0.0.1 -> 36510: () []
+16. NONE - 2:fe80::6a8f:8c8a:d2fb:b08c -> 52219: () []
+17. ESTABLISHED - 1:192.168.3.62 -> 12600:103.28.54.102 () [27021]
+18. ESTABLISHED - 1:127.0.0.1 -> 9725:127.0.0.1 () [2721]
+19. NONE - 2:26.204.199.99 -> 138: () []
+20. NONE - 2:fe80::f030:6547:ac03:86f -> 1900: () []
+    ... 还有 153 个外连
+
+================================================================================
+
+2025-08-18 23:01:39,526 - ui.network_tab - INFO - 网络行为分析完成，发现 0 个可疑连接
+2025-08-18 23:04:34,136 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:04:34,138 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:04:34,141 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:04:34,142 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:04:34,143 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:04:34,145 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:04:34,148 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:04:34,148 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:04:34,148 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:04:34,150 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:04:34,152 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:04:34,153 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:04:34,153 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:04:34,153 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:04:34,154 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:04:34,154 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:04:34,167 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:04:34,169 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:04:36,011 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:04:37,026 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:04:37,028 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:04:37,031 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:04:37,032 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:04:37,032 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:04:37,034 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:04:37,037 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:04:37,038 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:04:37,038 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:04:37,039 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:04:37,041 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:04:37,041 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:04:37,041 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:04:37,041 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:04:37,042 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:04:37,042 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:04:37,054 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:04:37,057 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:04:37,058 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:04:37,409 - root - INFO - 应用程序启动完成，总耗时: 1.18秒 (应用初始化: 1.05秒)
+2025-08-18 23:04:50,919 - ui.network_tab - INFO - 网络连接刷新完成，共 166 个连接
+2025-08-18 23:04:54,112 - ui.startup_tab - INFO - 启动项刷新完成，共 10 个启动项
+2025-08-18 23:05:04,236 - ui.main_window - INFO - 已刷新标签页 📁 文件行为分析 的数据
+2025-08-18 23:05:04,679 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:05:04,679 - sandbox.ui_components - INFO - 刷新沙箱列表
+2025-08-18 23:05:04,680 - ui.main_window - INFO - 已刷新标签页 沙箱 的数据
+2025-08-18 23:05:07,004 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-18 23:05:07,004 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-18 23:05:07,005 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-18 23:05:07,005 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:05:07,005 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-18 23:05:07,005 - ui.main_window - INFO - 应用程序已关闭
+2025-08-18 23:05:07,023 - root - INFO - 应用程序正常退出

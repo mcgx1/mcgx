@@ -137,14 +137,14 @@ class NetworkTab(QWidget):
                     self.connection_table.setItem(i, 1, type_item)
                     
                     # 本地地址
-                    local_addr = conn['laddr']['ip']
+                    local_addr = conn['laddr']['ip'] if conn['laddr'] else ''
                     local_item = QTableWidgetItem(local_addr)
                     local_item.setFlags(local_item.flags() & ~Qt.ItemIsEditable)
                     local_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
                     self.connection_table.setItem(i, 2, local_item)
                     
                     # 本地端口
-                    local_port = str(conn['laddr']['port'])
+                    local_port = str(conn['laddr']['port']) if conn['laddr'] else ''
                     local_port_item = QTableWidgetItem(local_port)
                     local_port_item.setFlags(local_port_item.flags() & ~Qt.ItemIsEditable)
                     local_port_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -366,13 +366,13 @@ class NetworkTab(QWidget):
         if selected_row >= 0:
             try:
                 # 获取选中行的信息
-                type_item = self.connection_table.item(selected_row, 0)
-                local_ip_item = self.connection_table.item(selected_row, 1)
-                local_port_item = self.connection_table.item(selected_row, 2)
-                remote_ip_item = self.connection_table.item(selected_row, 3)
-                remote_port_item = self.connection_table.item(selected_row, 4)
-                status_item = self.connection_table.item(selected_row, 5)
-                process_item = self.connection_table.item(selected_row, 6)
+                type_item = self.connection_table.item(selected_row, 1)
+                local_ip_item = self.connection_table.item(selected_row, 2)
+                local_port_item = self.connection_table.item(selected_row, 3)
+                remote_ip_item = self.connection_table.item(selected_row, 4)
+                remote_port_item = self.connection_table.item(selected_row, 5)
+                status_item = self.connection_table.item(selected_row, 6)
+                process_item = self.connection_table.item(selected_row, 7)
                 
                 details = f"""连接详细信息:
 类型: {type_item.text() if type_item else 'N/A'}
