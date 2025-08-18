@@ -928,3 +928,1354 @@ AttributeError: 'PopupBlockerTab' object has no attribute 'init_ui'
 2025-08-18 23:05:07,005 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
 2025-08-18 23:05:07,005 - ui.main_window - INFO - 应用程序已关闭
 2025-08-18 23:05:07,023 - root - INFO - 应用程序正常退出
+2025-08-18 23:09:14,636 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:09:14,638 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:09:14,641 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:09:14,642 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:09:14,643 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:09:14,645 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:09:14,648 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:09:14,648 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:09:14,648 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:09:14,650 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:09:14,652 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:09:14,652 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:09:14,653 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:09:14,653 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:09:14,654 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:09:14,654 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:09:14,668 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:09:14,671 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:09:16,166 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:09:17,201 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:09:17,203 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:09:17,206 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:09:17,207 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:09:17,207 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:09:17,209 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:09:17,213 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:09:17,213 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:09:17,213 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:09:17,214 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:09:17,216 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:09:17,216 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:09:17,217 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:09:17,217 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:09:17,218 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:09:17,218 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:09:17,231 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:09:17,234 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:09:17,234 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:09:17,597 - root - INFO - 应用程序启动完成，总耗时: 1.22秒 (应用初始化: 1.08秒)
+2025-08-18 23:09:20,539 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-18 23:09:20,539 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-18 23:09:20,540 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-18 23:09:20,540 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:09:20,540 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-18 23:09:20,540 - ui.main_window - INFO - 应用程序已关闭
+2025-08-18 23:09:20,547 - root - INFO - 应用程序正常退出
+2025-08-18 23:15:07,459 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:15:07,461 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:15:07,464 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:15:07,465 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:15:07,465 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:15:07,467 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:15:07,470 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:15:07,470 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:15:07,470 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:15:07,472 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:15:07,474 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:15:07,474 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:15:07,474 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:15:07,475 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:15:07,475 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:15:07,475 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:15:07,489 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:15:07,492 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:15:09,072 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:15:10,135 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:15:10,137 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:15:10,140 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:15:10,141 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:15:10,141 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:15:10,143 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:15:10,146 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:15:10,146 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:15:10,146 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:15:10,147 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:15:10,149 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:15:10,149 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:15:10,149 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:15:10,150 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:15:10,151 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:15:10,151 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:15:10,163 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:15:10,166 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:15:10,166 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:15:10,514 - root - INFO - 应用程序启动完成，总耗时: 1.21秒 (应用初始化: 1.07秒)
+2025-08-18 23:15:15,286 - ui.network_tab - INFO - 网络连接刷新完成，共 160 个连接
+2025-08-18 23:15:32,300 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-18 23:15:32,300 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-18 23:15:32,300 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-18 23:15:32,300 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:15:32,300 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-18 23:15:32,300 - ui.main_window - INFO - 应用程序已关闭
+2025-08-18 23:15:32,319 - root - INFO - 应用程序正常退出
+2025-08-18 23:21:01,901 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:21:01,904 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:21:01,906 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:21:01,908 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:21:01,908 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:21:01,910 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:21:01,913 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:21:01,913 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:21:01,914 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:21:01,915 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:21:01,917 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:21:01,918 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:21:01,918 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:21:01,918 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:21:01,919 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:21:01,919 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:21:01,932 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:21:01,935 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:21:03,333 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:21:04,275 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:21:04,277 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:21:04,281 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:21:04,282 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:21:04,282 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:21:04,284 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:21:04,286 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:21:04,287 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:21:04,287 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:21:04,288 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:21:04,291 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:21:04,291 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:21:04,291 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:21:04,291 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:21:04,292 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:21:04,292 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:21:04,304 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:21:04,306 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:21:04,307 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:21:04,656 - root - INFO - 应用程序启动完成，总耗时: 1.10秒 (应用初始化: 0.95秒)
+2025-08-18 23:21:14,535 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,535 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,536 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,536 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,536 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,536 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,536 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,536 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,537 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,537 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,537 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,537 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,538 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,538 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,538 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,538 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,538 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,539 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,539 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,539 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,539 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,540 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,540 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,540 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,540 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,540 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,541 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,541 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,541 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,541 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,541 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,542 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,542 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,543 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,543 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,543 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,543 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,544 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,544 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,544 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,544 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,544 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,545 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,545 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,545 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,545 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,545 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,546 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,546 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,546 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,546 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,546 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,546 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,547 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,547 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,547 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,547 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,547 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,548 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,548 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,548 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,548 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,549 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,549 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,549 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,549 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,549 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,550 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,550 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,550 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,550 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,551 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,551 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,551 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,551 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,552 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,552 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,553 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,553 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,553 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,553 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,553 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,554 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,554 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,554 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,554 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,554 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,555 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,555 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,555 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,556 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,556 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,557 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,559 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,559 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,559 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,559 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,559 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,560 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,560 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,560 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,561 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,561 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,561 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,562 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,562 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,562 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,562 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,563 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,563 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,563 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,563 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,563 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,564 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,564 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,564 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,565 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,565 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,566 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,566 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,566 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,566 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,567 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,567 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,567 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,567 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,568 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,568 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,568 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,568 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,568 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,569 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,570 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,570 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,570 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,571 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,571 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,571 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,571 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,571 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,572 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,572 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,572 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,572 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,572 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,574 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,574 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,574 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,574 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,575 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,575 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,575 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,575 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,575 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,576 - utils.system_utils - WARNING - 处理网络连接时出错: 'sconn' object has no attribute 'uids'
+2025-08-18 23:21:14,576 - ui.network_tab - INFO - 网络连接刷新完成，共 0 个连接
+2025-08-18 23:25:16,149 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:25:16,151 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:25:16,154 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:25:16,155 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:25:16,156 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:25:16,158 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:25:16,161 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:25:16,161 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:25:16,162 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:25:16,163 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:25:16,165 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:25:16,165 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:25:16,165 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:25:16,166 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:25:16,167 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:25:16,167 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:25:16,180 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:25:16,183 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:25:17,718 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:25:18,616 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:25:18,618 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:25:18,621 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:25:18,622 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:25:18,622 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:25:18,624 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:25:18,627 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:25:18,627 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:25:18,627 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:25:18,628 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:25:18,630 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:25:18,630 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:25:18,631 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:25:18,631 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:25:18,633 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:25:18,633 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:25:18,644 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:25:18,646 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:25:18,647 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:25:18,996 - root - INFO - 应用程序启动完成，总耗时: 1.05秒 (应用初始化: 0.91秒)
+2025-08-18 23:25:40,644 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-18 23:25:40,644 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-18 23:25:40,645 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-18 23:25:40,645 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:25:40,645 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-18 23:25:40,645 - ui.main_window - INFO - 应用程序已关闭
+2025-08-18 23:25:40,652 - root - INFO - 应用程序正常退出
+2025-08-18 23:28:04,733 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:28:04,736 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:28:04,738 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:28:04,740 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:28:04,740 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:28:04,742 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:28:04,745 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:28:04,746 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:28:04,746 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:28:04,749 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:28:04,751 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:28:04,751 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:28:04,752 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:28:04,752 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:28:04,753 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:28:04,753 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:28:04,767 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:28:04,769 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:28:06,096 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:28:07,053 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:28:07,055 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:28:07,058 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:28:07,059 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:28:07,059 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:28:07,061 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:28:07,064 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:28:07,065 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:28:07,065 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:28:07,066 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:28:07,070 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:28:07,070 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:28:07,070 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:28:07,070 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:28:07,071 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:28:07,071 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:28:07,084 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:28:07,086 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:28:07,087 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:28:07,440 - root - INFO - 应用程序启动完成，总耗时: 1.10秒 (应用初始化: 0.96秒)
+2025-08-18 23:28:12,730 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:28:12,730 - sandbox.ui_components - INFO - 刷新沙箱列表
+2025-08-18 23:28:12,730 - ui.main_window - INFO - 已刷新标签页 沙箱 的数据
+2025-08-18 23:28:12,730 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:28:12,731 - sandbox.ui_components - INFO - 刷新沙箱列表
+2025-08-18 23:28:15,049 - ui.main_window - INFO - 已刷新标签页 📁 文件行为分析 的数据
+2025-08-18 23:28:20,382 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-18 23:28:20,382 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-18 23:28:20,382 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-18 23:28:20,383 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:28:20,383 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-18 23:28:20,383 - ui.main_window - INFO - 应用程序已关闭
+2025-08-18 23:28:20,398 - root - INFO - 应用程序正常退出
+2025-08-18 23:28:57,296 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:28:57,299 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:28:57,302 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:28:57,303 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:28:57,304 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:28:57,306 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:28:57,308 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:28:57,309 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:28:57,309 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:28:57,311 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:28:57,313 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:28:57,313 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:28:57,313 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:28:57,314 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:28:57,315 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:28:57,315 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:28:57,328 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:28:57,330 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:28:58,778 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:28:59,720 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:28:59,722 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:28:59,726 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:28:59,727 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:28:59,727 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:28:59,730 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:28:59,733 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:28:59,733 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:28:59,733 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:28:59,734 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:28:59,736 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:28:59,736 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:28:59,737 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:28:59,737 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:28:59,737 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:28:59,738 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:28:59,751 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:28:59,754 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:28:59,754 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:29:00,109 - root - INFO - 应用程序启动完成，总耗时: 1.08秒 (应用初始化: 0.94秒)
+2025-08-18 23:29:02,081 - ui.process_tab - ERROR - 获取进程详细信息时出错: (pid=0, name='System Idle Process')
+2025-08-18 23:29:09,941 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-18 23:29:09,941 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-18 23:29:09,941 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-18 23:29:09,941 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:29:09,941 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-18 23:29:09,941 - ui.main_window - INFO - 应用程序已关闭
+2025-08-18 23:29:09,954 - root - INFO - 应用程序正常退出
+2025-08-18 23:34:09,048 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:34:09,050 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:34:09,053 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:34:09,054 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:34:09,055 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:34:09,057 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:34:09,060 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:34:09,060 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:34:09,060 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:34:09,062 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:34:09,064 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:34:09,064 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:34:09,065 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:34:09,065 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:34:09,067 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:34:09,067 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:34:09,081 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:34:09,083 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:34:10,561 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:34:12,429 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:34:12,431 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:34:12,434 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:34:12,435 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:34:12,435 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:34:12,437 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:34:12,440 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:34:12,440 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:34:12,440 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:34:12,442 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:34:12,444 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:34:12,444 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:34:12,444 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:34:12,444 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:34:12,446 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:34:12,446 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:34:12,460 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:34:12,462 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:34:12,463 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:34:12,820 - root - INFO - 应用程序启动完成，总耗时: 2.01秒 (应用初始化: 1.87秒)
+2025-08-18 23:34:14,259 - ui.process_tab - ERROR - 获取进程详细信息时出错: (pid=148, name='Registry')
+2025-08-18 23:34:20,730 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:20,731 - ui.network_tab - ERROR - 更新网络连接表格时出错: 'process'
+2025-08-18 23:34:22,114 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,114 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,114 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,115 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,115 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,116 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,116 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,116 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,116 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,116 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,117 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,117 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,117 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,118 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,118 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,118 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,118 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,118 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,119 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,119 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,119 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,119 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,119 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,120 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,120 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,120 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,120 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,121 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,121 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,121 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,121 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,122 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,122 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,122 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,122 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,123 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,123 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,123 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,123 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,123 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,124 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,124 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,124 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,124 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,124 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,125 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,125 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,125 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,125 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,126 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,126 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,126 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,126 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,126 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,126 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,127 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,127 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,127 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,127 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,127 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,128 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,128 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,128 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,128 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,128 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,129 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,129 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,129 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,129 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,130 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,130 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,130 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,130 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,131 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,131 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,131 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,132 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,134 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,134 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,134 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,135 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,135 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,135 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,135 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,136 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,136 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,136 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,136 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,136 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,137 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,137 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,137 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,137 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,138 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,138 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,138 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,138 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,138 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,139 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,139 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,139 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,139 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,139 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,140 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,140 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,140 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,140 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,140 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,141 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,141 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,141 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,141 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,141 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,142 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,142 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,142 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,142 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,142 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,143 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,143 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,143 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,143 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,143 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,144 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,144 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,144 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,144 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,144 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,145 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,145 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,145 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,145 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,146 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,147 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,147 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,147 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,147 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,149 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,149 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,149 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,150 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,151 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,151 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,151 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,151 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,151 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,152 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,152 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,152 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:34:22,153 - ui.network_tab - INFO - 网络连接刷新完成，共 149 个连接
+2025-08-18 23:34:24,837 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-18 23:34:24,838 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-18 23:34:24,839 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-18 23:34:24,839 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:34:24,839 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-18 23:34:24,839 - ui.main_window - INFO - 应用程序已关闭
+2025-08-18 23:34:24,855 - root - INFO - 应用程序正常退出
+2025-08-18 23:36:44,759 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:36:44,762 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:36:44,764 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:36:44,765 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:36:44,765 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:36:44,767 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:36:44,770 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:36:44,770 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:36:44,770 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:36:44,772 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:36:44,774 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:36:44,775 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:36:44,776 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:36:44,776 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:36:44,777 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:36:44,777 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:36:44,792 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:36:44,794 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:36:47,832 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:36:49,397 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:36:49,399 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:36:49,401 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:36:49,403 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:36:49,403 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:36:49,405 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:36:49,408 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:36:49,409 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:36:49,409 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:36:49,410 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:36:49,413 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:36:49,413 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:36:49,413 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:36:49,413 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:36:49,414 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:36:49,414 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:36:49,426 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:36:49,429 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:36:49,430 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:36:49,780 - root - INFO - 应用程序启动完成，总耗时: 1.72秒 (应用初始化: 1.58秒)
+2025-08-18 23:36:56,746 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:56,746 - ui.network_tab - ERROR - 更新网络连接表格时出错: 'process'
+2025-08-18 23:36:57,872 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,872 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,872 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,873 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,873 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,873 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,873 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,874 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,874 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,874 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,874 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,874 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,875 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,875 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,875 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,875 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,875 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,876 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,876 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,876 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,876 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,876 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,877 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,877 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,877 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,877 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,877 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,878 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,878 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,878 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,878 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,878 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,879 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,879 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,879 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,879 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,879 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,879 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,880 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,880 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,880 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,880 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,880 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,881 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,881 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,882 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,882 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,882 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,882 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,882 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,883 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,884 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,884 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,884 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,885 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,885 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,885 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,885 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,886 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,886 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,886 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,886 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,887 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,887 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,887 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,887 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,887 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,888 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,888 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,888 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,888 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,889 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,889 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,889 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,890 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,890 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,890 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,891 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,891 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,891 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,891 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,891 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,892 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,892 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,892 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,892 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,892 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,893 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,893 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,893 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,893 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,893 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,894 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,894 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,894 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,894 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,894 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,894 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,895 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,895 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,895 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,895 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,895 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,896 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,896 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,896 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,896 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,896 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,897 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,897 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,897 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,897 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,897 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,898 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,898 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,901 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,901 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,901 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,901 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,902 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,902 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,902 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,902 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,902 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,903 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,903 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,903 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,903 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,903 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,904 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,904 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,904 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,904 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,904 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,905 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,905 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,905 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,905 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,905 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,905 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,906 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,906 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,906 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-18 23:36:57,906 - ui.network_tab - INFO - 网络连接刷新完成，共 143 个连接
+2025-08-18 23:36:59,378 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-18 23:36:59,379 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-18 23:36:59,379 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-18 23:36:59,380 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:36:59,381 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-18 23:36:59,382 - ui.main_window - INFO - 应用程序已关闭
+2025-08-18 23:36:59,390 - root - INFO - 应用程序正常退出
+2025-08-18 23:38:16,927 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:38:16,929 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:38:16,932 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:38:16,933 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:38:16,933 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:38:16,935 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:38:16,938 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:38:16,938 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:38:16,938 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:38:16,940 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:38:16,942 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:38:16,942 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:38:16,942 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:38:16,943 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:38:16,944 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:38:16,944 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:38:16,956 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:38:16,959 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:38:43,266 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-18 23:38:44,909 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:38:44,911 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:38:44,914 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:38:44,915 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:38:44,915 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:38:44,917 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:38:44,920 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:38:44,920 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:38:44,920 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:38:44,921 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:38:44,923 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:38:44,923 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:38:44,923 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:38:44,924 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:38:44,924 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:38:44,924 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:38:44,936 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:38:44,939 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:38:44,939 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:38:45,406 - root - INFO - 应用程序启动完成，总耗时: 1.92秒 (应用初始化: 1.77秒)
+2025-08-18 23:38:46,781 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-18 23:38:46,781 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-18 23:38:46,782 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-18 23:38:46,782 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:38:46,782 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-18 23:38:46,782 - ui.main_window - INFO - 应用程序已关闭
+2025-08-18 23:38:46,791 - root - INFO - 应用程序正常退出
+2025-08-18 23:44:33,955 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-18 23:44:33,958 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-18 23:44:33,961 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-18 23:44:33,963 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-18 23:44:33,964 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-18 23:44:33,966 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-18 23:44:33,971 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-18 23:44:33,971 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-18 23:44:33,971 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-18 23:44:33,974 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-18 23:44:33,977 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-18 23:44:33,977 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-18 23:44:33,977 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-18 23:44:33,977 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-18 23:44:33,978 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-18 23:44:33,979 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-18 23:44:33,993 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-18 23:44:34,001 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-18 23:45:39,571 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-18 23:45:39,863 - root - INFO - 应用程序启动完成，总耗时: 68.43秒 (应用初始化: 67.80秒)
+2025-08-18 23:45:46,820 - ui.process_tab - ERROR - 获取进程详细信息时出错: (pid=0, name='System Idle Process')
+2025-08-18 23:45:50,911 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-18 23:45:50,911 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-18 23:45:50,911 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-18 23:45:50,911 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-18 23:45:50,911 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-18 23:45:50,911 - ui.main_window - INFO - 应用程序已关闭
+2025-08-18 23:45:50,926 - root - INFO - 应用程序正常退出
+2025-08-18 23:45:53,669 - httpx - INFO - HTTP Request: POST https://api.trustoken.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-18 23:47:15,945 - httpx - INFO - HTTP Request: POST https://api.trustoken.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-18 23:48:11,922 - httpx - INFO - HTTP Request: POST https://api.trustoken.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-18 23:49:00,802 - httpx - INFO - HTTP Request: POST https://api.trustoken.cn/v1/chat/completions "HTTP/1.1 200 OK"
+2025-08-18 23:51:32,368 - httpx - INFO - HTTP Request: POST https://api.trustoken.cn/v1/chat/completions "HTTP/1.1 403 Forbidden"
+2025-08-19 00:30:09,661 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:30:09,671 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:30:09,673 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:30:09,675 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:30:09,675 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:30:09,682 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:30:09,692 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:30:09,693 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:30:09,693 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:30:09,694 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:30:09,697 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:30:09,697 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:30:09,697 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:30:09,697 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:30:09,698 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:30:09,698 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:30:09,713 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:30:09,716 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:30:11,361 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-19 00:30:12,884 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:30:12,887 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:30:12,889 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:30:12,891 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:30:12,891 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:30:12,893 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:30:12,896 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:30:12,896 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:30:12,897 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:30:12,898 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:30:12,900 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:30:12,900 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:30:12,900 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:30:12,900 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:30:12,901 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:30:12,901 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:30:12,913 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:30:12,916 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:30:12,917 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-19 00:30:13,278 - root - INFO - 应用程序启动完成，总耗时: 1.71秒 (应用初始化: 1.57秒)
+2025-08-19 00:30:14,699 - ui.process_tab - ERROR - 获取进程详细信息时出错: (pid=148, name='Registry')
+2025-08-19 00:30:26,026 - ui.main_window - INFO - 已刷新标签页 📁 文件行为分析 的数据
+2025-08-19 00:30:28,918 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-19 00:30:28,918 - sandbox.ui_components - INFO - 刷新沙箱列表
+2025-08-19 00:30:28,919 - ui.main_window - INFO - 已刷新标签页 沙箱 的数据
+2025-08-19 00:30:28,919 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-19 00:30:28,919 - sandbox.ui_components - INFO - 刷新沙箱列表
+2025-08-19 00:30:31,561 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-19 00:30:31,562 - sandbox.ui_components - INFO - 刷新沙箱列表
+2025-08-19 00:30:31,562 - ui.main_window - INFO - 已刷新标签页 沙箱 的数据
+2025-08-19 00:30:34,165 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:34,166 - ui.network_tab - ERROR - 更新网络连接表格时出错: 'process'
+2025-08-19 00:30:35,252 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,252 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,253 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,253 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,253 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,254 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,254 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,254 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,254 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,255 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,255 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,255 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,255 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,255 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,256 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,256 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,257 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,257 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,257 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,257 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,257 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,258 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,258 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,258 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,258 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,258 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,259 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,259 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,259 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,259 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,259 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,260 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,260 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,260 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,260 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,260 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,261 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,261 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,261 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,261 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,261 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,262 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,262 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,262 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,262 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,263 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,263 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,263 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,263 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,263 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,264 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,264 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,264 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,264 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,264 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,265 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,265 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,265 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,265 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,266 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,266 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,266 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,266 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,266 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,267 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,267 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,267 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,267 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,267 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,268 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,268 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,268 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,268 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,268 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,269 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,269 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,269 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,269 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,269 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,270 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,270 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,270 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,271 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,272 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,272 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,273 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,273 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,273 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,273 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,274 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,274 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,274 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,276 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,276 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,276 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,277 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,277 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,277 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,277 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,277 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,278 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,278 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,278 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,278 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,278 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,279 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,279 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,279 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,279 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,280 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,280 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,280 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,280 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,280 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,281 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,281 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,281 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,281 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,282 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,282 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,282 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,282 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,283 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,283 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,283 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,283 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,284 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,284 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,284 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,284 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,284 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,285 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,285 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,285 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,285 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,286 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,286 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,286 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,286 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,286 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,287 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,287 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,287 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,287 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,287 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,288 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,288 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,289 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,289 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,289 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,289 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,290 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,292 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,292 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,293 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,293 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,293 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,293 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,293 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,294 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,294 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,294 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,294 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,294 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,295 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,295 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,295 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,295 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,295 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,296 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,296 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,296 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,296 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,296 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,297 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,297 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,297 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,297 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,297 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,298 - ui.network_tab - ERROR - 检查网络连接是否可疑时出错: string indices must be integers, not 'str'
+2025-08-19 00:30:35,298 - ui.network_tab - INFO - 网络连接刷新完成，共 180 个连接
+2025-08-19 00:35:12,867 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:35:12,869 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:35:12,871 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:35:12,872 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:35:12,872 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:35:12,874 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:35:12,878 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:35:12,878 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:35:12,878 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:35:12,880 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:35:12,882 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:35:12,882 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:35:12,883 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:35:12,883 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:35:12,884 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:35:12,884 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:35:12,896 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:35:12,899 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:35:14,132 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-19 00:35:15,522 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:35:15,524 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:35:15,527 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:35:15,528 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:35:15,528 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:35:15,530 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:35:15,533 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:35:15,533 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:35:15,533 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:35:15,534 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:35:15,537 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:35:15,538 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:35:15,538 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:35:15,538 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:35:15,539 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:35:15,539 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:35:15,551 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:35:15,554 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:35:15,554 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-19 00:35:15,899 - root - INFO - 应用程序启动完成，总耗时: 1.65秒 (应用初始化: 1.52秒)
+2025-08-19 00:35:16,946 - ui.process_tab - ERROR - 获取进程详细信息时出错: (pid=148, name='Registry')
+2025-08-19 00:35:26,540 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-19 00:35:26,540 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-19 00:35:26,540 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-19 00:35:26,540 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-19 00:35:26,541 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-19 00:35:26,541 - ui.main_window - INFO - 应用程序已关闭
+2025-08-19 00:35:26,551 - root - INFO - 应用程序正常退出
+2025-08-19 00:40:45,936 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:40:45,938 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:40:45,940 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:40:45,941 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:40:45,941 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:40:45,944 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:40:45,947 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:40:45,947 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:40:45,947 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:40:45,949 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:40:45,951 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:40:45,951 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:40:45,951 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:40:45,951 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:40:45,952 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:40:45,952 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:40:45,965 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:40:45,967 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:40:47,432 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-19 00:40:49,017 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:40:49,019 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:40:49,021 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:40:49,022 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:40:49,022 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:40:49,024 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:40:49,027 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:40:49,028 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:40:49,028 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:40:49,029 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:40:49,031 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:40:49,031 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:40:49,031 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:40:49,031 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:40:49,032 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:40:49,032 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:40:49,045 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:40:49,047 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:40:49,048 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-19 00:40:49,391 - root - INFO - 应用程序启动完成，总耗时: 1.75秒 (应用初始化: 1.62秒)
+2025-08-19 00:46:21,491 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:46:21,493 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:46:21,495 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:46:21,496 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:46:21,497 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:46:21,499 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:46:21,502 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:46:21,502 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:46:21,503 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:46:21,504 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:46:21,506 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:46:21,506 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:46:21,507 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:46:21,507 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:46:21,508 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:46:21,508 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:46:21,522 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:46:21,524 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:46:22,809 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-19 00:46:24,587 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:46:24,589 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:46:24,591 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:46:24,593 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:46:24,593 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:46:24,595 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:46:24,598 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:46:24,599 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:46:24,599 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:46:24,600 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:46:24,602 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:46:24,602 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:46:24,603 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:46:24,603 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:46:24,604 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:46:24,604 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:46:24,616 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:46:24,619 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:46:24,620 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-19 00:46:24,985 - root - INFO - 应用程序启动完成，总耗时: 1.96秒 (应用初始化: 1.81秒)
+2025-08-19 00:52:02,860 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:52:02,863 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:52:02,867 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:52:02,868 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:52:02,868 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:52:02,870 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:52:02,873 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:52:02,874 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:52:02,874 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:52:02,876 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:52:02,878 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:52:02,878 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:52:02,878 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:52:02,878 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:52:02,880 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:52:02,880 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:52:02,895 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:52:02,898 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:52:04,275 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-19 00:52:05,862 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:52:05,863 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:52:05,866 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:52:05,867 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:52:05,867 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:52:05,869 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:52:05,872 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:52:05,873 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:52:05,873 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:52:05,874 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:52:05,876 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:52:05,876 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:52:05,876 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:52:05,877 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:52:05,877 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:52:05,877 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:52:05,890 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:52:05,892 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:52:05,893 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-19 00:52:06,248 - root - INFO - 应用程序启动完成，总耗时: 1.75秒 (应用初始化: 1.61秒)
+2025-08-19 00:52:07,847 - ui.process_tab - ERROR - 获取进程详细信息时出错: (pid=148, name='Registry')
+2025-08-19 00:52:28,497 - ui.startup_tab - INFO - 启动项刷新完成，共 10 个启动项
+2025-08-19 00:52:36,822 - ui.network_tab - ERROR - 更新网络连接表格时出错: 'process'
+2025-08-19 00:52:37,975 - ui.network_tab - INFO - 网络连接刷新完成，共 150 个连接
+2025-08-19 00:56:15,408 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:56:15,410 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:56:15,413 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:56:15,414 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:56:15,415 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:56:15,417 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:56:15,420 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:56:15,420 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:56:15,421 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:56:15,422 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:56:15,424 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:56:15,424 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:56:15,424 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:56:15,424 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:56:15,425 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:56:15,425 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:56:15,440 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:56:15,442 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:56:16,927 - ui.main_window - INFO - ✅ 管理员权限进程已启动，正在退出当前进程
+2025-08-19 00:56:18,159 - ui.main_window - INFO - ✅ 进程标签页创建成功
+2025-08-19 00:56:18,161 - ui.main_window - INFO - ✅ 网络标签页创建成功
+2025-08-19 00:56:18,164 - ui.main_window - INFO - ✅ 启动项标签页创建成功
+2025-08-19 00:56:18,165 - ui.registry_tab - INFO - 注册表标签页初始化完成
+2025-08-19 00:56:18,165 - ui.main_window - INFO - ✅ 注册表标签页创建成功
+2025-08-19 00:56:18,167 - ui.main_window - INFO - ✅ 文件监控标签页创建成功
+2025-08-19 00:56:18,171 - ui.popup_blocker_tab - INFO - 已加载广告拦截规则文件: sandbox\popup_rules.json
+2025-08-19 00:56:18,171 - ui.popup_blocker_tab - INFO - 弹窗拦截标签页初始化完成
+2025-08-19 00:56:18,171 - ui.main_window - INFO - ✅ 弹窗拦截标签页创建成功
+2025-08-19 00:56:18,172 - ui.main_window - INFO - ✅ 系统模块标签页创建成功
+2025-08-19 00:56:18,174 - sandbox.ui_components - INFO - 沙箱列表UI初始化完成
+2025-08-19 00:56:18,175 - sandbox.ui_components - INFO - 沙箱列表组件初始化完成
+2025-08-19 00:56:18,175 - sandbox.ui_components - INFO - 沙箱详情UI初始化完成
+2025-08-19 00:56:18,175 - sandbox.ui_components - INFO - 沙箱详情组件初始化完成
+2025-08-19 00:56:18,176 - sandbox.ui_components - INFO - 沙箱控制面板UI初始化完成
+2025-08-19 00:56:18,176 - sandbox.ui_components - INFO - 沙箱控制面板初始化完成
+2025-08-19 00:56:18,189 - ui.main_window - INFO - ✅ 沙箱标签页创建成功
+2025-08-19 00:56:18,191 - ui.main_window - INFO - ✅ 文件行为分析标签页创建成功
+2025-08-19 00:56:18,192 - ui.main_window - INFO - 主窗口初始化完成
+2025-08-19 00:56:18,555 - root - INFO - 应用程序启动完成，总耗时: 1.50秒 (应用初始化: 1.36秒)
+2025-08-19 00:56:20,936 - ui.network_tab - ERROR - 更新网络连接表格时出错: string indices must be integers, not 'str'
+2025-08-19 00:56:22,149 - ui.network_tab - INFO - 网络连接刷新完成，共 155 个连接
+2025-08-19 00:56:24,082 - ui.network_tab - INFO - NetworkTab 资源清理完成
+2025-08-19 00:56:24,082 - ui.startup_tab - INFO - StartupTab 资源清理完成
+2025-08-19 00:56:24,082 - ui.file_monitor_tab - INFO - FileMonitorTab 资源清理完成
+2025-08-19 00:56:24,083 - sandbox.ui_components - INFO - 清空沙箱列表
+2025-08-19 00:56:24,083 - sandbox.ui_components - INFO - 清理沙箱控制面板资源
+2025-08-19 00:56:24,084 - ui.main_window - INFO - 应用程序已关闭
+2025-08-19 00:56:24,097 - root - INFO - 应用程序正常退出

@@ -487,7 +487,7 @@ class PopupBlockerTab(QWidget):
         """更新检测频率"""
         if self.monitor_timer and self.monitoring:
             self.monitor_timer.setInterval(value)
-        if self.ad_rules:
+        if hasattr(self, 'ad_rules') and self.ad_rules:
             self.ad_rules['check_frequency_ms'] = value
         logger.info(f"检测频率已更新为: {value}ms")
         show_info_message(self, "设置更新", f"检测频率已更新为: {value}ms")

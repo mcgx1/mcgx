@@ -198,14 +198,101 @@ class RegistryTab(QWidget):
     
     def load_subkeys(self, item):
         """加载子键"""
-        # TODO: 实现子键加载逻辑
-        pass
+        try:
+            # 获取项的完整路径
+            path_parts = []
+            current_item = item
+            while current_item:
+                path_parts.insert(0, current_item.text(0))
+                current_item = current_item.parent()
+            
+            full_path = "\\".join(path_parts)
+            
+            # 移除已有的子项
+            item.takeChildren()
+            
+            # 解析根键和子路径
+            if "\\" in full_path:
+                root_key_name, sub_path = full_path.split("\\", 1)
+            else:
+                root_key_name = full_path
+                sub_path = ""
+            
+            # 映射根键名称到实际的winreg键
+            root_key_map = {
+                "HKEY_CLASSES_ROOT": winreg.HKEY_CLASSES_ROOT,
+                "HKEY_CURRENT_USER": winreg.HKEY_CURRENT_USER,
+                "HKEY_LOCAL_MACHINE": winreg.HKEY_LOCAL_MACHINE,
+                "HKEY_USERS": winreg.HKEY_USERS,
+                "HKEY_CURRENT_CONFIG": winreg.HKEY_CURRENT_CONFIG
+            }
+            
+            if root_key_name not in root_key_map:
+                logger.warning(f"未知的根键: {root_key_name}")
+                return
+                
+            root_key = root_key_map[root_key_name]
+            
+            # 打开注册表键
+            try:
+                with winreg.OpenKey(root_key, sub_path) as key:
+                    # 枚举子键
+                    i = 0
+                    while True:
+                        try:
+                            subkey_name = winreg.EnumKey(key, i)
+                            sub_item = QTreeWidgetItem(item, [subkey_name])
+                            sub_item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
+                            i += 1
+                        except OSError:
+                            # 没有更多子键
+                            break
+                    
+                    # 枚举值
+                    i = 0
+                    while True:
+                        try:
+                            value_name, value_data, value_type = winreg.EnumValue(key, i)
+                            type_name = self.get_value_type_name(value_type)
+                            formatted_value = self.format_value_for_display(value_data, value_type)
+                            QTreeWidgetItem(item, [value_name, type_name, formatted_value])
+                            i += 1
+                        except OSError:
+                            # 没有更多值
+                            break
+                            
+            except FileNotFoundError:
+                logger.warning(f"注册表项未找到: {full_path}")
+            except PermissionError:
+                logger.warning(f"没有权限访问注册表项: {full_path}")
+            except Exception as e:
+                logger.error(f"加载注册表子键时出错: {e}")
+                
+        except Exception as e:
+            logger.error(f"加载子键时发生错误: {e}")
         
     def refresh_current_key(self):
         """刷新当前键"""
-        # TODO: 实现刷新逻辑
-        pass
-        
+        try:
+            current_item = self.registry_tree.currentItem()
+            if current_item:
+                # 获取父项
+                parent = current_item.parent()
+                if parent:
+                    # 重新加载父项的子项
+                    self.load_subkeys(parent)
+                else:
+                    # 如果是根项，重新加载根键
+                    self.load_root_keys()
+                logger.info("注册表项刷新完成")
+            else:
+                # 如果没有选中项，刷新根键
+                self.load_root_keys()
+                logger.info("注册表根键刷新完成")
+        except Exception as e:
+            logger.error(f"刷新注册表项时出错: {e}")
+            QMessageBox.critical(self, "错误", f"刷新注册表项时出错: {e}")
+    
     def show_context_menu(self, position):
         """显示右键菜单"""
         menu = QMenu()

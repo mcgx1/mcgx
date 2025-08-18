@@ -7,6 +7,7 @@
 import sys
 import os
 import ctypes
+import logging
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QLabel, QPushButton, QHBoxLayout
 from PyQt5.QtCore import Qt
 
@@ -21,6 +22,8 @@ except ImportError as e:
     print(f"⚠️ 沙箱UI组件导入失败: {e}")
     SANDBOX_AVAILABLE = False
 
+logger = logging.getLogger(__name__)
+
 class SandboxTab(QWidget):
     """沙箱标签页"""
     
@@ -34,53 +37,57 @@ class SandboxTab(QWidget):
         """检查当前是否具有管理员权限"""
         try:
             return ctypes.windll.shell32.IsUserAnAdmin()
-        except:
+        except Exception as e:
+            logger.error(f"检查管理员权限时出错: {e}")
             return False
     
     def check_admin_privileges(self):
         """检查管理员权限并提示用户"""
-        if not self.is_admin():
-            # 创建一个提示面板
-            self.permission_warning = QLabel("⚠️ 当前没有管理员权限，沙箱功能可能受限")
-            self.permission_warning.setStyleSheet("""
-                QLabel {
-                    background-color: #fff3cd;
-                    border: 1px solid #ffeaa7;
-                    border-radius: 4px;
-                    padding: 10px;
-                    color: #856404;
-                    font-weight: bold;
-                }
-            """)
-            
-            # 添加重启按钮
-            self.restart_button = QPushButton("以管理员权限重启")
-            self.restart_button.setStyleSheet("""
-                QPushButton {
-                    background-color: #ffc107;
-                    color: #212529;
-                    border: none;
-                    padding: 6px 12px;
-                    border-radius: 4px;
-                    font-weight: bold;
-                }
-                QPushButton:hover {
-                    background-color: #e0a800;
-                }
-            """)
-            self.restart_button.clicked.connect(self.request_admin_restart)
-            
-            # 插入到布局顶部
-            layout = self.layout()
-            if layout:
-                # 创建水平布局放置警告和按钮
-                warning_layout = QHBoxLayout()
-                warning_layout.addWidget(self.permission_warning)
-                warning_layout.addWidget(self.restart_button)
-                warning_layout.addStretch()
+        try:
+            if not self.is_admin():
+                # 创建一个提示面板
+                self.permission_warning = QLabel("⚠️ 当前没有管理员权限，沙箱功能可能受限")
+                self.permission_warning.setStyleSheet("""
+                    QLabel {
+                        background-color: #fff3cd;
+                        border: 1px solid #ffeaa7;
+                        border-radius: 4px;
+                        padding: 10px;
+                        color: #856404;
+                        font-weight: bold;
+                    }
+                """)
                 
-                # 插入到布局的顶部
-                layout.insertLayout(0, warning_layout)
+                # 添加重启按钮
+                self.restart_button = QPushButton("以管理员权限重启")
+                self.restart_button.setStyleSheet("""
+                    QPushButton {
+                        background-color: #ffc107;
+                        color: #212529;
+                        border: none;
+                        padding: 6px 12px;
+                        border-radius: 4px;
+                        font-weight: bold;
+                    }
+                    QPushButton:hover {
+                        background-color: #e0a800;
+                    }
+                """)
+                self.restart_button.clicked.connect(self.request_admin_restart)
+                
+                # 插入到布局顶部
+                layout = self.layout()
+                if layout:
+                    # 创建水平布局放置警告和按钮
+                    warning_layout = QHBoxLayout()
+                    warning_layout.addWidget(self.permission_warning)
+                    warning_layout.addWidget(self.restart_button)
+                    warning_layout.addStretch()
+                    
+                    # 插入到布局的顶部
+                    layout.insertLayout(0, warning_layout)
+        except Exception as e:
+            logger.error(f"检查管理员权限时出错: {e}")
     
     def request_admin_restart(self):
         """请求以管理员权限重启"""
@@ -90,13 +97,14 @@ class SandboxTab(QWidget):
             while main_window and not hasattr(main_window, 'restart_as_admin'):
                 main_window = main_window.parent()
             
+            # 安全检查main_window是否存在
             if main_window and hasattr(main_window, 'restart_as_admin'):
                 main_window.restart_as_admin()
             else:
                 # 如果找不到主窗口，直接处理重启逻辑
                 self.restart_as_admin_direct()
         except Exception as e:
-            print(f"❌ 请求管理员权限重启失败: {e}")
+            logger.error(f"请求管理员权限重启失败: {e}")
             self.restart_as_admin_direct()
     
     def restart_as_admin_direct(self):

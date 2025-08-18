@@ -420,9 +420,15 @@ class StartupTab(QWidget):
                     # 刷新界面
                     self.refresh()
                     
+            except AttributeError as e:
+                logger.error(f"禁用启动项时发生属性错误: {e}")
+                QMessageBox.critical(self, "错误", "发生属性错误：对象可能未正确初始化")
+            except IndexError as e:
+                logger.error(f"禁用启动项时发生索引错误: {e}")
+                QMessageBox.critical(self, "错误", "发生索引错误：访问了无效的表格项")
             except Exception as e:
                 logger.error(f"禁用启动项时出错: {e}")
-                QMessageBox.critical(self, "错误", f"禁用启动项时出错: {e}")
+                QMessageBox.critical(self, "错误", f"发生未知错误: {str(e)}")
 
     def delete_startup_item(self):
         """
@@ -456,9 +462,15 @@ class StartupTab(QWidget):
                     # 刷新界面
                     self.refresh()
                     
+            except AttributeError as e:
+                logger.error(f"删除启动项时发生属性错误: {e}")
+                QMessageBox.critical(self, "错误", "发生属性错误：对象可能未正确初始化")
+            except IndexError as e:
+                logger.error(f"删除启动项时发生索引错误: {e}")
+                QMessageBox.critical(self, "错误", "发生索引错误：访问了无效的表格项")
             except Exception as e:
                 logger.error(f"删除启动项时出错: {e}")
-                QMessageBox.critical(self, "错误", f"删除启动项时出错: {e}")
+                QMessageBox.critical(self, "错误", f"发生未知错误: {str(e)}")
 
     def scan_suspicious_items(self):
         """
@@ -554,9 +566,15 @@ class StartupTab(QWidget):
                     msg_box.setStandardButtons(QMessageBox.Ok)
                     msg_box.exec_()
                     
+            except AttributeError as e:
+                logger.error(f"显示启动项详细信息时发生属性错误: {e}")
+                QMessageBox.critical(self, "错误", "发生属性错误：对象可能未正确初始化")
+            except IndexError as e:
+                logger.error(f"显示启动项详细信息时发生索引错误: {e}")
+                QMessageBox.critical(self, "错误", "发生索引错误：访问了无效的表格项")
             except Exception as e:
                 logger.error(f"显示启动项详细信息时出错: {e}")
-                QMessageBox.critical(self, "错误", f"显示启动项详细信息时出错: {e}")
+                QMessageBox.critical(self, "错误", f"发生未知错误: {str(e)}")
     
     def cleanup(self):
         """

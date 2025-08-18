@@ -13,9 +13,6 @@ logger = logging.getLogger(__name__)
 
 class FileMonitorTab(QWidget):
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._last_refresh_time = None
     def __init__(self):
         super().__init__()
         self.refresh_worker = None

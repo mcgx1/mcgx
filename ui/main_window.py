@@ -191,99 +191,131 @@ class MainWindow(QMainWindow):
     
     def add_all_tabs(self):
         """添加所有标签页但不初始化数据"""
+        # 进程标签页
+        self.process_tab = ProcessTab()
+        self.tab_widget.addTab(self.process_tab, "进程监控")
+        self.tab_widgets['process'] = self.process_tab
+        logger.info("✅ 进程标签页创建成功")
+        
+        # 网络标签页
+        self.network_tab = NetworkTab()
+        self.tab_widget.addTab(self.network_tab, "网络监控")
+        self.tab_widgets['network'] = self.network_tab
+        logger.info("✅ 网络标签页创建成功")
+        
+        # 启动项标签页
+        self.startup_tab = StartupTab()
+        self.tab_widget.addTab(self.startup_tab, "启动项监控")
+        self.tab_widgets['startup'] = self.startup_tab
+        logger.info("✅ 启动项标签页创建成功")
+        
+        # 注册表标签页
+        self.registry_tab = RegistryTab()
+        self.tab_widget.addTab(self.registry_tab, "注册表监控")
+        self.tab_widgets['registry'] = self.registry_tab
+        logger.info("✅ 注册表标签页创建成功")
+        
+        # 文件监控标签页
+        self.file_monitor_tab = FileMonitorTab()
+        self.tab_widget.addTab(self.file_monitor_tab, "文件监控")
+        self.tab_widgets['file_monitor'] = self.file_monitor_tab
+        logger.info("✅ 文件监控标签页创建成功")
+        
+        # 弹窗拦截标签页
+        self.popup_blocker_tab = PopupBlockerTab()
+        self.tab_widget.addTab(self.popup_blocker_tab, "弹窗拦截")
+        self.tab_widgets['popup_blocker'] = self.popup_blocker_tab
+        logger.info("✅ 弹窗拦截标签页创建成功")
+        
+        # 模块标签页
+        self.modules_tab = ModulesTab()
+        self.tab_widget.addTab(self.modules_tab, "系统模块")
+        self.tab_widgets['modules'] = self.modules_tab
+        logger.info("✅ 系统模块标签页创建成功")
+        
+        # 沙箱标签页
+        self.sandbox_tab = SandboxTab()
+        self.tab_widget.addTab(self.sandbox_tab, "沙箱")
+        self.tab_widgets['sandbox'] = self.sandbox_tab
+        logger.info("✅ 沙箱标签页创建成功")
+        
+        # 添加文件行为分析标签页
         try:
-            # 进程标签页
-            self.process_tab = ProcessTab()
-            self.tab_widget.addTab(self.process_tab, "进程监控")
-            self.tab_widgets['process'] = self.process_tab
-            logger.info("✅ 进程标签页创建成功")
-            
-            # 网络标签页
-            self.network_tab = NetworkTab()
-            self.tab_widget.addTab(self.network_tab, "网络监控")
-            self.tab_widgets['network'] = self.network_tab
-            logger.info("✅ 网络标签页创建成功")
-            
-            # 启动项标签页
-            self.startup_tab = StartupTab()
-            self.tab_widget.addTab(self.startup_tab, "启动项监控")
-            self.tab_widgets['startup'] = self.startup_tab
-            logger.info("✅ 启动项标签页创建成功")
-            
-            # 注册表标签页
-            self.registry_tab = RegistryTab()
-            self.tab_widget.addTab(self.registry_tab, "注册表监控")
-            self.tab_widgets['registry'] = self.registry_tab
-            logger.info("✅ 注册表标签页创建成功")
-            
-            # 文件监控标签页
-            self.file_monitor_tab = FileMonitorTab()
-            self.tab_widget.addTab(self.file_monitor_tab, "文件监控")
-            self.tab_widgets['file_monitor'] = self.file_monitor_tab
-            logger.info("✅ 文件监控标签页创建成功")
-            
-            # 弹窗拦截标签页
-            self.popup_blocker_tab = PopupBlockerTab()
-            self.tab_widget.addTab(self.popup_blocker_tab, "弹窗拦截")
-            self.tab_widgets['popup_blocker'] = self.popup_blocker_tab
-            logger.info("✅ 弹窗拦截标签页创建成功")
-            
-            # 模块标签页
-            self.modules_tab = ModulesTab()
-            self.tab_widget.addTab(self.modules_tab, "系统模块")
-            self.tab_widgets['modules'] = self.modules_tab
-            logger.info("✅ 系统模块标签页创建成功")
-            
-            # 沙箱标签页
-            self.sandbox_tab = SandboxTab()
-            self.tab_widget.addTab(self.sandbox_tab, "沙箱")
-            self.tab_widgets['sandbox'] = self.sandbox_tab
-            logger.info("✅ 沙箱标签页创建成功")
-            
-            # 添加文件行为分析标签页
-            try:
-                from ui.file_behavior_analyzer import FileBehaviorAnalyzer
-                self.file_behavior_tab = FileBehaviorAnalyzer()
-                self.tab_widget.addTab(self.file_behavior_tab, "📁 文件行为分析")
-                self.tab_widgets['file_behavior'] = self.file_behavior_tab
-                logger.info("✅ 文件行为分析标签页创建成功")
-            except Exception as e:
-                logger.error(f"添加文件行为分析标签页失败: {e}")
-                # 添加一个占位标签页
-                placeholder = QLabel("文件行为分析模块加载失败")
-                placeholder.setAlignment(Qt.AlignCenter)
-                self.tab_widget.addTab(placeholder, "📁 文件行为分析")
-            
-            # 连接信号
-            if hasattr(self.process_tab, 'process_killed'):
-                self.process_tab.process_killed.connect(self.on_process_killed)
-            
+            from .file_behavior_analyzer import FileBehaviorAnalyzer
+            self.file_behavior_tab = FileBehaviorAnalyzer()
+            self.tab_widget.addTab(self.file_behavior_tab, "📁 文件行为分析")
+            self.tab_widgets['file_behavior'] = self.file_behavior_tab
+            logger.info("✅ 文件行为分析标签页创建成功")
         except Exception as e:
-            logger.error(f"创建标签页失败: {e}", exc_info=True)
-            # 如果标签页创建失败，添加一个欢迎标签页
-            from PyQt5.QtWidgets import QLabel
-            welcome_widget = QWidget()
-            welcome_layout = QVBoxLayout(welcome_widget)
-            welcome_label = QLabel("""
-            <h2>🎉 系统安全分析工具</h2>
-            <p>恭喜！所有导入问题已解决。</p>
-            <p>项目修复完成，现在可以正常使用。</p>
-            <p><b>修复的问题：</b></p>
-            <ul>
-            <li>✅ PyQt5 API更新</li>
-            <li>✅ 文件资源泄露修复</li>
-            <li>✅ 硬编码路径修复</li>
-            <li>✅ 异常处理优化</li>
-            <li>✅ 空指针安全处理</li>
-            <li>✅ 模块导入问题修复</li>
-            <li>✅ __file__变量问题解决</li>
-            <li>✅ SystemUtils类创建</li>
-            <li>✅ 包结构重建</li>
-            </ul>
-            """)
-            welcome_label.setAlignment(Qt.AlignCenter)
-            welcome_layout.addWidget(welcome_label)
-            self.tab_widget.addTab(welcome_widget, "欢迎")
+            logger.error(f"添加文件行为分析标签页失败: {e}")
+            # 添加一个占位标签页
+            placeholder = QLabel("文件行为分析模块加载失败")
+            placeholder.setAlignment(Qt.AlignCenter)
+            self.tab_widget.addTab(placeholder, "📁 文件行为分析")
+        
+        # 连接信号
+        if hasattr(self.process_tab, 'process_killed'):
+            self.process_tab.process_killed.connect(self.on_process_killed)
+    
+    def show_file_behavior_analyzer(self):
+        """显示文件行为分析器"""
+        try:
+            # 切换到文件行为分析标签页
+            if hasattr(self, 'file_behavior_tab'):
+                file_behavior_index = self.tab_widget.indexOf(self.file_behavior_tab)
+                if file_behavior_index >= 0:
+                    self.tab_widget.setCurrentIndex(file_behavior_index)
+                    self.statusBar().showMessage("已切换到文件行为分析标签页")
+                    
+                    # 如果标签页支持刷新，触发刷新
+                    if hasattr(self.file_behavior_tab, 'refresh_display'):
+                        self.file_behavior_tab.refresh_display()
+                else:
+                    QMessageBox.warning(self, "警告", "文件行为分析标签页不可用")
+            else:
+                QMessageBox.warning(self, "警告", "文件行为分析模块未加载")
+        except Exception as e:
+            logger.error(f"显示文件行为分析器时出错: {e}")
+            QMessageBox.critical(self, "错误", f"显示文件行为分析器时出错: {e}")
+    
+    def retry_load_file_behavior(self):
+        """重试加载文件行为分析模块"""
+        try:
+            from .file_behavior_analyzer import FileBehaviorAnalyzer
+            # 移除错误页面
+            index = self.tab_widget.indexOf(self.file_behavior_error_widget)
+            if index >= 0:
+                self.tab_widget.removeTab(index)
+            
+            # 创建新的标签页
+            self.file_behavior_tab = FileBehaviorAnalyzer()
+            self.tab_widget.addTab(self.file_behavior_tab, "📁 文件行为分析")
+            self.tab_widgets['file_behavior'] = self.file_behavior_tab
+            
+            # 立即切换到新加载的标签页
+            index = self.tab_widget.indexOf(self.file_behavior_tab)
+            if index >= 0:
+                self.tab_widget.setCurrentIndex(index)
+                self.statusBar().showMessage("✅ 文件行为分析模块已成功加载")
+                logger.info("✅ 文件行为分析模块重试加载成功")
+                
+            # 连接刷新信号（如果存在）
+            if hasattr(self.file_behavior_tab, 'refresh_requested'):
+                self.file_behavior_tab.refresh_requested.connect(self.refresh_file_behavior_tab)
+                
+        except ImportError as e:
+            logger.error(f"❌ 重试加载文件行为分析模块失败: {e}", exc_info=True)
+            show_error_message(self, "加载失败", f"无法加载文件行为分析模块:\n{str(e)}\n请确保模块文件可用并正确配置。")
+            
+    def refresh_file_behavior_tab(self):
+        """处理来自文件行为分析标签页的刷新请求"""
+        try:
+            if hasattr(self.file_behavior_tab, 'refresh_display'):
+                self.file_behavior_tab.refresh_display()
+                self.statusBar().showMessage("已刷新文件行为分析标签页")
+        except Exception as e:
+            logger.error(f"刷新文件行为分析标签页时出错: {e}")
+            show_error_message(self, "刷新失败", f"无法刷新文件行为分析标签页: {e}")
     
     def create_menu_bar(self):
         """创建菜单栏"""
@@ -419,24 +451,6 @@ class MainWindow(QMainWindow):
         if current_index >= 0:
             self.load_tab_data(current_index)
             self.statusBar().showMessage(f"已刷新: {self.tab_widget.tabText(current_index)}")
-    
-    def show_file_behavior_analyzer(self):
-        """显示文件行为分析器"""
-        try:
-            # 切换到文件行为分析标签页
-            file_behavior_index = self.tab_widget.indexOf(self.file_behavior_tab)
-            if file_behavior_index >= 0:
-                self.tab_widget.setCurrentIndex(file_behavior_index)
-                self.statusBar().showMessage("已切换到文件行为分析标签页")
-                
-                # 如果标签页支持刷新，触发刷新
-                if hasattr(self.file_behavior_tab, 'refresh_display'):
-                    self.file_behavior_tab.refresh_display()
-            else:
-                show_warning_message(self, "警告", "文件行为分析标签页不可用")
-        except Exception as e:
-            logger.error(f"显示文件行为分析器时出错: {e}")
-            show_error_message(self, "错误", f"显示文件行为分析器时出错: {e}")
     
     def show_popup_blocker(self):
         """显示弹窗拦截器"""

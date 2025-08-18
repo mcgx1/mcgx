@@ -122,14 +122,23 @@ class NetworkTab(QWidget):
                     # 检查是否为可疑连接
                     is_suspicious = self.is_suspicious_connection(conn)
                     
-                    # 图标列
+                    # 获取进程信息
+                    process_info = "N/A"
+                    if conn.get('pid'):
+                        try:
+                            proc = psutil.Process(conn['pid'])
+                            process_info = f"{proc.name()} (PID: {conn['pid']})"
+                        except (psutil.NoSuchProcess, psutil.AccessDenied):
+                            process_info = f"PID: {conn['pid']}"
+                    
+                    # 图标列（暂时禁用图标功能）
                     icon_item = QTableWidgetItem()
-                    icon = self.get_process_icon(conn['process'])
-                    icon_item.setIcon(icon)
+                    # icon = self.get_process_icon(process_info)
+                    # icon_item.setIcon(icon)
                     icon_item.setFlags(icon_item.flags() & ~Qt.ItemIsEditable)
                     icon_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
                     self.connection_table.setItem(i, 0, icon_item)
-                    
+                        
                     # 类型
                     type_item = QTableWidgetItem(conn['type'])
                     type_item.setFlags(type_item.flags() & ~Qt.ItemIsEditable)
@@ -137,21 +146,21 @@ class NetworkTab(QWidget):
                     self.connection_table.setItem(i, 1, type_item)
                     
                     # 本地地址
-                    local_addr = conn['laddr']['ip'] if conn['laddr'] else ''
+                    local_addr = conn['laddr'].split(':')[0] if ':' in str(conn['laddr']) else str(conn['laddr'])
                     local_item = QTableWidgetItem(local_addr)
                     local_item.setFlags(local_item.flags() & ~Qt.ItemIsEditable)
                     local_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
                     self.connection_table.setItem(i, 2, local_item)
                     
                     # 本地端口
-                    local_port = str(conn['laddr']['port']) if conn['laddr'] else ''
+                    local_port = conn['laddr'].split(':')[1] if ':' in str(conn['laddr']) else ''
                     local_port_item = QTableWidgetItem(local_port)
                     local_port_item.setFlags(local_port_item.flags() & ~Qt.ItemIsEditable)
                     local_port_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
                     self.connection_table.setItem(i, 3, local_port_item)
                     
                     # 远程地址
-                    remote_addr = conn['raddr']['ip'] if conn['raddr'] else ''
+                    remote_addr = conn['raddr'].split(':')[0] if ':' in str(conn['raddr']) else str(conn['raddr']) if conn['raddr'] != 'N/A' else ''
                     remote_item = QTableWidgetItem(remote_addr)
                     remote_item.setFlags(remote_item.flags() & ~Qt.ItemIsEditable)
                     remote_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -160,7 +169,7 @@ class NetworkTab(QWidget):
                     self.connection_table.setItem(i, 4, remote_item)
                     
                     # 远程端口
-                    remote_port = str(conn['raddr']['port']) if conn['raddr'] else ''
+                    remote_port = conn['raddr'].split(':')[1] if ':' in str(conn['raddr']) else '' if conn['raddr'] != 'N/A' else ''
                     remote_port_item = QTableWidgetItem(remote_port)
                     remote_port_item.setFlags(remote_port_item.flags() & ~Qt.ItemIsEditable)
                     remote_port_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -175,7 +184,7 @@ class NetworkTab(QWidget):
                     self.connection_table.setItem(i, 6, status_item)
                     
                     # 进程信息
-                    process_item = QTableWidgetItem(conn['process'])
+                    process_item = QTableWidgetItem(process_info)
                     process_item.setFlags(process_item.flags() & ~Qt.ItemIsEditable)
                     process_item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
                     if is_suspicious:
@@ -201,7 +210,7 @@ class NetworkTab(QWidget):
             
             # 统计信息
             listening_count = sum(1 for conn in connections if conn['status'] == 'LISTEN')
-            external_count = sum(1 for conn in connections if conn['raddr'])
+            external_count = sum(1 for conn in connections if conn['raddr'] != 'N/A')
             suspicious_count = sum(1 for conn in connections if self.is_suspicious_connection(conn))
             
             # 更新信息标签
@@ -239,103 +248,9 @@ class NetworkTab(QWidget):
         Returns:
             QIcon: 进程图标，如果无法获取则返回空图标
         """
-        if not WIN32_AVAILABLE:
-            return QIcon()
-            
-        try:
-            # 从进程信息中提取PID
-            pid = None
-            if "(PID:" in process_info and ")" in process_info:
-                try:
-                    pid_str = process_info.split("(PID:")[1].split(")")[0]
-                    pid = int(pid_str)
-                except (ValueError, IndexError):
-                    logger.debug(f"无法从进程信息中提取PID: {process_info}")
-                    return QIcon()
-            else:
-                logger.debug(f"进程信息格式不正确: {process_info}")
-                return QIcon()
-                
-            if pid is None:
-                return QIcon()
-                
-            # 通过PID获取进程可执行文件路径
-            try:
-                proc = psutil.Process(pid)
-                exe_path = proc.exe()
-            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess) as e:
-                logger.debug(f"无法获取进程exe路径 (PID: {pid}): {e}")
-                return QIcon()
-            except Exception as e:
-                logger.debug(f"获取进程exe路径时发生未知错误 (PID: {pid}): {e}")
-                return QIcon()
-                
-            if not exe_path or not os.path.exists(exe_path):
-                logger.debug(f"进程exe文件不存在: {exe_path}")
-                return QIcon()
-            
-            # 尝试从指定路径提取图标
-            large, small = win32gui.ExtractIconEx(exe_path, 0)
-            
-            # 如果无法提取图标，尝试使用系统默认图标
-            if not large and not small:
-                logger.debug(f"无法从 {exe_path} 提取图标，尝试从 shell32.dll 获取默认图标")
-                large, small = win32gui.ExtractIconEx("shell32.dll", 0)
-                if not large and not small:
-                    logger.debug(f"无法从 shell32.dll 提取默认图标")
-                    return QIcon()
-            
-            # 优先使用大图标，否则使用小图标
-            hIcon = None
-            if large:
-                hIcon = large[0]
-            elif small:
-                hIcon = small[0]
-            
-            if not hIcon:
-                logger.debug(f"无法获取有效图标句柄: {exe_path}")
-                return QIcon()
-            
-            # 创建设备上下文和位图
-            hdcScreen = win32gui.GetDC(None)
-            hdc = win32ui.CreateDCFromHandle(hdcScreen)
-            hbmp = win32ui.CreateBitmap()
-            hbmp.CreateCompatibleBitmap(hdc, 32, 32)
-            hdc = hdc.CreateCompatibleDC()
-            hdc.SelectObject(hbmp)
-            
-            # 绘制图标到位图
-            hdc.DrawIcon((0, 0), hIcon)
-            
-            # 将位图转换为QPixmap
-            from PyQt5.QtGui import QImage
-            bitmap_bits = hbmp.GetBitmapBits(True)
-            qimage = QImage(bitmap_bits, 32, 32, QImage.Format_ARGB32)
-            qpixmap = QPixmap(qimage)
-            
-            # 清理资源
-            try:
-                if large:
-                    for handle in large:
-                        win32gui.DestroyIcon(handle)
-                if small:
-                    for handle in small:
-                        win32gui.DestroyIcon(handle)
-                hdc.DeleteDC()
-                win32gui.ReleaseDC(None, hdcScreen)
-            except Exception as e:
-                logger.warning(f"清理图标资源时出错: {e}")
-            
-            # 如果图标无效则返回空图标
-            if qpixmap.isNull():
-                logger.debug(f"获取的图标为空或无效: {exe_path}")
-                return QIcon()
-                
-            logger.debug(f"成功获取图标: {exe_path}")
-            return QIcon(qpixmap)
-        except Exception as e:
-            logger.debug(f"获取进程图标时出错: {e}")
-            return QIcon()
+        # 为防止程序崩溃，暂时禁用图标功能，直接返回空图标
+        # TODO: 后续需要更彻底地解决图标获取导致的崩溃问题
+        return QIcon()
 
     def is_suspicious_connection(self, conn):
         """
@@ -349,12 +264,23 @@ class NetworkTab(QWidget):
         """
         try:
             # 检查是否连接到可疑端口
-            if conn['raddr'] and conn['raddr']['port'] in SUSPICIOUS_PORTS:
-                return True
+            if conn['raddr'] != 'N/A':
+                raddr_parts = conn['raddr'].split(':')
+                if len(raddr_parts) >= 2:
+                    try:
+                        port = int(raddr_parts[-1])
+                        if port in SUSPICIOUS_PORTS:
+                            return True
+                    except ValueError:
+                        pass  # 端口号不是整数
                 
             # 检查是否连接到本地回环地址但不是监听状态
-            if conn['raddr'] and conn['raddr']['ip'] == '127.0.0.1' and conn['status'] != 'LISTEN':
-                return True
+            if conn['raddr'] != 'N/A' and conn['status'] != 'LISTEN':
+                raddr_parts = conn['raddr'].split(':')
+                if len(raddr_parts) >= 2:
+                    ip = ':'.join(raddr_parts[:-1])  # 处理IPv6地址
+                    if ip == '127.0.0.1' or ip == '::1':
+                        return True
                 
             return False
         except Exception as e:
@@ -402,14 +328,15 @@ class NetworkTab(QWidget):
             # 获取所有连接
             connections = []
             for row in range(self.connection_table.rowCount()):
-                type_item = self.connection_table.item(row, 0)
-                local_ip_item = self.connection_table.item(row, 1)
-                local_port_item = self.connection_table.item(row, 2)
-                remote_ip_item = self.connection_table.item(row, 3)
-                remote_port_item = self.connection_table.item(row, 4)
-                status_item = self.connection_table.item(row, 5)
-                process_item = self.connection_table.item(row, 6)
+                type_item = self.connection_table.item(row, 1)  # 注意这里修正了列索引
+                local_ip_item = self.connection_table.item(row, 2)
+                local_port_item = self.connection_table.item(row, 3)
+                remote_ip_item = self.connection_table.item(row, 4)
+                remote_port_item = self.connection_table.item(row, 5)
+                status_item = self.connection_table.item(row, 6)
+                process_item = self.connection_table.item(row, 7)
                 
+                # 根据表格内容构造连接信息
                 conn = {
                     'type': type_item.text() if type_item else 'N/A',
                     'laddr': {
@@ -433,7 +360,7 @@ class NetworkTab(QWidget):
             # 分类连接
             listening_connections = [conn for conn in connections if conn['status'] == 'LISTEN']
             external_connections = [conn for conn in connections if conn['raddr']['ip']]
-            suspicious_connections = [conn for conn in connections if self.is_suspicious_connection(conn)]
+            suspicious_connections = [conn for conn in connections if self.is_suspicious_connection_for_analysis(conn)]
             
             # 记录分析结果到日志
             analysis_result = "网络行为分析结果:\n"
@@ -499,6 +426,37 @@ class NetworkTab(QWidget):
             logger.error(f"分析网络行为时出错: {e}")
             QMessageBox.critical(self, "错误", f"分析网络行为时出错: {e}")
     
+    def is_suspicious_connection_for_analysis(self, conn):
+        """
+        用于分析的可疑连接检查方法
+        
+        Args:
+            conn (Dict[str, Any]): 网络连接信息
+            
+        Returns:
+            bool: 如果连接可疑返回True，否则返回False
+        """
+        try:
+            # 检查是否连接到可疑端口
+            if conn['raddr']['port']:
+                try:
+                    port = int(conn['raddr']['port'])
+                    if port in SUSPICIOUS_PORTS:
+                        return True
+                except ValueError:
+                    pass  # 端口号不是整数
+            
+            # 检查是否连接到本地回环地址但不是监听状态
+            if conn['raddr']['ip'] and conn['status'] != 'LISTEN':
+                ip = conn['raddr']['ip']
+                if ip == '127.0.0.1' or ip == '::1':
+                    return True
+            
+            return False
+        except Exception as e:
+            logger.error(f"检查网络连接是否可疑时出错: {e}")
+            return False
+    
     def cleanup(self):
         """
         清理资源
@@ -510,7 +468,8 @@ class NetworkTab(QWidget):
                     if self.refresh_worker.isRunning():
                         self.refresh_worker.quit()
                         self.refresh_worker.wait()
-                except:
+                except Exception as e:
+                    logger.error(f"停止后台线程时出错: {e}")
                     pass  # 忽略线程清理过程中的任何异常
                     
             logger.info("NetworkTab 资源清理完成")

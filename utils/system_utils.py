@@ -84,17 +84,8 @@ import psutil
 import platform
 from pathlib import Path
 
-# Windows注册表模块导入（仅在Windows系统上可用）
-try:
-    import winreg
-except ImportError:
-    winreg = None
-
-# 项目内部模块导入
-from utils.common_utils import performance_monitor, memoize_with_ttl
-
-# 设置日志
-logger = logging.getLogger(__name__)
+# Windows注册表模块导入
+import winreg
 
 # 添加项目根目录到sys.path
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -134,7 +125,7 @@ def _init_config():
             # 如果都失败了，使用默认实现
             def default_get_config(key_path, default=None):
                 """配置获取函数的默认实现"""
-                logger.warning("无法导入配置管理器，使用默认配置值")
+                logger.warning(f"无法导入配置管理器，使用默认配置值: {key_path}")
                 return default
             _get_config = default_get_config
             return _get_config
@@ -264,31 +255,27 @@ class SystemUtils:
         try:
             for conn in psutil.net_connections(kind='inet'):
                 try:
-                    # 获取进程信息
-                    process_info = "N/A"
-                    if conn.pid:
-                        try:
-                            process = psutil.Process(conn.pid)
-                            process_info = f"{process.name()} (PID: {conn.pid})"
-                        except (psutil.NoSuchProcess, psutil.AccessDenied):
-                            process_info = f"PID: {conn.pid}"
-                    
-                    connections.append({
+                    # 准备连接信息字典
+                    conn_info = {
                         'fd': conn.fd,
                         'family': str(conn.family),
                         'type': str(conn.type),
-                        'laddr': {
-                            'ip': conn.laddr.ip if conn.laddr else '',
-                            'port': conn.laddr.port if conn.laddr else 0
-                        } if conn.laddr else None,
-                        'raddr': {
-                            'ip': conn.raddr.ip if conn.raddr else '',
-                            'port': conn.raddr.port if conn.raddr else 0
-                        } if conn.raddr else None,
+                        'laddr': f"{conn.laddr.ip}:{conn.laddr.port}" if conn.laddr else 'N/A',
+                        'raddr': f"{conn.raddr.ip}:{conn.raddr.port}" if conn.raddr else 'N/A',
                         'status': conn.status,
                         'pid': conn.pid,
-                        'process': process_info
-                    })
+                    }
+                                    
+                    # 只在非Windows系统上添加uids和gids属性
+                    if os.name != 'nt':
+                        conn_info['uids'] = list(conn.uids) if conn.uids else []
+                        conn_info['gids'] = list(conn.gids) if conn.gids else []
+                    else:
+                        # Windows系统上不支持uids和gids
+                        conn_info['uids'] = []
+                        conn_info['gids'] = []
+                                    
+                    connections.append(conn_info)
                 except Exception as e:
                     logger.warning(f"处理网络连接时出错: {e}")
                     continue

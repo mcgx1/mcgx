@@ -185,12 +185,24 @@ class SandboxListWidget(QTableWidget):
     def clear_list(self):
         """清空列表"""
         try:
-            # 断开信号连接以防止在清空过程中触发事件
-            self.itemSelectionChanged.disconnect(self.on_selection_changed)
-            self.itemDoubleClicked.disconnect(self.on_item_double_clicked)
-        except TypeError:
-            # 信号可能未连接，忽略 TypeError
-            pass
+            # 安全断开信号连接以防止在清空过程中触发事件
+            try:
+                if hasattr(self, 'itemSelectionChanged'):
+                    self.itemSelectionChanged.disconnect(self.on_selection_changed)
+            except TypeError:
+                # 信号可能未连接，忽略 TypeError
+                pass
+            except Exception as e:
+                logger.warning(f"断开selectionChanged信号时发生异常: {e}")
+
+            try:
+                if hasattr(self, 'itemDoubleClicked'):
+                    self.itemDoubleClicked.disconnect(self.on_item_double_clicked)
+            except TypeError:
+                # 信号可能未连接，忽略 TypeError
+                pass
+            except Exception as e:
+                logger.warning(f"断开itemDoubleClicked信号时发生异常: {e}")
         except Exception as e:
             logger.warning(f"断开信号时发生异常: {e}")
 
@@ -549,9 +561,13 @@ class SandboxControlPanel(QWidget):
             # 如果这是当前沙箱，更新当前沙箱状态并重置按钮
             if self.current_sandbox and self.current_sandbox.get('id') == sandbox_id:
                 self.current_sandbox['status'] = '已停止'
-                self.stop_button.setEnabled(False)
-                self.pause_button.setEnabled(False)
-                self.resume_button.setEnabled(False)
+                # 安全检查按钮是否存在再设置状态
+                if hasattr(self, 'stop_button') and self.stop_button:
+                    self.stop_button.setEnabled(False)
+                if hasattr(self, 'pause_button') and self.pause_button:
+                    self.pause_button.setEnabled(False)
+                if hasattr(self, 'resume_button') and self.resume_button:
+                    self.resume_button.setEnabled(False)
             
             logger.info(f"沙箱已停止: {sandbox_id}")
         except Exception as e:
@@ -594,13 +610,13 @@ class SandboxControlPanel(QWidget):
         try:
             self.current_sandbox = sandbox_info
             self.sandbox_details.display_sandbox_info(sandbox_info)
-            # 根据沙箱状态启用/禁用按钮
+            # 根据沙箱状态启用/禁用按钮，增加安全检查
             status = sandbox_info.get('status', '未知')
-            if self.stop_button:
+            if hasattr(self, 'stop_button') and self.stop_button:
                 self.stop_button.setEnabled(status in ['运行中', '已暂停'])
-            if self.pause_button:
+            if hasattr(self, 'pause_button') and self.pause_button:
                 self.pause_button.setEnabled(status == '运行中')
-            if self.resume_button:
+            if hasattr(self, 'resume_button') and self.resume_button:
                 self.resume_button.setEnabled(status == '已暂停')
             logger.info(f"选中沙箱: {sandbox_info.get('name', '未知')}")
         except Exception as e:
@@ -619,16 +635,17 @@ class SandboxControlPanel(QWidget):
     def reset_controls(self):
         """重置控制按钮状态"""
         try:
-            if self.start_button:
+            # 安全检查按钮是否存在再设置状态
+            if hasattr(self, 'start_button') and self.start_button:
                 self.start_button.setEnabled(True)
-            if self.stop_button:
+            if hasattr(self, 'stop_button') and self.stop_button:
                 self.stop_button.setEnabled(False)
-            if self.pause_button:
+            if hasattr(self, 'pause_button') and self.pause_button:
                 self.pause_button.setEnabled(False)
-            if self.resume_button:
+            if hasattr(self, 'resume_button') and self.resume_button:
                 self.resume_button.setEnabled(False)
             self.current_sandbox = None  # 重置当前选中的沙箱
-            if self.exe_path_edit:
+            if hasattr(self, 'exe_path_edit') and self.exe_path_edit:
                 self.exe_path_edit.clear()
             logger.info("重置控制按钮状态")
         except Exception as e:
