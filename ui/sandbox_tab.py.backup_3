@@ -1,0 +1,1931 @@
+from ui_style_utils import get_QLabel__font_style
+import win32process
+import win32job
+import win32api
+import win32con
+from ctypes import wintypes
+import psutil
+import subprocess
+import ctypes
+import os
+import hashlib
+import time
+import collections
+import struct
+import json
+import logging
+import math
+import sys
+from datetime import datetime
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QLabel, QGroupBox, QFormLayout, 
+                             QLineEdit, QPushButton, QHBoxLayout, QProgressBar, 
+                             QTabWidget, QTableWidget, QTableWidgetItem, QHeaderView, 
+                             QAbstractItemView, QFileDialog, QMessageBox)
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
+from PyQt5.QtGui import QColor
+class SandboxAnalysisWorker(QThread):
+    """
+    后台线程用于执行沙箱分析任务，避免阻塞UI线程
+    """
+    analysis_finished = pyqtSignal(dict)
+    analysis_progress = pyqtSignal(str, int)
+    
+    def __init__(self, file_path):
+        super().__init__()
+        self.file_path = file_path
+        self.logger = logging.getLogger(__name__)
+        
+    def run(self):
+        try:
+            result = self.analyze_file(self.file_path)
+            self.analysis_finished.emit(result)
+        except Exception as e:
+            self.logger.error(f"沙箱分析时出错: {e}")
+            self.analysis_finished.emit({
+                'error': str(e)
+            })
+    
+    def calculate_entropy(self, data):
+        """
+        计算数据的熵值
+        """
+        if not data:
+            return 0
+            
+        entropy = 0
+        counter = collections.Counter(data)
+        data_len = len(data)
+        
+        for count in counter.values():
+            probability = count / data_len
+            if probability > 0:
+                entropy -= probability * math.log2(probability)
+            
+        return entropy
+
+    def analyze_file(self, file_path):
+        """
+        分析文件的沙箱环境行为
+        """
+        self.analysis_progress.emit("开始分析文件信息", 5)
+        time.sleep(0.05)  # 减少模拟分析时间
+        
+        # 获取文件基本信息
+        file_info = {}
+        try:
+            stat = os.stat(file_path)
+            file_info['size'] = stat.st_size
+            file_info['modified_time'] = stat.st_mtime
+            file_info['created_time'] = stat.st_ctime
+            file_info['accessed_time'] = stat.st_atime
+        except Exception as e:
+            file_info['error'] = str(e)
+        
+        self.analysis_progress.emit("计算文件哈希值", 10)
+        time.sleep(0.05)
+        
+        # 计算文件哈希
+        hashes = {}
+        try:
+            with open(file_path, 'rb') as f:
+                content = f.read()
+                hashes['md5'] = hashlib.md5(content).hexdigest()
+                hashes['sha1'] = hashlib.sha1(content).hexdigest()
+                hashes['sha256'] = hashlib.sha256(content).hexdigest()
+                
+                # 计算文件熵值
+                entropy = self.calculate_entropy(content)
+                hashes['entropy'] = f"{entropy:.2f}"
+        except Exception as e:
+            hashes['error'] = str(e)
+            
+        self.analysis_progress.emit("分析PE结构", 20)
+        time.sleep(0.05)
+        
+        # PE文件分析
+        pe_info = {}
+        pe_analyzer = PEAnalyzer(file_path)
+        if pe_analyzer.analyze():
+            pe_info['is_pe'] = True
+            pe_info['sections'] = pe_analyzer.sections
+            pe_info['file_header'] = pe_analyzer.file_header
+            pe_info['optional_header'] = pe_analyzer.optional_header
+            pe_info['directories'] = pe_analyzer.directories
+            
+            # 提取关键信息用于显示
+            pe_summary = []
+            for section in pe_analyzer.sections:
+                try:
+                    section_entropy = 'N/A'
+                    if content and section['PointerToRawData'] < len(content):
+                        section_data = content[section['PointerToRawData']:section['PointerToRawData']+min(section['SizeOfRawData'], 1024)]
+                        section_entropy = f"{self.calculate_entropy(section_data):.2f}"
+                    
+                    pe_summary.append({
+                        'name': section['Name'],
+                        'size': f"{section['SizeOfRawData']} bytes",
+                        'entropy': section_entropy
+                    })
+                except Exception as e:
+                    self.logger.error(f"计算节熵值时出错: {e}")
+                    pe_summary.append({
+                        'name': section['Name'],
+                        'size': f"{section['SizeOfRawData']} bytes",
+                        'entropy': '计算错误'
+                    })
+            pe_info['sections_summary'] = pe_summary
+            
+            # PE头信息摘要
+            pe_headers_summary = {}
+            if 'Machine' in pe_analyzer.file_header:
+                machine_map = {
+                    0x014c: 'x86',
+                    0x0200: 'IA-64',
+                    0x8664: 'x64',
+                    0x01c0: 'ARM',
+                    0xaa64: 'ARM64'
+                }
+                pe_headers_summary['Machine'] = machine_map.get(pe_analyzer.file_header['Machine'], f"未知 (0x{pe_analyzer.file_header['Machine']:04x})")
+            
+            if 'TimeDateStamp' in pe_analyzer.file_header:
+                try:
+                    timestamp = pe_analyzer.file_header['TimeDateStamp']
+                    pe_headers_summary['编译时间'] = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+                except:
+                    pe_headers_summary['编译时间'] = '无效时间戳'
+                    
+            if 'AddressOfEntryPoint' in pe_analyzer.optional_header:
+                pe_headers_summary['入口点'] = f"0x{pe_analyzer.optional_header['AddressOfEntryPoint']:08x}"
+                
+            if 'ImageBase' in pe_analyzer.optional_header:
+                if isinstance(pe_analyzer.optional_header['ImageBase'], int):
+                    pe_headers_summary['基址'] = f"0x{pe_analyzer.optional_header['ImageBase']:08x}"
+                else:
+                    pe_headers_summary['基址'] = str(pe_analyzer.optional_header['ImageBase'])
+                    
+            pe_info['headers_summary'] = pe_headers_summary
+        else:
+            pe_info['is_pe'] = False
+            pe_info['sections'] = []
+        
+        # 检查文件类型
+        file_extension = os.path.splitext(file_path)[1].lower()
+        file_type_map = {
+            '.exe': 'Windows可执行文件',
+            '.dll': '动态链接库',
+            '.sys': '系统驱动',
+            '.ocx': 'ActiveX控件',
+            '.scr': '屏幕保护程序',
+            '.bat': '批处理脚本',
+            '.cmd': '命令脚本',
+            '.vbs': 'VBScript脚本',
+            '.js': 'JavaScript脚本',
+            '.ps1': 'PowerShell脚本',
+        }
+        pe_info['file_type'] = file_type_map.get(file_extension, '未知文件类型')
+        
+        self.analysis_progress.emit("检测可疑行为特征", 35)
+        time.sleep(0.05)
+        
+        # 检测可疑特征
+        suspicious_features = []
+        
+        # 高熵值检测
+        try:
+            if float(hashes.get('entropy', 0)) > 7.0:
+                suspicious_features.append({
+                    'type': '高熵值',
+                    'description': f'文件熵值过高 ({hashes.get("entropy")})，可能被压缩或加密',
+                    'severity': 'high'
+                })
+        except:
+            pass
+            
+        # 临时目录检测
+        temp_dirs = ['temp', 'tmp', r'AppData\Local\Temp']
+        if any(temp_dir.lower() in file_path.lower() for temp_dir in temp_dirs):
+            suspicious_features.append({
+                'type': '临时目录',
+                'description': '文件位于临时目录中',
+                'severity': 'medium'
+            })
+            
+        # 可执行文件在临时目录
+        if pe_info.get('is_pe') and any(temp_dir.lower() in file_path.lower() for temp_dir in temp_dirs):
+            suspicious_features.append({
+                'type': '可执行文件位置',
+                'description': '可执行文件位于临时目录中，较为可疑',
+                'severity': 'high'
+            })
+            
+        # 文件大小异常检测
+        if file_info.get('size', 0) < 1024 and pe_info.get('is_pe'):
+            suspicious_features.append({
+                'type': '文件大小异常',
+                'description': 'PE文件过小，可能不完整或经过特殊处理',
+                'severity': 'medium'
+            })
+            
+        # 检测可疑文件名
+        suspicious_names = ['install', 'update', 'patch', 'crack', 'keygen', 'loader', 'unpack', 'extract']
+        file_name = os.path.basename(file_path).lower()
+        if any(name in file_name for name in suspicious_names):
+            suspicious_features.append({
+                'type': '可疑文件名',
+                'description': f'文件名包含可疑关键词: {file_name}',
+                'severity': 'medium'
+            })
+            
+        # 检测可疑扩展名组合
+        suspicious_ext_combinations = ['.exe.exe', '.scr.exe', '.dll.exe']
+        if any(comb in file_name for comb in suspicious_ext_combinations):
+            suspicious_features.append({
+                'type': '可疑扩展名',
+                'description': f'文件扩展名异常: {file_name}',
+                'severity': 'high'
+            })
+            
+        self.analysis_progress.emit("模拟行为分析", 50)
+        time.sleep(0.05)
+        
+        # 模拟行为分析（这部分在实际应用中应该通过真实的沙箱环境来完成）
+        network_behavior = [
+            {'domain': 'example.com', 'ip': '93.184.216.34', 'port': 80, 'protocol': 'HTTP', 'description': '连接到示例网站'},
+            {'domain': 'api.example.net', 'ip': '104.24.12.34', 'port': 443, 'protocol': 'HTTPS', 'description': '安全连接到API服务器'}
+        ]
+        
+        # 根据文件特征动态生成行为
+        if pe_info.get('is_pe'):
+            network_behavior.append({
+                'domain': 'malware-check.example.com', 
+                'ip': '192.168.1.100', 
+                'port': 8080, 
+                'protocol': 'TCP', 
+                'description': '连接到C2服务器'
+            })
+        
+        file_operations = [
+            {'operation': '创建文件', 'path': r'C:\Users\Public\test.dat', 'description': '在公共目录创建数据文件'},
+            {'operation': '修改注册表', 'path': r'HKCU\Software\Microsoft\Windows\CurrentVersion\Run', 'description': '添加开机自启项'}
+        ]
+        
+        registry_operations = [
+            {'operation': '写入', 'path': r'HKCU\Software\TestApp', 'description': '写入应用配置信息'},
+            {'operation': '读取', 'path': r'HKLM\SYSTEM\CurrentControlSet\Services', 'description': '读取系统服务信息'}
+        ]
+        
+        process_operations = [
+            {'operation': '创建进程', 'target': 'cmd.exe', 'command_line': 'cmd.exe /c echo hello', 'description': '创建命令行进程'},
+            {'operation': '注入', 'target': 'explorer.exe', 'command_line': '', 'description': '尝试注入资源管理器进程'}
+        ]
+        
+        # 根据可疑特征添加更多行为
+        if any(f['type'] == '高熵值' for f in suspicious_features):
+            process_operations.append({
+                'operation': '解压', 
+                'target': 'self', 
+                'command_line': '', 
+                'description': '文件可能包含压缩或加密内容'
+            })
+        
+        self.analysis_progress.emit("生成风险评估", 80)
+        time.sleep(0.05)
+        
+        # 生成风险评估
+        high_risks = len([f for f in suspicious_features if f['severity'] == 'high'])
+        medium_risks = len([f for f in suspicious_features if f['severity'] == 'medium'])
+        low_risks = len([f for f in suspicious_features if f['severity'] == 'low'])
+        
+        # 更智能的风险等级判定
+        if high_risks > 1 or (high_risks > 0 and medium_risks > 2):
+            risk_level = "高风险"
+        elif high_risks > 0 or medium_risks > 1:
+            risk_level = "中风险"
+        elif medium_risks > 0 or high_risks > 0 or low_risks > 0:
+            risk_level = "低风险"
+        else:
+            risk_level = "安全"
+            
+        # 改进的威胁评分算法 (0-100)
+        # 基础风险评分
+        base_score = (
+            high_risks * 30 + 
+            medium_risks * 15 + 
+            low_risks * 5
+        )
+        
+        # 行为评分
+        behavior_score = (
+            len(network_behavior) * 10 +
+            len(file_operations) * 8 +
+            len(registry_operations) * 7 +
+            len(process_operations) * 10
+        )
+        
+        # 特殊特征加分
+        special_score = 0
+        if pe_info.get('is_pe'):
+            special_score += 5  # PE文件额外加分
+            
+        # 高熵值额外加分
+        try:
+            if float(hashes.get('entropy', 0)) > 7.5:
+                special_score += 10
+            elif float(hashes.get('entropy', 0)) > 7.0:
+                special_score += 5
+        except:
+            pass
+            
+        # 综合评分并限制在0-100范围内
+        threat_score = min(100, max(0, base_score + behavior_score + special_score))
+            
+        self.analysis_progress.emit("分析完成", 100)
+        time.sleep(0.05)
+        
+        return {
+            'file_info': file_info,
+            'hashes': hashes,
+            'pe_info': pe_info,
+            'suspicious_features': suspicious_features,
+            'network_behavior': network_behavior,
+            'file_operations': file_operations,
+            'registry_operations': registry_operations,
+            'process_operations': process_operations,
+            'risk_level': risk_level,
+            'threat_score': threat_score
+        }
+
+
+class PEAnalyzer:
+    """
+    简单的PE文件分析器
+    """
+    def __init__(self, file_path):
+        self.file_path = file_path
+        self.is_pe = False
+        self.file_header = {}
+        self.optional_header = {}
+        self.sections = []
+        self.directories = []  # 添加directories属性
+        self.logger = logging.getLogger(__name__)
+        
+    def analyze(self):
+        """
+        分析PE文件
+        """
+        try:
+            with open(self.file_path, 'rb') as f:
+                # 检查MZ签名
+                mz_signature = f.read(2)
+                if mz_signature != b'MZ':
+                    return False
+                    
+                # 读取PE偏移
+                f.seek(0x3C)
+                pe_offset = struct.unpack('<I', f.read(4))[0]
+                
+                # 检查PE签名
+                f.seek(pe_offset)
+                pe_signature = f.read(4)
+                if pe_signature != b'PE\x00\x00':
+                    return False
+                    
+                self.is_pe = True
+                
+                # 读取COFF文件头
+                self._read_file_header(f)
+                
+                # 读取可选头
+                self._read_optional_header(f)
+                
+                # 读取数据目录
+                self._read_directories(f)
+                
+                # 读取节表
+                self.sections = self._read_sections(f, pe_offset)
+                
+            return True
+        except Exception as e:
+            self.logger.error(f"PE分析错误: {e}")
+            return False
+    
+    def _read_file_header(self, f):
+        """
+        读取COFF文件头
+        """
+        try:
+            self.file_header['Machine'] = struct.unpack('<H', f.read(2))[0]
+            self.file_header['NumberOfSections'] = struct.unpack('<H', f.read(2))[0]
+            self.file_header['TimeDateStamp'] = struct.unpack('<I', f.read(4))[0]
+            f.read(4)  # PointerToSymbolTable
+            f.read(4)  # NumberOfSymbols
+            self.file_header['SizeOfOptionalHeader'] = struct.unpack('<H', f.read(2))[0]
+            self.file_header['Characteristics'] = struct.unpack('<H', f.read(2))[0]
+        except Exception as e:
+            self.logger.error(f"读取文件头错误: {e}")
+    
+    def _read_optional_header(self, f):
+        """
+        读取可选头
+        """
+        try:
+            self.optional_header['Magic'] = struct.unpack('<H', f.read(2))[0]
+            f.read(1)  # MajorLinkerVersion
+            f.read(1)  # MinorLinkerVersion
+            self.optional_header['SizeOfCode'] = struct.unpack('<I', f.read(4))[0]
+            self.optional_header['SizeOfInitializedData'] = struct.unpack('<I', f.read(4))[0]
+            self.optional_header['SizeOfUninitializedData'] = struct.unpack('<I', f.read(4))[0]
+            self.optional_header['AddressOfEntryPoint'] = struct.unpack('<I', f.read(4))[0]
+            self.optional_header['BaseOfCode'] = struct.unpack('<I', f.read(4))[0]
+            
+            if self.optional_header['Magic'] == 0x10b:  # PE32
+                self.optional_header['BaseOfData'] = struct.unpack('<I', f.read(4))[0]
+                self.optional_header['ImageBase'] = struct.unpack('<I', f.read(4))[0]
+            elif self.optional_header['Magic'] == 0x20b:  # PE32+
+                self.optional_header['ImageBase'] = struct.unpack('<Q', f.read(8))[0]
+                
+            self.optional_header['SectionAlignment'] = struct.unpack('<I', f.read(4))[0]
+            self.optional_header['FileAlignment'] = struct.unpack('<I', f.read(4))[0]
+        except Exception as e:
+            self.logger.error(f"读取可选头错误: {e}")
+            
+    def _read_directories(self, f):
+        """
+        读取数据目录
+        """
+        try:
+            # 数据目录从可选头偏移112字节处开始（对于PE32）
+            # 但对于PE32+，偏移是128字节
+            if self.optional_header.get('Magic') == 0x20b:  # PE32+
+                # 跳过其他字段直到数据目录开始位置
+                f.read(54)  # PE32+比PE32多16字节（ImageBase是8字节而不是4字节），所以是112+16=128
+            else:  # PE32
+                # 跳过其他字段直到数据目录开始位置
+                f.read(38)  # 112 - 74 = 38 (已读取的可选头字段)
+                
+            # 数据目录名称映射
+            directory_names = [
+                "导出表", "导入表", "资源表", "异常表", "安全证书", "重定位表",
+                "调试信息", "版权信息", "全局指针", "TLS表", "加载配置", "绑定导入",
+                "IAT", "延迟导入", "CLR运行时头", "保留"
+            ]
+                
+            # 读取16个数据目录项
+            self.directories = []
+            for i in range(16):
+                directory = {}
+                directory['VirtualAddress'] = struct.unpack('<I', f.read(4))[0]
+                directory['Size'] = struct.unpack('<I', f.read(4))[0]
+                directory['Name'] = directory_names[i] if i < len(directory_names) else f"目录 {i}"
+                self.directories.append(directory)
+        except Exception as e:
+            self.logger.error(f"读取数据目录错误: {e}")
+            
+    def _read_sections(self, f, pe_offset):
+        """
+        读取节表
+        """
+        sections = []
+        try:
+            # 计算节表位置
+            section_table_offset = pe_offset + 4 + 20 + self.file_header['SizeOfOptionalHeader']
+            f.seek(section_table_offset)
+            
+            for i in range(self.file_header['NumberOfSections']):
+                section = {}
+                section['Name'] = f.read(8).rstrip(b'\x00').decode('utf-8', errors='ignore')
+                section['VirtualSize'] = struct.unpack('<I', f.read(4))[0]
+                section['VirtualAddress'] = struct.unpack('<I', f.read(4))[0]
+                section['SizeOfRawData'] = struct.unpack('<I', f.read(4))[0]
+                section['PointerToRawData'] = struct.unpack('<I', f.read(4))[0]
+                section['PointerToRelocations'] = struct.unpack('<I', f.read(4))[0]
+                section['PointerToLinenumbers'] = struct.unpack('<I', f.read(4))[0]
+                section['NumberOfRelocations'] = struct.unpack('<H', f.read(2))[0]
+                section['NumberOfLinenumbers'] = struct.unpack('<H', f.read(2))[0]
+                section['Characteristics'] = struct.unpack('<I', f.read(4))[0]
+                sections.append(section)
+        except Exception as e:
+            self.logger.error(f"读取节表错误: {e}")
+            
+        return sections
+
+
+class SandboxTab(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.analysis_worker = None
+        self.logger = logging.getLogger(__name__)
+        self.init_ui()
+
+    def create_sandbox_environment(self):
+        """创建隔离的沙箱环境目录"""
+        self.sandbox_base = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "sandbox")
+        self.sandbox_dirs = self._create_sandbox_directories()
+        
+        if not self.sandbox_dirs:
+            self.logger.error("沙箱目录创建失败")
+            self.status_label.setText("沙箱环境创建失败")
+            return False
+            
+        self.logger.info(f"沙箱环境已创建: {self.sandbox_base}")
+        self.sandbox_base = None
+        self.sandbox_dirs = None
+        self.sandboxed_processes = []
+        self.file_redirect_map = {}
+        self.job_handles = []
+        self.resource_monitor_timer = QTimer(self)
+        self.resource_monitor_timer.timeout.connect(self.update_resource_usage)
+        self.resource_monitor_timer.start(1000)  # 每秒更新一次资源使用情况
+        self.status_label.setText(f"沙箱环境就绪: {os.path.basename(self.sandbox_base)}")
+        return True
+        
+    def _create_sandbox_directories(self):
+        """创建沙箱所需的目录结构"""
+        sandbox_dirs = {
+            "root": os.path.join(self.sandbox_base, "root"),
+            "bin": os.path.join(self.sandbox_base, "root", "bin"),
+            "tmp": os.path.join(self.sandbox_base, "tmp"),
+            "home": os.path.join(self.sandbox_base, "home"),
+            "logs": os.path.join(self.sandbox_base, "logs"),
+            "proc": os.path.join(self.sandbox_base, "proc"),
+            "sys": os.path.join(self.sandbox_base, "sys")
+        }
+        
+        for dir_path in sandbox_dirs.values():
+            try:
+                os.makedirs(dir_path, exist_ok=True)
+                if sys.platform.startswith('win'):
+                    win32api.SetFileAttributes(dir_path, win32api.FILE_ATTRIBUTE_HIDDEN)
+            except Exception as e:
+                self.logger.error(f"创建沙箱目录失败 {dir_path}: {str(e)}")
+                return None
+        
+        return sandbox_dirs
+        super().__init__()
+        self.analysis_worker = None
+        self.logger = logging.getLogger(__name__)
+        self.init_ui()
+        
+    def init_ui(self):
+        layout = QVBoxLayout()
+        layout.setSpacing(10)
+        layout.setContentsMargins(15, 15, 15, 15)
+        
+        # 标题
+        title_label = QLabel("沙箱分析")
+        title_label.setStyleSheet(get_QLabel__font_style())
+        layout.addWidget(title_label)
+        
+        # 文件选择区域
+        file_group = QGroupBox("文件选择")
+        file_group.setStyleSheet(get_QGroupBox__fo_style())
+        
+        file_layout = QFormLayout()
+        file_layout.setLabelAlignment(Qt.AlignRight)
+        file_layout.setHorizontalSpacing(15)
+        file_layout.setVerticalSpacing(12)
+        
+        self.file_path_edit = QLineEdit()
+        self.file_path_edit.setPlaceholderText("请选择要分析的文件...")
+        self.file_path_edit.setMinimumHeight(32)
+        self.file_path_edit.setStyleSheet(get_QLineEdit__bo_style())
+        
+        self.browse_btn = QPushButton("浏览")
+        self.browse_btn.clicked.connect(self.browse_file)
+        self.browse_btn.setMinimumHeight(32)
+        self.browse_btn.setCursor(Qt.PointingHandCursor)
+        self.browse_btn.setStyleSheet(get_QPushButton__style())
+        
+        file_path_layout = QHBoxLayout()
+        file_path_layout.addWidget(self.file_path_edit)
+        file_path_layout.addWidget(self.browse_btn)
+        file_path_layout.setSpacing(10)
+        
+        file_layout.addRow("文件路径:", file_path_layout)
+        
+        self.analyze_btn = QPushButton("开始分析")
+        self.analyze_btn.clicked.connect(self.start_analysis)
+        self.analyze_btn.setMinimumHeight(38)
+        self.analyze_btn.setCursor(Qt.PointingHandCursor)
+        self.analyze_btn.setStyleSheet(get_QPushButton__style())
+        
+        file_layout.addRow("", self.analyze_btn)
+        file_group.setLayout(file_layout)
+        layout.addWidget(file_group)
+        
+        # 进度条
+        self.progress_container = QWidget()
+        progress_layout = QHBoxLayout()
+        progress_layout.setContentsMargins(0, 0, 0, 0)
+        
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setVisible(False)
+        self.progress_bar.setMinimumHeight(26)
+        self.progress_bar.setTextDirection(QProgressBar.TopToBottom)
+        self.progress_bar.setStyleSheet(get_QProgressBar__style())
+        
+        self.cancel_btn = QPushButton("取消")
+        self.cancel_btn.clicked.connect(self.cancel_analysis)
+        self.cancel_btn.setVisible(False)
+        self.cancel_btn.setMinimumHeight(26)
+        self.cancel_btn.setCursor(Qt.PointingHandCursor)
+        self.cancel_btn.setStyleSheet(get_QPushButton__style())
+        
+        progress_layout.addWidget(self.progress_bar)
+        progress_layout.addWidget(self.cancel_btn)
+        self.progress_container.setLayout(progress_layout)
+        layout.addWidget(self.progress_container)
+        
+        # 结果显示区域
+        self.result_container = QGroupBox("分析结果")
+        self.result_container.setVisible(False)
+        self.result_container.setStyleSheet(get_QGroupBox__fo_style())
+        
+        result_layout = QVBoxLayout()
+        result_layout.setSpacing(12)
+        
+        # 摘要信息
+        summary_widget = QWidget()
+        summary_layout = QHBoxLayout()
+        summary_layout.setSpacing(20)
+        summary_layout.setContentsMargins(10, 10, 10, 10)
+        
+        self.threat_score_label = QLabel("威胁评分: --")
+        self.threat_score_label.setStyleSheet(get_QLabel__font_style())
+        summary_layout.addWidget(self.threat_score_label)
+        
+        self.risk_label = QLabel("风险等级: 未知")
+        self.risk_label.setStyleSheet(get_QLabel__font_style())
+        summary_layout.addWidget(self.risk_label)
+        
+        summary_layout.addStretch()
+        
+        # 导出报告按钮
+        self.export_btn = QPushButton("导出报告")
+        self.export_btn.clicked.connect(self.export_report)
+        self.export_btn.setMinimumHeight(36)
+        self.export_btn.setCursor(Qt.PointingHandCursor)
+        self.export_btn.setStyleSheet(get_QPushButton__style())
+        summary_layout.addWidget(self.export_btn)
+        
+        summary_widget.setLayout(summary_layout)
+        result_layout.addWidget(summary_widget)
+        
+        # 创建标签页用于显示详细结果
+        self.result_tabs = QTabWidget()
+        self.result_tabs.setStyleSheet(get_QTabWidgetpane__style())
+        
+        # 基本信息标签页
+        self.basic_info_tab = QWidget()
+        self.setup_basic_info_tab()
+        self.result_tabs.addTab(self.basic_info_tab, "基本信息")
+        
+        # PE信息标签页
+        self.pe_info_tab = QWidget()
+        self.setup_pe_info_tab()
+        self.result_tabs.addTab(self.pe_info_tab, "PE信息")
+        
+        # 行为分析标签页
+        self.behavior_tab = QWidget()
+        self.setup_behavior_tab()
+        self.result_tabs.addTab(self.behavior_tab, "行为分析")
+        
+        # 可疑特征标签页
+        self.suspicious_tab = QWidget()
+        self.setup_suspicious_tab()
+        self.result_tabs.addTab(self.suspicious_tab, "可疑特征")
+        
+        result_layout.addWidget(self.result_tabs)
+        self.result_container.setLayout(result_layout)
+        layout.addWidget(self.result_container)
+        
+        # 添加弹性空间
+        layout.addStretch()
+        
+        self.setLayout(layout)
+        
+    def setup_basic_info_tab(self):
+        """
+        设置基本信息标签页
+        """
+        layout = QVBoxLayout()
+        layout.setSpacing(12)
+        
+        # 文件信息表格
+        self.basic_info_table = QTableWidget()
+        self.basic_info_table.setColumnCount(2)
+        self.basic_info_table.setHorizontalHeaderLabels(['属性', '值'])
+        self.basic_info_table.setAlternatingRowColors(True)
+        self.basic_info_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.basic_info_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.basic_info_table.verticalHeader().setVisible(False)
+        self.basic_info_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.basic_info_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.basic_info_table.setStyleSheet(get_QTableWidget__style())
+        layout.addWidget(self.basic_info_table)
+        
+        # 哈希信息表格
+        hash_label = QLabel("文件哈希:")
+        hash_label.setStyleSheet("font-weight: bold; font-size: 15px; margin-top: 12px; color: #2c3e50;")
+        layout.addWidget(hash_label)
+        
+        self.hash_table = QTableWidget()
+        self.hash_table.setColumnCount(2)
+        self.hash_table.setHorizontalHeaderLabels(['算法', '哈希值'])
+        self.hash_table.setAlternatingRowColors(True)
+        self.hash_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.hash_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.hash_table.verticalHeader().setVisible(False)
+        self.hash_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.hash_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.hash_table.setStyleSheet(get_QTableWidget__style())
+        layout.addWidget(self.hash_table)
+        
+        self.basic_info_tab.setLayout(layout)
+        
+    def setup_pe_info_tab(self):
+        """
+        设置PE信息标签页
+        """
+        layout = QVBoxLayout()
+        layout.setSpacing(12)
+        
+        # PE头信息
+        pe_header_label = QLabel("PE头信息:")
+        pe_header_label.setStyleSheet("font-weight: bold; font-size: 15px; color: #2c3e50;")
+        layout.addWidget(pe_header_label)
+        
+        self.pe_header_table = QTableWidget()
+        self.pe_header_table.setColumnCount(2)
+        self.pe_header_table.setHorizontalHeaderLabels(['字段', '值'])
+        self.pe_header_table.setAlternatingRowColors(True)
+        self.pe_header_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.pe_header_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.pe_header_table.verticalHeader().setVisible(False)
+        self.pe_header_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.pe_header_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.pe_header_table.setStyleSheet(get_QTableWidget__style())
+        layout.addWidget(self.pe_header_table)
+        
+        # 数据目录信息
+        directory_label = QLabel("数据目录:")
+        directory_label.setStyleSheet("font-weight: bold; font-size: 15px; margin-top: 12px; color: #2c3e50;")
+        layout.addWidget(directory_label)
+        
+        self.directory_table = QTableWidget()
+        self.directory_table.setColumnCount(3)
+        self.directory_table.setHorizontalHeaderLabels(['索引', '虚拟地址', '大小'])
+        self.directory_table.setAlternatingRowColors(True)
+        self.directory_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.directory_table.horizontalHeader().setStretchLastSection(True)
+        self.directory_table.verticalHeader().setVisible(False)
+        self.directory_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.directory_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.directory_table.setStyleSheet(get_QTableWidget__style())
+        layout.addWidget(self.directory_table)
+        
+        # 节表信息
+        section_label = QLabel("节表信息:")
+        section_label.setStyleSheet("font-weight: bold; font-size: 15px; margin-top: 12px; color: #2c3e50;")
+        layout.addWidget(section_label)
+        
+        self.section_table = QTableWidget()
+        self.section_table.setColumnCount(4)
+        self.section_table.setHorizontalHeaderLabels(['节名', '大小', '熵值', '描述'])
+        self.section_table.setAlternatingRowColors(True)
+        self.section_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.section_table.horizontalHeader().setStretchLastSection(True)
+        self.section_table.verticalHeader().setVisible(False)
+        self.section_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.section_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.section_table.setStyleSheet(get_QTableWidget__style())
+        layout.addWidget(self.section_table)
+        
+        self.pe_info_tab.setLayout(layout)
+        
+    def setup_behavior_tab(self):
+        """
+        设置行为分析标签页
+        """
+        layout = QVBoxLayout()
+        layout.setSpacing(10)
+        layout.setContentsMargins(0, 0, 0, 0)
+        
+        # 创建行为分析标签页
+        behavior_tabs = QTabWidget()
+        behavior_tabs.setStyleSheet(get_QTabWidgetpane__style())
+        
+        # 网络行为
+        self.network_tab = QWidget()
+        self.setup_network_tab()
+        behavior_tabs.addTab(self.network_tab, "网络行为")
+        
+        # 文件操作
+        self.file_ops_tab = QWidget()
+        self.setup_file_ops_tab()
+        behavior_tabs.addTab(self.file_ops_tab, "文件操作")
+        
+        # 注册表操作
+        self.registry_tab = QWidget()
+        self.setup_registry_tab()
+        behavior_tabs.addTab(self.registry_tab, "注册表操作")
+        
+        # 进程操作
+        self.process_tab = QWidget()
+        self.setup_process_tab()
+        behavior_tabs.addTab(self.process_tab, "进程操作")
+        
+        layout.addWidget(behavior_tabs)
+        self.behavior_tab.setLayout(layout)
+        
+    def setup_network_tab(self):
+        """
+        设置网络行为标签页
+        """
+        layout = QVBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+        self.network_table = QTableWidget()
+        self.network_table.setColumnCount(5)
+        self.network_table.setHorizontalHeaderLabels(['域名', 'IP地址', '端口', '协议', '描述'])
+        self.network_table.setAlternatingRowColors(True)
+        self.network_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.network_table.horizontalHeader().setStretchLastSection(True)
+        self.network_table.verticalHeader().setVisible(False)
+        self.network_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.network_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.network_table.setStyleSheet(get_QTableWidget__style())
+        layout.addWidget(self.network_table)
+        self.network_tab.setLayout(layout)
+        
+    def setup_file_ops_tab(self):
+        """
+        设置文件操作标签页
+        """
+        layout = QVBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+        self.file_ops_table = QTableWidget()
+        self.file_ops_table.setColumnCount(3)
+        self.file_ops_table.setHorizontalHeaderLabels(['操作类型', '文件路径', '描述'])
+        self.file_ops_table.setAlternatingRowColors(True)
+        self.file_ops_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.file_ops_table.horizontalHeader().setStretchLastSection(True)
+        self.file_ops_table.verticalHeader().setVisible(False)
+        self.file_ops_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.file_ops_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.file_ops_table.setStyleSheet(get_QTableWidget__style())
+        layout.addWidget(self.file_ops_table)
+        self.file_ops_tab.setLayout(layout)
+        
+    def setup_registry_tab(self):
+        """
+        设置注册表操作标签页
+        """
+        layout = QVBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+        self.registry_table = QTableWidget()
+        self.registry_table.setColumnCount(3)
+        self.registry_table.setHorizontalHeaderLabels(['操作类型', '注册表路径', '描述'])
+        self.registry_table.setAlternatingRowColors(True)
+        self.registry_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.registry_table.horizontalHeader().setStretchLastSection(True)
+        self.registry_table.verticalHeader().setVisible(False)
+        self.registry_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.registry_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.registry_table.setStyleSheet(get_QTableWidget__style())
+        layout.addWidget(self.registry_table)
+        self.registry_tab.setLayout(layout)
+        
+    def setup_process_tab(self):
+        """
+        设置进程操作标签页
+        """
+        layout = QVBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+        self.process_table = QTableWidget()
+        self.process_table.setColumnCount(4)
+        self.process_table.setHorizontalHeaderLabels(['操作类型', '目标进程', '命令行', '描述'])
+        self.process_table.setAlternatingRowColors(True)
+        self.process_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.process_table.horizontalHeader().setStretchLastSection(True)
+        self.process_table.verticalHeader().setVisible(False)
+        self.process_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.process_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.process_table.setStyleSheet(get_QTableWidget__style())
+        layout.addWidget(self.process_table)
+        self.process_tab.setLayout(layout)
+        
+    def setup_suspicious_tab(self):
+        """
+        设置可疑特征标签页
+        """
+        layout = QVBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+        self.suspicious_table = QTableWidget()
+        self.suspicious_table.setColumnCount(3)
+        self.suspicious_table.setHorizontalHeaderLabels(['风险类型', '风险描述', '严重程度'])
+        self.suspicious_table.setAlternatingRowColors(True)
+        self.suspicious_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.suspicious_table.horizontalHeader().setStretchLastSection(True)
+        self.suspicious_table.verticalHeader().setVisible(False)
+        self.suspicious_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.suspicious_table.setSelectionMode(QAbstractItemView.SingleSelection)
+        self.suspicious_table.setStyleSheet(get_QTableWidget__style())
+        layout.addWidget(self.suspicious_table)
+        self.suspicious_tab.setLayout(layout)
+        
+    def browse_file(self):
+        """
+        浏览文件
+        """
+        file_path, _ = QFileDialog.getOpenFileName(
+            self, 
+            "选择要分析的文件", 
+            "", 
+            "所有文件 (*.*)"
+        )
+        
+        if file_path:
+            self.file_path_edit.setText(file_path)
+            
+    def start_analysis(self):
+        """
+        开始分析
+        """
+        file_path = self.file_path_edit.text().strip()
+        
+        if not file_path:
+            QMessageBox.warning(self, "警告", "请选择要分析的文件")
+            return
+            
+        if not os.path.exists(file_path):
+            QMessageBox.critical(self, "错误", "文件不存在")
+            return
+            
+        # 禁用分析按钮
+        self.analyze_btn.setEnabled(False)
+        self.analyze_btn.setText("分析中...")
+        
+        # 显示进度条和取消按钮
+        self.progress_container.setVisible(True)
+        self.progress_bar.setVisible(True)
+        self.cancel_btn.setVisible(True)
+        self.progress_bar.setValue(0)
+        
+        # 隐藏结果区域
+        self.result_container.setVisible(False)
+        
+        # 创建并启动分析线程
+        self.analysis_worker = SandboxAnalysisWorker(file_path)
+        self.analysis_worker.analysis_finished.connect(self.on_analysis_finished)
+        self.analysis_worker.analysis_progress.connect(self.on_analysis_progress)
+        self.analysis_worker.start()
+        
+    def cancel_analysis(self):
+        """
+        取消分析
+        """
+        if self.analysis_worker and self.analysis_worker.isRunning():
+            self.analysis_worker.terminate()
+            self.analysis_worker.wait()
+            
+        # 恢复按钮状态
+        self.analyze_btn.setEnabled(True)
+        self.analyze_btn.setText("开始分析")
+        
+        # 隐藏进度条和取消按钮
+        self.progress_bar.setVisible(False)
+        self.cancel_btn.setVisible(False)
+        
+    def on_analysis_progress(self, message, progress):
+        """
+        更新分析进度
+        """
+        self.progress_bar.setFormat(f"{message} ({progress}%)")
+        self.progress_bar.setValue(progress)
+        
+    def on_analysis_finished(self, result):
+        """
+        分析完成处理
+        """
+        # 恢复按钮状态
+        self.analyze_btn.setEnabled(True)
+        self.analyze_btn.setText("开始分析")
+        
+        # 隐藏进度条和取消按钮
+        self.progress_bar.setVisible(False)
+        self.cancel_btn.setVisible(False)
+        
+        # 显示结果
+        if 'error' in result:
+            QMessageBox.critical(self, "错误", f"分析过程中发生错误: {result['error']}")
+            return
+            
+        # 显示分析结果
+        self.display_results(result)
+        
+    def display_results(self, result):
+        """
+        显示分析结果
+        """
+        # 更新威胁评分和风险等级
+        threat_score = result.get('threat_score', 0)
+        risk_level = result.get('risk_level', '未知')
+        
+        self.threat_score_label.setText(f"威胁评分: {threat_score}")
+        self.risk_label.setText(f"风险等级: {risk_level}")
+        
+        # 根据风险等级设置颜色
+        risk_colors = {
+            '安全': '#27ae60',  # 绿色
+            '低风险': '#f39c12',  # 橙色
+            '中风险': '#e67e22',  # 深橙色
+            '高风险': '#e74c3c'   # 红色
+        }
+        color = risk_colors.get(risk_level, '#bdc3c7')
+        self.risk_label.setStyleSheet(f"""
+            QLabel {{
+                font-size: 18px;
+                font-weight: bold;
+                padding: 10px 20px;
+                border-radius: 6px;
+                background-color: {color};
+                color: white;
+                min-width: 150px;
+                text-align: center;
+            }}
+        """)
+        
+        # 显示基本信息
+        self.display_basic_info(result)
+        
+        # 显示PE信息
+        self.display_pe_info(result)
+        
+        # 显示行为分析
+        self.display_behavior_analysis(result)
+        
+        # 显示可疑特征
+        self.display_suspicious_features(result)
+        
+        # 显示结果区域
+        self.result_container.setVisible(True)
+        
+    def display_basic_info(self, result):
+        """
+        显示基本信息
+        """
+        # 文件信息
+        self.basic_info_table.setRowCount(0)
+        file_info = result.get('file_info', {})
+        if file_info:
+            self.basic_info_table.setRowCount(5)
+            self.basic_info_table.setItem(0, 0, QTableWidgetItem("文件大小"))
+            self.basic_info_table.setItem(0, 1, QTableWidgetItem(f"{file_info.get('size', 'N/A')} 字节"))
+            
+            self.basic_info_table.setItem(1, 0, QTableWidgetItem("创建时间"))
+            created_time = file_info.get('created_time')
+            if created_time:
+                created_str = datetime.fromtimestamp(created_time).strftime('%Y-%m-%d %H:%M:%S')
+                self.basic_info_table.setItem(1, 1, QTableWidgetItem(created_str))
+            else:
+                self.basic_info_table.setItem(1, 1, QTableWidgetItem("N/A"))
+                
+            self.basic_info_table.setItem(2, 0, QTableWidgetItem("修改时间"))
+            modified_time = file_info.get('modified_time')
+            if modified_time:
+                modified_str = datetime.fromtimestamp(modified_time).strftime('%Y-%m-%d %H:%M:%S')
+                self.basic_info_table.setItem(2, 1, QTableWidgetItem(modified_str))
+            else:
+                self.basic_info_table.setItem(2, 1, QTableWidgetItem("N/A"))
+                
+            self.basic_info_table.setItem(3, 0, QTableWidgetItem("访问时间"))
+            accessed_time = file_info.get('accessed_time')
+            if accessed_time:
+                accessed_str = datetime.fromtimestamp(accessed_time).strftime('%Y-%m-%d %H:%M:%S')
+                self.basic_info_table.setItem(3, 1, QTableWidgetItem(accessed_str))
+            else:
+                self.basic_info_table.setItem(3, 1, QTableWidgetItem("N/A"))
+                
+            file_type = result.get('pe_info', {}).get('file_type', '未知')
+            self.basic_info_table.setItem(4, 0, QTableWidgetItem("文件类型"))
+            self.basic_info_table.setItem(4, 1, QTableWidgetItem(file_type))
+            
+        # 哈希信息
+        self.hash_table.setRowCount(0)
+        hashes = result.get('hashes', {})
+        if hashes:
+            self.hash_table.setRowCount(4)
+            row = 0
+            for algo in ['md5', 'sha1', 'sha256', 'entropy']:
+                self.hash_table.setItem(row, 0, QTableWidgetItem(algo.upper()))
+                self.hash_table.setItem(row, 1, QTableWidgetItem(hashes.get(algo, 'N/A')))
+                row += 1
+                
+    def display_pe_info(self, result):
+        """
+        显示PE信息
+        """
+        pe_info = result.get('pe_info', {})
+        
+        # PE头信息
+        self.pe_header_table.setRowCount(0)
+        headers_summary = pe_info.get('headers_summary', {})
+        if headers_summary:
+            self.pe_header_table.setRowCount(len(headers_summary))
+            row = 0
+            for key, value in headers_summary.items():
+                self.pe_header_table.setItem(row, 0, QTableWidgetItem(key))
+                self.pe_header_table.setItem(row, 1, QTableWidgetItem(str(value)))
+                row += 1
+                
+        # 数据目录
+        self.directory_table.setRowCount(0)
+        directories = pe_info.get('directories', [])
+        if directories:
+            self.directory_table.setRowCount(min(len(directories), 16))
+            for i, directory in enumerate(directories[:16]):
+                if i >= 16:
+                    break
+                self.directory_table.setItem(i, 0, QTableWidgetItem(directory.get('Name', f'目录 {i}')))
+                self.directory_table.setItem(i, 1, QTableWidgetItem(f"0x{directory.get('VirtualAddress', 0):08x}"))
+                self.directory_table.setItem(i, 2, QTableWidgetItem(f"0x{directory.get('Size', 0):08x}"))
+                
+        # 节表信息
+        self.section_table.setRowCount(0)
+        sections_summary = pe_info.get('sections_summary', [])
+        if sections_summary:
+            self.section_table.setRowCount(len(sections_summary))
+            for row, section in enumerate(sections_summary):
+                self.section_table.setItem(row, 0, QTableWidgetItem(section.get('name', 'N/A')))
+                self.section_table.setItem(row, 1, QTableWidgetItem(section.get('size', 'N/A')))
+                self.section_table.setItem(row, 2, QTableWidgetItem(section.get('entropy', 'N/A')))
+                
+                # 根据熵值判断节的特征
+                entropy = section.get('entropy')
+                try:
+                    entropy_val = float(entropy)
+                    if entropy_val > 7.5:
+                        description = "高熵值，很可能被压缩或加密"
+                    elif entropy_val > 7.0:
+                        description = "较高熵值，可能被压缩或加密"
+                    elif entropy_val > 6.0:
+                        description = "中等熵值，正常数据"
+                    else:
+                        description = "低熵值，可能是代码或纯文本"
+                except:
+                    description = "熵值无法计算"
+                    
+                self.section_table.setItem(row, 3, QTableWidgetItem(description))
+                
+    def display_behavior_analysis(self, result):
+        """
+        显示行为分析
+        """
+        # 网络行为
+        self.network_table.setRowCount(0)
+        network_behavior = result.get('network_behavior', [])
+        if network_behavior:
+            self.network_table.setRowCount(len(network_behavior))
+            for row, behavior in enumerate(network_behavior):
+                self.network_table.setItem(row, 0, QTableWidgetItem(behavior.get('domain', 'N/A')))
+                self.network_table.setItem(row, 1, QTableWidgetItem(behavior.get('ip', 'N/A')))
+                self.network_table.setItem(row, 2, QTableWidgetItem(str(behavior.get('port', 'N/A'))))
+                self.network_table.setItem(row, 3, QTableWidgetItem(behavior.get('protocol', 'N/A')))
+                self.network_table.setItem(row, 4, QTableWidgetItem(behavior.get('description', 'N/A')))
+                
+        # 文件操作
+        self.file_ops_table.setRowCount(0)
+        file_operations = result.get('file_operations', [])
+        if file_operations:
+            self.file_ops_table.setRowCount(len(file_operations))
+            for row, operation in enumerate(file_operations):
+                self.file_ops_table.setItem(row, 0, QTableWidgetItem(operation.get('operation', 'N/A')))
+                self.file_ops_table.setItem(row, 1, QTableWidgetItem(operation.get('path', 'N/A')))
+                self.file_ops_table.setItem(row, 2, QTableWidgetItem(operation.get('description', 'N/A')))
+                
+        # 注册表操作
+        self.registry_table.setRowCount(0)
+        registry_operations = result.get('registry_operations', [])
+        if registry_operations:
+            self.registry_table.setRowCount(len(registry_operations))
+            for row, operation in enumerate(registry_operations):
+                self.registry_table.setItem(row, 0, QTableWidgetItem(operation.get('operation', 'N/A')))
+                self.registry_table.setItem(row, 1, QTableWidgetItem(operation.get('path', 'N/A')))
+                self.registry_table.setItem(row, 2, QTableWidgetItem(operation.get('description', 'N/A')))
+                
+        # 进程操作
+        self.process_table.setRowCount(0)
+        process_operations = result.get('process_operations', [])
+        if process_operations:
+            self.process_table.setRowCount(len(process_operations))
+            for row, operation in enumerate(process_operations):
+                self.process_table.setItem(row, 0, QTableWidgetItem(operation.get('operation', 'N/A')))
+                self.process_table.setItem(row, 1, QTableWidgetItem(operation.get('target', 'N/A')))
+                self.process_table.setItem(row, 2, QTableWidgetItem(operation.get('command_line', 'N/A')))
+                self.process_table.setItem(row, 3, QTableWidgetItem(operation.get('description', 'N/A')))
+                
+    def display_suspicious_features(self, result):
+        """
+        显示可疑特征
+        """
+        self.suspicious_table.setRowCount(0)
+        suspicious_features = result.get('suspicious_features', [])
+        if suspicious_features:
+            self.suspicious_table.setRowCount(len(suspicious_features))
+            for row, feature in enumerate(suspicious_features):
+                self.suspicious_table.setItem(row, 0, QTableWidgetItem(feature.get('type', 'N/A')))
+                self.suspicious_table.setItem(row, 1, QTableWidgetItem(feature.get('description', 'N/A')))
+                
+                severity = feature.get('severity', 'N/A')
+                severity_text = {
+                    'low': '低',
+                    'medium': '中',
+                    'high': '高'
+                }.get(severity, severity)
+                
+                self.suspicious_table.setItem(row, 2, QTableWidgetItem(severity_text))
+                
+                # 根据严重程度设置颜色
+                color_map = {
+                    'low': QColor(243, 156, 18),  # 橙色
+                    'medium': QColor(230, 126, 34),  # 深橙色
+                    'high': QColor(231, 76, 60)  # 红色
+                }
+                
+                if severity in color_map:
+                    for col in range(3):
+                        self.suspicious_table.item(row, col).setBackground(color_map[severity])
+                        
+    def export_report(self):
+        """
+        导出分析报告
+        """
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        # 获取保存文件路径
+        file_path, _ = QFileDialog.getSaveFileName(
+            self,
+            "导出分析报告",
+            f"沙箱分析报告_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            "JSON文件 (*.json);;文本文件 (*.txt);;所有文件 (*.*)"
+        )
+        
+        if not file_path:
+            return
+            
+        try:
+            # 构建报告数据
+            report_data = {
+                "report_info": {
+                    "生成时间": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    "工具名称": "系统安全分析工具",
+                    "版本": "1.0.0"
+                },
+                "file_path": self.file_path_edit.text(),
+                "threat_score": self.threat_score_label.text().replace("威胁评分: ", ""),
+                "risk_level": self.risk_label.text().replace("风险等级: ", "")
+            }
+            
+            # 从表格中提取数据
+            # 基本信息
+            basic_info = {}
+            for row in range(self.basic_info_table.rowCount()):
+                key = self.basic_info_table.item(row, 0).text()
+                value = self.basic_info_table.item(row, 1).text()
+                basic_info[key] = value
+            report_data["basic_info"] = basic_info
+            
+            # 哈希信息
+            hashes = {}
+            for row in range(self.hash_table.rowCount()):
+                algorithm = self.hash_table.item(row, 0).text()
+                value = self.hash_table.item(row, 1).text()
+                hashes[algorithm] = value
+            report_data["hashes"] = hashes
+            
+            # PE头信息
+            pe_headers = {}
+            if self.pe_header_table.rowCount() > 0:
+                for row in range(self.pe_header_table.rowCount()):
+                    key = self.pe_header_table.item(row, 0).text()
+                    value = self.pe_header_table.item(row, 1).text()
+                    pe_headers[key] = value
+            report_data["pe_headers"] = pe_headers
+            
+            # 节表信息
+            sections = []
+            for row in range(self.section_table.rowCount()):
+                section = {}
+                for col in range(self.section_table.columnCount()):
+                    header = self.section_table.horizontalHeaderItem(col).text()
+                    value = self.section_table.item(row, col).text()
+                    section[header] = value
+                sections.append(section)
+            report_data["sections"] = sections
+            
+            # 可疑特征
+            suspicious_features = []
+            for row in range(self.suspicious_table.rowCount()):
+                feature = {}
+                for col in range(self.suspicious_table.columnCount()):
+                    header = self.suspicious_table.horizontalHeaderItem(col).text()
+                    value = self.suspicious_table.item(row, col).text()
+                    feature[header] = value
+                suspicious_features.append(feature)
+            report_data["suspicious_features"] = suspicious_features
+            
+            # 网络行为
+            network_behavior = []
+            for row in range(self.network_table.rowCount()):
+                behavior = {}
+                for col in range(self.network_table.columnCount()):
+                    header = self.network_table.horizontalHeaderItem(col).text()
+                    value = self.network_table.item(row, col).text()
+                    behavior[header] = value
+                network_behavior.append(behavior)
+            report_data["network_behavior"] = network_behavior
+            
+            # 文件操作
+            file_operations = []
+            for row in range(self.file_ops_table.rowCount()):
+                operation = {}
+                for col in range(self.file_ops_table.columnCount()):
+                    header = self.file_ops_table.horizontalHeaderItem(col).text()
+                    value = self.file_ops_table.item(row, col).text()
+                    operation[header] = value
+                file_operations.append(operation)
+            report_data["file_operations"] = file_operations
+            
+            # 注册表操作
+            registry_operations = []
+            for row in range(self.registry_table.rowCount()):
+                operation = {}
+                for col in range(self.registry_table.columnCount()):
+                    header = self.registry_table.horizontalHeaderItem(col).text()
+                    value = self.registry_table.item(row, col).text()
+                    operation[header] = value
+                registry_operations.append(operation)
+            report_data["registry_operations"] = registry_operations
+            
+            # 进程操作
+            process_operations = []
+            for row in range(self.process_table.rowCount()):
+                operation = {}
+                for col in range(self.process_table.columnCount()):
+                    header = self.process_table.horizontalHeaderItem(col).text()
+                    value = self.process_table.item(row, col).text()
+                    operation[header] = value
+                process_operations.append(operation)
+            report_data["process_operations"] = process_operations
+            
+            # 保存报告
+            if file_path.endswith('.json'):
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    json.dump(report_data, f, ensure_ascii=False, indent=2)
+            else:
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    f.write("沙箱分析报告\n")
+                    f.write("=" * 50 + "\n\n")
+                    
+                    f.write(f"报告生成时间: {report_data['report_info']['生成时间']}\n")
+                    f.write(f"分析文件: {report_data['file_path']}\n")
+                    f.write(f"威胁评分: {report_data['threat_score']}\n")
+                    f.write(f"风险等级: {report_data['risk_level']}\n\n")
+                    
+                    f.write("基本信息:\n")
+                    f.write("-" * 20 + "\n")
+                    for key, value in report_data['basic_info'].items():
+                        f.write(f"{key}: {value}\n")
+                    f.write("\n")
+                    
+                    f.write("哈希信息:\n")
+                    f.write("-" * 20 + "\n")
+                    for key, value in report_data['hashes'].items():
+                        f.write(f"{key}: {value}\n")
+                    f.write("\n")
+                    
+                    if report_data['pe_headers']:
+                        f.write("PE头信息:\n")
+                        f.write("-" * 20 + "\n")
+                        for key, value in report_data['pe_headers'].items():
+                            f.write(f"{key}: {value}\n")
+                        f.write("\n")
+                    
+                    if report_data['sections']:
+                        f.write("节表信息:\n")
+                        f.write("-" * 20 + "\n")
+                        for section in report_data['sections']:
+                            f.write(f"节名: {section['节名']}, 大小: {section['大小']}, 熵值: {section['熵值']}, 描述: {section['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['suspicious_features']:
+                        f.write("可疑特征:\n")
+                        f.write("-" * 20 + "\n")
+                        for feature in report_data['suspicious_features']:
+                            f.write(f"类型: {feature['风险类型']}, 描述: {feature['风险描述']}, 严重程度: {feature['严重程度']}\n")
+                        f.write("\n")
+                    
+                    if report_data['network_behavior']:
+                        f.write("网络行为:\n")
+                        f.write("-" * 20 + "\n")
+                        for behavior in report_data['network_behavior']:
+                            f.write(f"域名: {behavior['域名']}, IP: {behavior['IP地址']}, 端口: {behavior['端口']}, 协议: {behavior['协议']}, 描述: {behavior['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['file_operations']:
+                        f.write("文件操作:\n")
+                        f.write("-" * 20 + "\n")
+                        for operation in report_data['file_operations']:
+                            f.write(f"操作类型: {operation['操作类型']}, 路径: {operation['文件路径']}, 描述: {operation['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['registry_operations']:
+                        f.write("注册表操作:\n")
+                        f.write("-" * 20 + "\n")
+                        for operation in report_data['registry_operations']:
+                            f.write(f"操作类型: {operation['操作类型']}, 路径: {operation['注册表路径']}, 描述: {operation['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['process_operations']:
+                        f.write("进程操作:\n")
+                        f.write("-" * 20 + "\n")
+                        for operation in report_data['process_operations']:
+                            f.write(f"操作类型: {operation['操作类型']}, 目标进程: {operation['目标进程']}, 命令行: {operation['命令行']}, 描述: {operation['描述']}\n")
+                        f.write("\n")
+            
+            QMessageBox.information(self, "成功", f"分析报告已成功导出到:\n{file_path}")
+        except Exception as e:
+            self.logger.error(f"导出报告时出错: {e}")
+            QMessageBox.critical(self, "错误", f"导出报告时发生错误:\n{str(e)}")
+
+    def export_report(self):
+        """
+        导出分析报告
+        """
+        # 在方法开始处定义logger
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        if not self.result_container.isVisible():
+            QMessageBox.warning(self, "警告", "没有可导出的分析结果")
+            return
+            
+        file_path, _ = QFileDialog.getSaveFileName(
+            self, 
+            "导出分析报告", 
+            f"沙箱分析报告_{datetime.now().strftime('%Y%m%d_%H%M%S')}", 
+            "JSON文件 (*.json);;文本文件 (*.txt)"
+        )
+        
+        if not file_path:
+            return
+            
+        try:
+            # 收集报告数据
+            report_data = {
+                'report_info': {
+                    '生成时间': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    '工具名称': 'MCgx沙箱分析工具'
+                },
+                'file_path': self.file_path_edit.text(),
+                'threat_score': self.threat_score_label.text().replace('威胁评分: ', ''),
+                'risk_level': self.risk_label.text().replace('风险等级: ', ''),
+            }
+            
+            # 基本信息
+            basic_info = {}
+            for row in range(self.basic_info_table.rowCount()):
+                key = self.basic_info_table.item(row, 0).text()
+                value = self.basic_info_table.item(row, 1).text()
+                basic_info[key] = value
+            report_data['basic_info'] = basic_info
+            
+            # 网络行为
+            network_behavior = []
+            for row in range(self.network_behavior_table.rowCount()):
+                behavior = {
+                    '域名': self.network_behavior_table.item(row, 0).text(),
+                    'IP地址': self.network_behavior_table.item(row, 1).text(),
+                    '端口': self.network_behavior_table.item(row, 2).text(),
+                    '协议': self.network_behavior_table.item(row, 3).text(),
+                    '描述': self.network_behavior_table.item(row, 4).text(),
+                }
+                network_behavior.append(behavior)
+            report_data['network_behavior'] = network_behavior
+            
+            # 文件操作
+            file_operations = []
+            for row in range(self.file_operations_table.rowCount()):
+                operation = {
+                    '操作类型': self.file_operations_table.item(row, 0).text(),
+                    '文件路径': self.file_operations_table.item(row, 1).text(),
+                    '描述': self.file_operations_table.item(row, 2).text(),
+                }
+                file_operations.append(operation)
+            report_data['file_operations'] = file_operations
+            
+            # 注册表操作
+            registry_operations = []
+            for row in range(self.registry_operations_table.rowCount()):
+                operation = {
+                    '操作类型': self.registry_operations_table.item(row, 0).text(),
+                    '注册表路径': self.registry_operations_table.item(row, 1).text(),
+                    '描述': self.registry_operations_table.item(row, 2).text(),
+                }
+                registry_operations.append(operation)
+            report_data['registry_operations'] = registry_operations
+            
+            # 进程操作
+            process_operations = []
+            for row in range(self.process_operations_table.rowCount()):
+                operation = {
+                    '操作类型': self.process_operations_table.item(row, 0).text(),
+                    '目标进程': self.process_operations_table.item(row, 1).text(),
+                    '命令行': self.process_operations_table.item(row, 2).text(),
+                    '描述': self.process_operations_table.item(row, 3).text(),
+                }
+                process_operations.append(operation)
+            report_data['process_operations'] = process_operations
+            
+            # 导出报告
+            if file_path.endswith('.json'):
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    json.dump(report_data, f, ensure_ascii=False, indent=4)
+            else:
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    if report_data['network_behavior']:
+                        f.write("网络行为:\n")
+                        f.write("-" * 20 + "\n")
+                        for behavior in report_data['network_behavior']:
+                            f.write(f"域名: {behavior['域名']}, IP: {behavior['IP地址']}, 端口: {behavior['端口']}, 协议: {behavior['协议']}, 描述: {behavior['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['file_operations']:
+                        f.write("文件操作:\n")
+                        f.write("-" * 20 + "\n")
+                        for operation in report_data['file_operations']:
+                            f.write(f"操作类型: {operation['操作类型']}, 路径: {operation['文件路径']}, 描述: {operation['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['registry_operations']:
+                        f.write("注册表操作:\n")
+                        f.write("-" * 20 + "\n")
+                        for operation in report_data['registry_operations']:
+                            f.write(f"操作类型: {operation['操作类型']}, 路径: {operation['注册表路径']}, 描述: {operation['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['process_operations']:
+                        f.write("进程操作:\n")
+                        f.write("-" * 20 + "\n")
+                        for operation in report_data['process_operations']:
+                            f.write(f"操作类型: {operation['操作类型']}, 目标进程: {operation['目标进程']}, 命令行: {operation['命令行']}, 描述: {operation['描述']}\n")
+                        f.write("\n")
+            
+            QMessageBox.information(self, "成功", f"分析报告已成功导出到:\n{file_path}")
+        except Exception as e:
+            logger.error(f"导出报告时出错: {e}")
+            QMessageBox.critical(self, "错误", f"导出报告时发生错误:\n{str(e)}")
+
+    def export_report(self):
+        """
+        导出分析报告
+        """
+        # 在方法开始处定义logger
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        if not self.result_container.isVisible():
+            QMessageBox.warning(self, "警告", "没有可导出的分析结果")
+            return
+            
+        file_path, _ = QFileDialog.getSaveFileName(
+            self, 
+            "导出分析报告", 
+            f"沙箱分析报告_{datetime.now().strftime('%Y%m%d_%H%M%S')}", 
+            "JSON文件 (*.json);;文本文件 (*.txt)"
+        )
+        
+        if not file_path:
+            return
+            
+        try:
+            # 收集报告数据
+            report_data = {
+                'report_info': {
+                    '生成时间': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    '工具名称': 'MCgx沙箱分析工具'
+                },
+                'file_path': self.file_path_edit.text(),
+                'threat_score': self.threat_score_label.text().replace('威胁评分: ', ''),
+                'risk_level': self.risk_label.text().replace('风险等级: ', ''),
+            }
+            
+            # 基本信息
+            basic_info = {}
+            for row in range(self.basic_info_table.rowCount()):
+                key = self.basic_info_table.item(row, 0).text()
+                value = self.basic_info_table.item(row, 1).text()
+                basic_info[key] = value
+            report_data["basic_info"] = basic_info
+            
+            # 哈希信息
+            hashes = {}
+            for row in range(self.hash_table.rowCount()):
+                key = self.hash_table.item(row, 0).text()
+                value = self.hash_table.item(row, 1).text()
+                hashes[key] = value
+            report_data["hashes"] = hashes
+            
+            # PE头信息
+            pe_headers = {}
+            for row in range(self.pe_header_table.rowCount()):
+                key = self.pe_header_table.item(row, 0).text()
+                value = self.pe_header_table.item(row, 1).text()
+                pe_headers[key] = value
+            report_data["pe_headers"] = pe_headers
+            
+            # 数据目录
+            directories = []
+            for row in range(self.directory_table.rowCount()):
+                directory = {}
+                for col in range(self.directory_table.columnCount()):
+                    header = self.directory_table.horizontalHeaderItem(col).text()
+                    value = self.directory_table.item(row, col).text()
+                    directory[header] = value
+                directories.append(directory)
+            report_data["directories"] = directories
+            
+            # 节表信息
+            sections = []
+            for row in range(self.section_table.rowCount()):
+                section = {}
+                for col in range(self.section_table.columnCount()):
+                    header = self.section_table.horizontalHeaderItem(col).text()
+                    value = self.section_table.item(row, col).text()
+                    section[header] = value
+                sections.append(section)
+            report_data["sections"] = sections
+            
+            # 可疑特征
+            suspicious_features = []
+            for row in range(self.suspicious_table.rowCount()):
+                feature = {}
+                for col in range(self.suspicious_table.columnCount()):
+                    header = self.suspicious_table.horizontalHeaderItem(col).text()
+                    value = self.suspicious_table.item(row, col).text()
+                    feature[header] = value
+                suspicious_features.append(feature)
+            report_data["suspicious_features"] = suspicious_features
+            
+            # 网络行为
+            network_behavior = []
+            for row in range(self.network_table.rowCount()):
+                behavior = {}
+                for col in range(self.network_table.columnCount()):
+                    header = self.network_table.horizontalHeaderItem(col).text()
+                    value = self.network_table.item(row, col).text()
+                    behavior[header] = value
+                network_behavior.append(behavior)
+            report_data["network_behavior"] = network_behavior
+            
+            # 文件操作
+            file_operations = []
+            for row in range(self.file_ops_table.rowCount()):
+                operation = {}
+                for col in range(self.file_ops_table.columnCount()):
+                    header = self.file_ops_table.horizontalHeaderItem(col).text()
+                    value = self.file_ops_table.item(row, col).text()
+                    operation[header] = value
+                file_operations.append(operation)
+            report_data["file_operations"] = file_operations
+            
+            # 注册表操作
+            registry_operations = []
+            for row in range(self.registry_table.rowCount()):
+                operation = {}
+                for col in range(self.registry_table.columnCount()):
+                    header = self.registry_table.horizontalHeaderItem(col).text()
+                    value = self.registry_table.item(row, col).text()
+                    operation[header] = value
+                registry_operations.append(operation)
+            report_data["registry_operations"] = registry_operations
+            
+            # 进程操作
+            process_operations = []
+            for row in range(self.process_table.rowCount()):
+                operation = {}
+                for col in range(self.process_table.columnCount()):
+                    header = self.process_table.horizontalHeaderItem(col).text()
+                    value = self.process_table.item(row, col).text()
+                    operation[header] = value
+                process_operations.append(operation)
+            report_data["process_operations"] = process_operations
+            
+            # 保存报告
+            if file_path.endswith('.json'):
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    json.dump(report_data, f, ensure_ascii=False, indent=2)
+            else:
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    f.write("沙箱分析报告\n")
+                    f.write("=" * 50 + "\n\n")
+                    
+                    f.write(f"报告生成时间: {report_data['report_info']['生成时间']}\n")
+                    f.write(f"分析文件: {report_data['file_path']}\n")
+                    f.write(f"威胁评分: {report_data['threat_score']}\n")
+                    f.write(f"风险等级: {report_data['risk_level']}\n\n")
+                    
+                    f.write("基本信息:\n")
+                    f.write("-" * 20 + "\n")
+                    for key, value in report_data['basic_info'].items():
+                        f.write(f"{key}: {value}\n")
+                    f.write("\n")
+                    
+                    f.write("哈希信息:\n")
+                    f.write("-" * 20 + "\n")
+                    for key, value in report_data['hashes'].items():
+                        f.write(f"{key}: {value}\n")
+                    f.write("\n")
+                    
+                    if report_data['pe_headers']:
+                        f.write("PE头信息:\n")
+                        f.write("-" * 20 + "\n")
+                        for key, value in report_data['pe_headers'].items():
+                            f.write(f"{key}: {value}\n")
+                        f.write("\n")
+                    
+                    if report_data['directories']:
+                        f.write("数据目录:\n")
+                        f.write("-" * 20 + "\n")
+                        for directory in report_data['directories']:
+                            f.write(f"名称: {directory['索引']}, 虚拟地址: {directory['虚拟地址']}, 大小: {directory['大小']}\n")
+                        f.write("\n")
+                    
+                    if report_data['sections']:
+                        f.write("节表信息:\n")
+                        f.write("-" * 20 + "\n")
+                        for section in report_data['sections']:
+                            f.write(f"节名: {section['节名']}, 大小: {section['大小']}, 熵值: {section['熵值']}, 描述: {section['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['suspicious_features']:
+                        f.write("可疑特征:\n")
+                        f.write("-" * 20 + "\n")
+                        for feature in report_data['suspicious_features']:
+                            f.write(f"类型: {feature['风险类型']}, 描述: {feature['风险描述']}, 严重程度: {feature['严重程度']}\n")
+                        f.write("\n")
+                    
+                    if report_data['network_behavior']:
+                        f.write("网络行为:\n")
+                        f.write("-" * 20 + "\n")
+                        for behavior in report_data['network_behavior']:
+                            f.write(f"域名: {behavior['域名']}, IP: {behavior['IP地址']}, 端口: {behavior['端口']}, 协议: {behavior['协议']}, 描述: {behavior['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['file_operations']:
+                        f.write("文件操作:\n")
+                        f.write("-" * 20 + "\n")
+                        for operation in report_data['file_operations']:
+                            f.write(f"操作类型: {operation['操作类型']}, 路径: {operation['文件路径']}, 描述: {operation['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['registry_operations']:
+                        f.write("注册表操作:\n")
+                        f.write("-" * 20 + "\n")
+                        for operation in report_data['registry_operations']:
+                            f.write(f"操作类型: {operation['操作类型']}, 路径: {operation['注册表路径']}, 描述: {operation['描述']}\n")
+                        f.write("\n")
+                    
+                    if report_data['process_operations']:
+                        f.write("进程操作:\n")
+                        f.write("-" * 20 + "\n")
+                        for operation in report_data['process_operations']:
+                            f.write(f"操作类型: {operation['操作类型']}, 目标进程: {operation['目标进程']}, 命令行: {operation['命令行']}, 描述: {operation['描述']}\n")
+                        f.write("\n")
+            
+            QMessageBox.information(self, "成功", f"分析报告已成功导出到:\n{file_path}")
+        except Exception as e:
+            self.logger.error(f"导出报告时出错: {e}")
+            QMessageBox.critical(self, "错误", f"导出报告时发生错误:\n{str(e)}")
+
+    def start_isolated_process(self, command, max_memory_mb=256, max_processes=5):
+        """启动隔离的进程并应用资源限制"""
+        if not hasattr(self, 'sandbox_dirs') or not self.sandbox_dirs:
+            if not self.create_sandbox_environment():
+                return None
+                
+        try:
+            # 创建环境变量副本
+            env = os.environ.copy()
+            # 修改关键环境变量指向沙箱目录
+            env["HOME"] = self.sandbox_dirs["home"]
+            env["TMP"] = self.sandbox_dirs["tmp"]
+            env["TEMP"] = self.sandbox_dirs["tmp"]
+            env["PATH"] = self.sandbox_dirs["bin"] + ";" + env["PATH"]
+            
+            # 启动受限制的进程
+            process = subprocess.Popen(
+                command,
+                cwd=self.sandbox_dirs["root"],
+                env=env,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                creationflags=subprocess.CREATE_NEW_PROCESS_GROUP
+            )
+            
+            # 应用资源限制
+            job_handle = self.set_process_resource_limits(process.pid, max_memory_mb, max_processes)
+            
+            # 记录进程信息
+            self.sandboxed_processes.append({
+                "pid": process.pid,
+                "command": command,
+                "job_handle": job_handle,
+                "start_time": psutil.Process(process.pid).create_time()
+            })
+            
+            self.logger.info(f"已启动隔离进程 PID={process.pid}, 命令={' '.join(command)}")
+            self.update_process_list()
+            
+            return process
+            
+        except Exception as e:
+            self.logger.error(f"启动隔离进程失败: {str(e)}")
+            self.status_label.setText(f"启动进程失败: {str(e)}")
+            return None
+
+    def setup_file_redirection(self):
+        """设置文件系统重定向"""
+        # 创建重定向映射表
+        self.file_redirect_map = {
+            "C:\\Windows": os.path.join(self.sandbox_dirs["root"], "windows"),
+            "C:\\Program Files": os.path.join(self.sandbox_dirs["root"], "program_files"),
+            "C:\\Users": self.sandbox_dirs["home"],
+            "C:\\Documents and Settings": self.sandbox_dirs["home"]
+        }
+        
+        # 创建虚拟目录结构
+        for target in self.file_redirect_map.values():
+            os.makedirs(target, exist_ok=True)
+            
+        self.logger.info("文件重定向映射已设置")
+        return True
+
+    def set_process_resource_limits(self, pid, max_memory_mb=256, max_processes=5):
+        """
+        为指定进程设置资源限制
+        
+        Args:
+            pid: 进程ID
+            max_memory_mb: 最大内存限制(MB)
+            max_processes: 最大子进程数
+            
+        Returns:
+            job_handle: 作业对象句柄
+        """
+        try:
+            # 创建作业对象
+            job_handle = win32job.CreateJobObject(None, "")
+            
+            # 设置作业限制
+            extended_limit_info = win32job.QueryInformationJobObject(
+                job_handle, win32job.JobObjectExtendedLimitInformation)
+                
+            # 设置内存限制 (转换为字节)
+            extended_limit_info['BasicLimitInformation']['LimitFlags'] |= (
+                win32job.JOB_OBJECT_LIMIT_PROCESS_MEMORY | 
+                win32job.JOB_OBJECT_LIMIT_JOB_MEMORY |
+                win32job.JOB_OBJECT_LIMIT_ACTIVE_PROCESS
+            )
+            
+            # 设置最大内存限制
+            extended_limit_info['ProcessMemoryLimit'] = max_memory_mb * 1024 * 1024
+            extended_limit_info['JobMemoryLimit'] = max_memory_mb * 1024 * 1024
+            
+            # 设置最大进程数限制
+            extended_limit_info['BasicLimitInformation']['ActiveProcessLimit'] = max_processes
+            
+            # 应用限制
+            win32job.SetInformationJobObject(
+                job_handle, 
+                win32job.JobObjectExtendedLimitInformation, 
+                extended_limit_info
+            )
+            
+            # 将进程分配给作业
+            process_handle = win32api.OpenProcess(win32con.PROCESS_ALL_ACCESS, False, pid)
+            win32job.AssignProcessToJobObject(job_handle, process_handle)
+            win32api.CloseHandle(process_handle)
+            
+            # 保存作业句柄
+            self.job_handles.append(job_handle)
+            
+            self.logger.info(f"已为进程 {pid} 设置资源限制: 内存 {max_memory_mb}MB, 最大进程数 {max_processes}")
+            return job_handle
+            
+        except Exception as e:
+            self.logger.error(f"设置进程资源限制失败: {str(e)}")
+            return None
+

@@ -1,0 +1,13 @@
+{
+  "project_name": "mcgx",
+  "issue": "exe不运行",
+  "root_cause": "Unicode编码问题",
+  "solution": "修复特殊字符和添加编码声明",
+  "final_status": "已解决",
+  "files": {
+    "safe_exe": "E:\\程序\\xiangmu\\mcgx\\dist\\mcgx_safe.exe",
+    "original_exe": "E:\\程序\\xiangmu\\mcgx\\dist\\mcgx.exe",
+    "fixed_source": "E:\\程序\\xiangmu\\mcgx\\main_fixed.py",
+    "backup_source": "E:\\程序\\xiangmu\\mcgx\\main_backup.py"
+  }
+}

@@ -1,0 +1,349 @@
+{
+  "config_version": "3.1",
+  "update_time": "2025-08-16",
+  "description": "高级沙箱配置，支持深度行为分析、威胁检测和增强的安全功能",
+  "behavior_analysis": {
+    "enabled": true,
+    "api_monitoring": {
+      "enabled": true,
+      "monitored_apis": [
+        "CreateFile",
+        "ReadFile",
+        "WriteFile",
+        "DeleteFile",
+        "CreateProcess",
+        "CreateRemoteThread",
+        "WriteProcessMemory",
+        "RegCreateKey",
+        "RegSetValue",
+        "RegDeleteKey",
+        "Connect",
+        "Send",
+        "Recv",
+        "Listen",
+        "LoadLibrary",
+        "GetProcAddress",
+        "VirtualAlloc"
+      ],
+      "hook_mode": "inline_hook",
+      "log_level": "detailed"
+    },
+    "file_operations": {
+      "enabled": true,
+      "monitor_creations": true,
+      "monitor_modifications": true,
+      "monitor_deletions": true,
+      "monitor_access": true,
+      "content_analysis": true,
+      "hash_calculation": true
+    },
+    "process_operations": {
+      "enabled": true,
+      "monitor_creation": true,
+      "monitor_termination": true,
+      "monitor_injection": true,
+      "monitor_thread_creation": true,
+      "monitor_memory_operations": true
+    },
+    "registry_operations": {
+      "enabled": true,
+      "monitor_key_creation": true,
+      "monitor_value_modification": true,
+      "monitor_key_deletion": true,
+      "monitor_access": true,
+      "virtualization_enabled": true
+    }
+  },
+  "threat_detection": {
+    "enabled": true,
+    "yara_rules": {
+      "enabled": true,
+      "rules_directory": "rules/yara",
+      "auto_update": true,
+      "update_interval_hours": 24,
+      "custom_rules": []
+    },
+    "heuristic_detection": {
+      "enabled": true,
+      "sensitivity": "medium",
+      "scan_memory": true,
+      "scan_files": true,
+      "scan_registry": true,
+      "behavior_patterns": [
+        "file_encryption",
+        "process_injection",
+        "registry_persistence",
+        "network_anomaly",
+        "privilege_escalation",
+        "anti_debugging"
+      ]
+    },
+    "machine_learning": {
+      "enabled": true,
+      "model_path": "models/threat_detector.pkl",
+      "confidence_threshold": 0.8,
+      "features": [
+        "api_call_frequency",
+        "file_operations_rate",
+        "network_connections_count",
+        "registry_modifications_count",
+        "process_creation_count",
+        "memory_allocation_patterns"
+      ]
+    },
+    "threat_intelligence": {
+      "enabled": true,
+      "feeds": [
+        "https://threatfeed.example.com/malware_domains",
+        "https://threatfeed.example.com/malicious_ips",
+        "https://threatfeed.example.com/malware_hashes"
+      ],
+      "cache_duration_hours": 6,
+      "auto_update": true
+    }
+  },
+  "network_proxy": {
+    "enabled": true,
+    "proxy_type": "socks5",
+    "proxy_port": 1080,
+    "intercept_http": true,
+    "intercept_https": true,
+    "ssl_decryption": true,
+    "dns_monitoring": true,
+    "traffic_analysis": {
+      "enabled": true,
+      "protocol_analysis": true,
+      "payload_inspection": true,
+      "malicious_detection": true,
+      "data_exfiltration_detection": true
+    },
+    "url_filtering": {
+      "enabled": true,
+      "categories": [
+        "malware",
+        "phishing",
+        "botnet",
+        "c2",
+        "exploit",
+        "suspicious"
+      ],
+      "custom_blacklist": [],
+      "custom_whitelist": []
+    }
+  },
+  "filesystem_virtualization": {
+    "enabled": true,
+    "virtualization_mode": "redirect",
+    "base_directory": "%TEMP%\\sandbox_vfs\\",
+    "redirect_all_operations": true,
+    "allow_host_readonly": false,
+    "content_scanning": {
+      "enabled": true,
+      "scan_on_create": true,
+      "scan_on_modify": true,
+      "scan_on_execute": true,
+      "engines": [
+        "yara",
+        "heuristic",
+        "ml"
+      ]
+    },
+    "file_integrity": {
+      "enabled": true,
+      "calculate_hashes": true,
+      "hash_algorithms": [
+        "md5",
+        "sha1",
+        "sha256"
+      ],
+      "monitor_changes": true
+    }
+  },
+  "registry_virtualization": {
+    "enabled": true,
+    "virtualization_mode": "redirect",
+    "base_key": "HKEY_CURRENT_USER\\Software\\Sandbox\\",
+    "redirect_all_operations": true,
+    "persistence_monitoring": {
+      "enabled": true,
+      "monitor_run_keys": true,
+      "monitor_services": true,
+      "monitor_scheduled_tasks": true,
+      "monitor_startup_folders": true
+    },
+    "change_tracking": {
+      "enabled": true,
+      "track_all_changes": true,
+      "generate_diff_report": true,
+      "auto_cleanup": true
+    }
+  },
+  "advanced_reporting": {
+    "enabled": true,
+    "report_format": [
+      "html",
+      "json",
+      "pdf"
+    ],
+    "include_timeline": true,
+    "include_iocs": true,
+    "include_network_analysis": true,
+    "include_file_analysis": true,
+    "include_registry_analysis": true,
+    "include_threat_score": true,
+    "visualization": {
+      "enabled": true,
+      "process_graph": true,
+      "network_graph": true,
+      "file_access_graph": true,
+      "timeline_chart": true
+    },
+    "export_options": {
+      "auto_export": true,
+      "export_directory": "reports/",
+      "include_screenshots": true,
+      "include_memory_dumps": true
+    }
+  },
+  "automation": {
+    "enabled": true,
+    "auto_analysis": true,
+    "auto_classification": true,
+    "auto_response": {
+      "enabled": true,
+      "actions": [
+        "terminate_on_threat",
+        "isolate_on_suspicion",
+        "quarantine_files",
+        "generate_alert"
+      ]
+    },
+    "batch_processing": {
+      "enabled": true,
+      "max_concurrent": 5,
+      "queue_directory": "queue/",
+      "result_directory": "results/"
+    },
+    "scheduling": {
+      "enabled": true,
+      "scheduled_scans": [],
+      "maintenance_tasks": [
+        "clean_temp_files",
+        "update_rules",
+        "generate_reports"
+      ]
+    }
+  },
+  "performance": {
+    "max_analysis_time_minutes": 30,
+    "max_memory_usage_mb": 4096,
+    "max_cpu_usage_percent": 50,
+    "max_disk_usage_mb": 10240,
+    "enable_caching": true,
+    "cache_size_mb": 1024,
+    "parallel_analysis": true,
+    "max_parallel_tasks": 3
+  },
+
+  "isolation_profiles": {
+    "strict": {
+      "name": "严格模式",
+      "description": "最高安全级别，限制所有潜在危险操作",
+      "max_memory_mb": 256,
+      "max_processes": 5,
+      "network_access": false,
+      "file_access": false,
+      "registry_access": false,
+      "allowed_paths": [],
+      "blocked_processes": ["cmd.exe", "powershell.exe", "wmic.exe", "net.exe"],
+      "enable_file_monitoring": true,
+      "enable_network_monitoring": true,
+      "enable_registry_monitoring": true,
+      "enable_security_logging": true,
+      "priority_class": "IDLE_PRIORITY_CLASS"
+    },
+    "medium": {
+      "name": "中等模式",
+      "description": "平衡安全性和功能性",
+      "max_memory_mb": 512,
+      "max_processes": 10,
+      "network_access": true,
+      "file_access": true,
+      "registry_access": true,
+      "allowed_paths": ["C:\\Users\\Public\\", "C:\\Temp\\"],
+      "blocked_processes": [],
+      "enable_file_monitoring": true,
+      "enable_network_monitoring": true,
+      "enable_registry_monitoring": true,
+      "enable_security_logging": true,
+      "priority_class": "BELOW_NORMAL_PRIORITY_CLASS"
+    },
+    "relaxed": {
+      "name": "宽松模式",
+      "description": "最小限制，适合可信程序",
+      "max_memory_mb": 1024,
+      "max_processes": 20,
+      "network_access": true,
+      "file_access": true,
+      "registry_access": true,
+      "allowed_paths": [],
+      "blocked_processes": [],
+      "enable_file_monitoring": false,
+      "enable_network_monitoring": false,
+      "enable_registry_monitoring": false,
+      "enable_security_logging": false,
+      "priority_class": "NORMAL_PRIORITY_CLASS"
+    }
+  },
+
+  "logging": {
+    "level": "DEBUG",
+    "log_directory": "logs/",
+    "max_log_size_mb": 100,
+    "log_retention_days": 30,
+    "structured_logging": true,
+    "log_events": [
+      "process_creation",
+      "file_operations",
+      "registry_operations",
+      "network_operations",
+      "threat_detection",
+      "system_calls"
+    ]
+  },
+
+  "monitoring": {
+    "enabled": true,
+    "refresh_interval_ms": 1000,
+    "max_history_size": 10000,
+    "log_file": "sandbox_monitor.log",
+    "log_level": "INFO"
+  },
+
+  "security": {
+    "enable_integrity_check": true,
+    "enable_behavior_analysis": true,
+    "suspicious_patterns": [
+      ".*\\\\Temp\\\\.*",
+      ".*\\\\AppData\\\\Local\\\\Temp\\\\.*",
+      ".*\\\\Windows\\\\Temp\\\\.*",
+      ".*\\\\System32\\\\.*\\.exe$",
+      ".*\\\\Windows\\\\.*\\.exe$"
+    ],
+    "max_file_operations_per_minute": 100,
+    "max_network_connections": 10
+  },
+
+  "resource_limits": {
+    "cpu_limit_percent": 50,
+    "disk_io_limit_mb": 100,
+    "network_io_limit_mb": 50
+  },
+
+  "auto_cleanup": {
+    "enabled": true,
+    "delay_seconds": 30,
+    "remove_logs": false
+  }
+
+}

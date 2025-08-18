@@ -1,0 +1,126 @@
+{
+  "limits_version": "2.0",
+  "update_time": "2025-08-15",
+  "description": "详细的资源限制配置",
+  "cpu_limits": {
+    "basic": {
+      "max_cpu_percent": 25,
+      "priority_class": "BELOW_NORMAL",
+      "affinity_mask": 1,
+      "description": "基础CPU限制"
+    },
+    "strict": {
+      "max_cpu_percent": 10,
+      "priority_class": "IDLE",
+      "affinity_mask": 1,
+      "description": "严格CPU限制"
+    },
+    "permissive": {
+      "max_cpu_percent": 50,
+      "priority_class": "NORMAL",
+      "affinity_mask": 3,
+      "description": "宽松CPU限制"
+    }
+  },
+  "memory_limits": {
+    "basic": {
+      "process_memory_mb": 512,
+      "job_memory_mb": 2048,
+      "working_set_mb": 256,
+      "page_file_mb": 1024,
+      "description": "基础内存限制"
+    },
+    "strict": {
+      "process_memory_mb": 256,
+      "job_memory_mb": 1024,
+      "working_set_mb": 128,
+      "page_file_mb": 512,
+      "description": "严格内存限制"
+    },
+    "permissive": {
+      "process_memory_mb": 1024,
+      "job_memory_mb": 4096,
+      "working_set_mb": 512,
+      "page_file_mb": 2048,
+      "description": "宽松内存限制"
+    }
+  },
+  "disk_limits": {
+    "basic": {
+      "read_speed_mbps": 10,
+      "write_speed_mbps": 5,
+      "total_space_mb": 1000,
+      "description": "基础磁盘限制"
+    },
+    "strict": {
+      "read_speed_mbps": 5,
+      "write_speed_mbps": 2,
+      "total_space_mb": 500,
+      "description": "严格磁盘限制"
+    },
+    "permissive": {
+      "read_speed_mbps": 50,
+      "write_speed_mbps": 25,
+      "total_space_mb": 5000,
+      "description": "宽松磁盘限制"
+    }
+  },
+  "network_limits": {
+    "basic": {
+      "bandwidth_mbps": 1,
+      "connection_limit": 10,
+      "allowed_ports": [
+        80,
+        443
+      ],
+      "description": "基础网络限制"
+    },
+    "strict": {
+      "bandwidth_mbps": 0.5,
+      "connection_limit": 5,
+      "allowed_ports": [],
+      "description": "严格网络限制"
+    },
+    "permissive": {
+      "bandwidth_mbps": 10,
+      "connection_limit": 50,
+      "allowed_ports": [
+        80,
+        443,
+        21,
+        22,
+        25
+      ],
+      "description": "宽松网络限制"
+    }
+  },
+  "time_limits": {
+    "max_execution_time_minutes": {
+      "basic": 30,
+      "strict": 10,
+      "permissive": 120
+    },
+    "idle_timeout_minutes": {
+      "basic": 5,
+      "strict": 2,
+      "permissive": 30
+    }
+  },
+  "process_limits": {
+    "max_processes": {
+      "basic": 10,
+      "strict": 3,
+      "permissive": 20
+    },
+    "max_threads_per_process": {
+      "basic": 50,
+      "strict": 20,
+      "permissive": 100
+    },
+    "max_handles_per_process": {
+      "basic": 1000,
+      "strict": 500,
+      "permissive": 2000
+    }
+  }
+}

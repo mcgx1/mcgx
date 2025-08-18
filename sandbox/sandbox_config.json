@@ -1,0 +1,273 @@
+{
+  "config_version": "2.0",
+  "update_time": "2025-08-15",
+  "description": "增强版沙箱配置，支持完整的进程隔离和资源限制",
+  "process_isolation": {
+    "enabled": true,
+    "job_object_limits": {
+      "active_process_limit": 10,
+      "affinity": 1,
+      "priority_class": 16384,
+      "ui_restrictions": {
+        "desktop": "sandbox_desktop",
+        "display_settings": false,
+        "global_atoms": false,
+        "clipboard": false
+      }
+    },
+    "process_creation": {
+      "allow_child_processes": true,
+      "child_process_limit": 5,
+      "allowed_executables": [
+        "*.exe",
+        "*.bat",
+        "*.cmd",
+        "*.ps1"
+      ],
+      "blocked_executables": [
+        "cmd.exe",
+        "powershell.exe",
+        "wscript.exe",
+        "cscript.exe",
+        "regedit.exe",
+        "taskmgr.exe"
+      ]
+    }
+  },
+  "resource_limits": {
+    "cpu": {
+      "enabled": true,
+      "rate_limit_percent": 25,
+      "affinity_mask": 1,
+      "priority_class": 16384
+    },
+    "memory": {
+      "enabled": true,
+      "process_memory_limit_mb": 512,
+      "job_memory_limit_mb": 2048,
+      "working_set_limit_mb": 256,
+      "page_file_limit_mb": 1024
+    },
+    "disk": {
+      "enabled": true,
+      "read_limit_mb_per_sec": 10,
+      "write_limit_mb_per_sec": 5,
+      "total_disk_space_mb": 1000,
+      "allowed_directories": [
+        "%TEMP%\\sandbox_%PID%",
+        "%USERPROFILE%\\Documents\\sandbox",
+        "%APPDATA%\\sandbox"
+      ],
+      "blocked_directories": [
+        "C:\\Windows\\System32",
+        "C:\\Program Files",
+        "C:\\Program Files (x86)",
+        "%USERPROFILE%\\Desktop",
+        "%USERPROFILE%\\Downloads"
+      ]
+    },
+    "network": {
+      "enabled": true,
+      "block_all": false,
+      "allowed_hosts": [
+        "*.microsoft.com",
+        "*.windowsupdate.com",
+        "localhost",
+        "127.0.0.1"
+      ],
+      "blocked_hosts": [
+        "*.malicious.com",
+        "*.suspicious.net",
+        "*.adware.org"
+      ],
+      "allowed_ports": [
+        80,
+        443
+      ],
+      "blocked_ports": [
+        21,
+        22,
+        23,
+        25,
+        110,
+        143
+      ],
+      "bandwidth_limit_mbps": 1,
+      "connection_limit": 10
+    },
+    "registry": {
+      "enabled": true,
+      "virtualization": true,
+      "allowed_keys": [
+        "HKEY_CURRENT_USER\\Software\\Sandbox",
+        "HKEY_CURRENT_USER\\Environment"
+      ],
+      "blocked_keys": [
+        "HKEY_LOCAL_MACHINE\\SOFTWARE",
+        "HKEY_LOCAL_MACHINE\\SYSTEM",
+        "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"
+      ],
+      "read_only_keys": [
+        "HKEY_LOCAL_MACHINE\\HARDWARE",
+        "HKEY_LOCAL_MACHINE\\SAM",
+        "HKEY_LOCAL_MACHINE\\SECURITY"
+      ]
+    }
+  },
+  "security_restrictions": {
+    "file_access": {
+      "read_only_access": true,
+      "write_restriction": true,
+      "execute_restriction": true,
+      "delete_restriction": true,
+      "allowed_file_extensions": [
+        ".txt",
+        ".log",
+        ".tmp",
+        ".dat",
+        ".json",
+        ".xml"
+      ],
+      "blocked_file_extensions": [
+        ".exe",
+        ".dll",
+        ".sys",
+        ".drv",
+        ".scr",
+        ".com",
+        ".pif"
+      ]
+    },
+    "system_access": {
+      "block_driver_loading": true,
+      "block_service_creation": true,
+      "block_process_injection": true,
+      "block_dll_injection": true,
+      "block_hook_installation": true,
+      "block_debugger": true
+    },
+    "ui_restrictions": {
+      "block_global_hooks": true,
+      "block_window_creation": false,
+      "block_clipboard_access": true,
+      "block_printing": true,
+      "block_screen_capture": true
+    }
+  },
+  "monitoring": {
+    "enabled": true,
+    "process_monitoring": {
+      "track_process_creation": true,
+      "track_process_termination": true,
+      "track_thread_creation": true,
+      "track_dll_loading": true,
+      "track_memory_access": true
+    },
+    "file_monitoring": {
+      "track_file_creation": true,
+      "track_file_modification": true,
+      "track_file_deletion": true,
+      "track_file_access": true
+    },
+    "registry_monitoring": {
+      "track_key_creation": true,
+      "track_key_modification": true,
+      "track_key_deletion": true,
+      "track_value_access": true
+    },
+    "network_monitoring": {
+      "track_connection_creation": true,
+      "track_data_transfer": true,
+      "track_dns_queries": true
+    },
+    "log_level": "DEBUG",
+    "log_file": "logs/sandbox_%PID%_%TIMESTAMP%.log",
+    "max_log_size_mb": 100,
+    "log_retention_days": 7
+  },
+  "cleanup": {
+    "enabled": true,
+    "auto_cleanup": true,
+    "cleanup_on_exit": true,
+    "cleanup_timeout_seconds": 30,
+    "force_termination": true,
+    "cleanup_items": [
+      "processes",
+      "files",
+      "registry_keys",
+      "network_connections",
+      "environment_variables"
+    ],
+    "preserve_items": [
+      "log_files",
+      "analysis_reports"
+    ]
+  },
+  "profiles": {
+    "strict": {
+      "description": "严格模式 - 最高安全性",
+      "process_isolation": {
+        "active_process_limit": 3,
+        "allow_child_processes": false
+      },
+      "resource_limits": {
+        "cpu": {
+          "rate_limit_percent": 10
+        },
+        "memory": {
+          "process_memory_limit_mb": 256
+        },
+        "network": {
+          "block_all": true
+        }
+      },
+      "security_restrictions": {
+        "file_access": {
+          "write_restriction": true,
+          "execute_restriction": true
+        }
+      }
+    },
+    "balanced": {
+      "description": "平衡模式 - 安全性与可用性平衡",
+      "process_isolation": {
+        "active_process_limit": 10,
+        "allow_child_processes": true
+      },
+      "resource_limits": {
+        "cpu": {
+          "rate_limit_percent": 25
+        },
+        "memory": {
+          "process_memory_limit_mb": 512
+        },
+        "network": {
+          "block_all": false
+        }
+      }
+    },
+    "permissive": {
+      "description": "宽松模式 - 侧重可用性",
+      "process_isolation": {
+        "active_process_limit": 20,
+        "allow_child_processes": true
+      },
+      "resource_limits": {
+        "cpu": {
+          "rate_limit_percent": 50
+        },
+        "memory": {
+          "process_memory_limit_mb": 1024
+        },
+        "network": {
+          "block_all": false
+        }
+      }
+    }
+  },
+  "default_profile": "balanced",
+  "auto_start_monitoring": true,
+  "enable_real_time_protection": true,
+  "enable_behavior_analysis": true,
+  "enable_heuristic_detection": true
+}
