@@ -10,7 +10,7 @@ from pathlib import Path
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
                              QTableWidget, QTableWidgetItem, QLabel, QMessageBox, 
                              QAbstractItemView, QGroupBox, QFormLayout, QLineEdit, QCheckBox,
-                             QTextEdit, QComboBox, QSpinBox, QTabWidget, QHeaderView)
+                             QTextEdit, QComboBox, QSpinBox, QTabWidget, QHeaderView, QFileDialog)
 from PyQt5.QtCore import QTimer, Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QColor
 
