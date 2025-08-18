@@ -74,7 +74,8 @@ class MainWindow(QMainWindow):
         
         # 设置窗口属性
         self.setWindowTitle("系统安全分析工具")
-        self.setGeometry(100, 100, 1200, 800)
+        self.setGeometry(100, 100, 1400, 900)
+        self.setMinimumSize(1200, 800)  # 设置最小尺寸，防止窗口过小导致界面元素错乱
         
         # 初始化状态
         self.initialized_tabs = set()  # 记录已初始化的标签页
@@ -176,6 +177,7 @@ class MainWindow(QMainWindow):
         self.tab_widget = QTabWidget()
         self.tab_widget.setTabsClosable(False)
         self.tab_widget.setMovable(True)
+        self.tab_widget.setStyleSheet(self.get_tab_widget_style())
         
         # 添加标签页
         self.add_all_tabs()
@@ -189,53 +191,91 @@ class MainWindow(QMainWindow):
         # 检查管理员权限并提示
         self.check_admin_privileges()
     
+    def get_tab_widget_style(self):
+        """获取标签页控件样式"""
+        return """
+            QTabWidget::pane {
+                border: 1px solid #bdc3c7;
+                border-radius: 4px;
+                padding: 5px;
+                background-color: #ffffff;
+            }
+            
+            QTabBar::tab {
+                background-color: #ecf0f1;
+                border: 1px solid #bdc3c7;
+                border-bottom: none;
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+                padding: 12px 20px;
+                margin-right: 2px;
+                font-weight: bold;
+                font-size: 14px;
+                min-width: 120px;
+            }
+            
+            QTabBar::tab:selected {
+                background-color: #3498db;
+                color: white;
+                border-color: #3498db;
+            }
+            
+            QTabBar::tab:!selected {
+                margin-top: 2px;
+            }
+            
+            QTabBar::tab:hover:!selected {
+                background-color: #d6eaf8;
+            }
+        """
+    
     def add_all_tabs(self):
         """添加所有标签页但不初始化数据"""
         # 进程标签页
         self.process_tab = ProcessTab()
-        self.tab_widget.addTab(self.process_tab, "进程监控")
+        self.tab_widget.addTab(self.process_tab, "🔄 进程监控")
         self.tab_widgets['process'] = self.process_tab
         logger.info("✅ 进程标签页创建成功")
         
         # 网络标签页
         self.network_tab = NetworkTab()
-        self.tab_widget.addTab(self.network_tab, "网络监控")
+        self.tab_widget.addTab(self.network_tab, "🌐 网络监控")
         self.tab_widgets['network'] = self.network_tab
         logger.info("✅ 网络标签页创建成功")
         
         # 启动项标签页
         self.startup_tab = StartupTab()
-        self.tab_widget.addTab(self.startup_tab, "启动项监控")
+        self.tab_widget.addTab(self.startup_tab, "🚀 启动项监控")
         self.tab_widgets['startup'] = self.startup_tab
         logger.info("✅ 启动项标签页创建成功")
         
         # 注册表标签页
         self.registry_tab = RegistryTab()
-        self.tab_widget.addTab(self.registry_tab, "注册表监控")
+        self.tab_widget.addTab(self.registry_tab, "📋 注册表监控")
         self.tab_widgets['registry'] = self.registry_tab
         logger.info("✅ 注册表标签页创建成功")
         
         # 文件监控标签页
         self.file_monitor_tab = FileMonitorTab()
-        self.tab_widget.addTab(self.file_monitor_tab, "文件监控")
+        self.tab_widget.addTab(self.file_monitor_tab, "📁 文件监控")
         self.tab_widgets['file_monitor'] = self.file_monitor_tab
         logger.info("✅ 文件监控标签页创建成功")
         
         # 弹窗拦截标签页
         self.popup_blocker_tab = PopupBlockerTab()
-        self.tab_widget.addTab(self.popup_blocker_tab, "弹窗拦截")
+        self.tab_widget.addTab(self.popup_blocker_tab, "🛡️ 弹窗拦截")
         self.tab_widgets['popup_blocker'] = self.popup_blocker_tab
         logger.info("✅ 弹窗拦截标签页创建成功")
         
         # 模块标签页
         self.modules_tab = ModulesTab()
-        self.tab_widget.addTab(self.modules_tab, "系统模块")
+        self.tab_widget.addTab(self.modules_tab, "🧩 系统模块")
         self.tab_widgets['modules'] = self.modules_tab
         logger.info("✅ 系统模块标签页创建成功")
         
         # 沙箱标签页
         self.sandbox_tab = SandboxTab()
-        self.tab_widget.addTab(self.sandbox_tab, "沙箱")
+        self.tab_widget.addTab(self.sandbox_tab, "📦 沙箱")
         self.tab_widgets['sandbox'] = self.sandbox_tab
         logger.info("✅ 沙箱标签页创建成功")
         
@@ -243,7 +283,7 @@ class MainWindow(QMainWindow):
         try:
             from .file_behavior_analyzer import FileBehaviorAnalyzer
             self.file_behavior_tab = FileBehaviorAnalyzer()
-            self.tab_widget.addTab(self.file_behavior_tab, "📁 文件行为分析")
+            self.tab_widget.addTab(self.file_behavior_tab, "🔍 文件行为分析")
             self.tab_widgets['file_behavior'] = self.file_behavior_tab
             logger.info("✅ 文件行为分析标签页创建成功")
         except Exception as e:
@@ -251,7 +291,7 @@ class MainWindow(QMainWindow):
             # 添加一个占位标签页
             placeholder = QLabel("文件行为分析模块加载失败")
             placeholder.setAlignment(Qt.AlignCenter)
-            self.tab_widget.addTab(placeholder, "📁 文件行为分析")
+            self.tab_widget.addTab(placeholder, "🔍 文件行为分析")
         
         # 连接信号
         if hasattr(self.process_tab, 'process_killed'):
@@ -289,7 +329,7 @@ class MainWindow(QMainWindow):
             
             # 创建新的标签页
             self.file_behavior_tab = FileBehaviorAnalyzer()
-            self.tab_widget.addTab(self.file_behavior_tab, "📁 文件行为分析")
+            self.tab_widget.addTab(self.file_behavior_tab, "🔍 文件行为分析")
             self.tab_widgets['file_behavior'] = self.file_behavior_tab
             
             # 立即切换到新加载的标签页
@@ -320,6 +360,40 @@ class MainWindow(QMainWindow):
     def create_menu_bar(self):
         """创建菜单栏"""
         menubar = self.menuBar()
+        menubar.setStyleSheet("""
+            QMenuBar {
+                background-color: #2c3e50;
+                color: white;
+                border-bottom: 1px solid #34495e;
+            }
+            
+            QMenuBar::item {
+                background: transparent;
+                padding: 8px 12px;
+            }
+            
+            QMenuBar::item:selected {
+                background-color: #34495e;
+            }
+            
+            QMenuBar::item:pressed {
+                background-color: #3498db;
+            }
+            
+            QMenu {
+                background-color: #ffffff;
+                border: 1px solid #bdc3c7;
+                border-radius: 4px;
+            }
+            
+            QMenu::item {
+                padding: 6px 20px;
+            }
+            
+            QMenu::item:selected {
+                background-color: #d6eaf8;
+            }
+        """)
         
         # 文件菜单
         file_menu = menubar.addMenu('文件')
@@ -373,30 +447,66 @@ class MainWindow(QMainWindow):
         """创建工具栏"""
         toolbar = self.addToolBar('主工具栏')
         toolbar.setObjectName("main_toolbar")
+        toolbar.setStyleSheet("""
+            QToolBar {
+                background-color: #ecf0f1;
+                border: none;
+                padding: 6px;
+            }
+            
+            QToolButton {
+                background-color: #3498db;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: bold;
+                margin: 2px;
+            }
+            
+            QToolButton:hover {
+                background-color: #2980b9;
+            }
+            
+            QToolButton:pressed {
+                background-color: #21618c;
+            }
+        """)
         
         # 添加管理员权限重启按钮
-        restart_admin_btn = QAction('以管理员权限重启', self)
+        restart_admin_btn = QAction('🔑 管理员权限重启', self)
         restart_admin_btn.triggered.connect(self.restart_as_admin)
         toolbar.addAction(restart_admin_btn)
         
         toolbar.addSeparator()
         
         # 添加快速访问按钮
-        file_behavior_btn = QAction('文件行为分析', self)
+        file_behavior_btn = QAction('🔍 文件行为分析', self)
         file_behavior_btn.triggered.connect(self.show_file_behavior_analyzer)
         toolbar.addAction(file_behavior_btn)
         
-        popup_blocker_btn = QAction('弹窗拦截', self)
+        popup_blocker_btn = QAction('🛡️ 弹窗拦截', self)
         popup_blocker_btn.triggered.connect(self.show_popup_blocker)
         toolbar.addAction(popup_blocker_btn)
         
-        sandbox_btn = QAction('沙箱管理', self)
+        sandbox_btn = QAction('📦 沙箱管理', self)
         sandbox_btn.triggered.connect(self.show_sandbox_manager)
         toolbar.addAction(sandbox_btn)
     
     def create_status_bar(self):
         """创建状态栏"""
         status_bar = self.statusBar()
+        status_bar.setStyleSheet("""
+            QStatusBar {
+                background-color: #ecf0f1;
+                border-top: 1px solid #bdc3c7;
+            }
+            
+            QLabel {
+                color: #2c3e50;
+                font-size: 12px;
+            }
+        """)
         
         # 添加实时时间显示
         self.time_label = QLabel()

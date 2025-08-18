@@ -2,7 +2,8 @@
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, 
                             QPushButton, QTreeWidget, QTreeWidgetItem, QLabel,
                             QMessageBox, QSplitter, QMenu, QAction)
-from PyQt5.QtCore import Qt, QThread, pyqtSignal
+from PyQt5.QtCore import Qt, QThread, pyqtSignal, QSize
+from PyQt5.QtGui import QKeySequence
 import winreg
 import logging
 
@@ -21,27 +22,35 @@ class RegistryTab(QWidget):
     def init_ui(self):
         """初始化UI"""
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(5, 5, 5, 5)
+        layout.setSpacing(5)
         
         # 创建顶部导航栏
         nav_layout = QHBoxLayout()
+        nav_layout.setContentsMargins(0, 0, 0, 0)
+        nav_layout.setSpacing(5)
         
         # 路径输入框
         self.key_path_edit = QLineEdit()
         self.key_path_edit.setPlaceholderText("输入注册表路径，例如：HKEY_CURRENT_USER\\Software\\Microsoft\\Windows")
+        self.key_path_edit.setMinimumHeight(25)
         nav_layout.addWidget(self.key_path_edit)
         
         # 导航按钮
         self.navigate_btn = QPushButton("导航")
+        self.navigate_btn.setFixedSize(60, 25)
         self.navigate_btn.clicked.connect(self.navigate_to_key)
         nav_layout.addWidget(self.navigate_btn)
         
         # 刷新按钮
         self.refresh_btn = QPushButton("刷新")
+        self.refresh_btn.setFixedSize(60, 25)
         self.refresh_btn.clicked.connect(self.refresh_current_key)
         nav_layout.addWidget(self.refresh_btn)
         
         # 添加启动项管理按钮
         self.startup_manager_btn = QPushButton("启动项管理")
+        self.startup_manager_btn.setFixedSize(90, 25)
         self.startup_manager_btn.clicked.connect(self.open_startup_manager)
         nav_layout.addWidget(self.startup_manager_btn)
         
@@ -55,6 +64,7 @@ class RegistryTab(QWidget):
         self.registry_tree.setContextMenuPolicy(Qt.CustomContextMenu)
         self.registry_tree.customContextMenuRequested.connect(self.show_context_menu)
         self.registry_tree.itemExpanded.connect(self.load_subkeys)
+        self.registry_tree.setMinimumHeight(300)
         layout.addWidget(self.registry_tree)
         
         # 连接回车键到导航功能
@@ -99,241 +109,237 @@ class RegistryTab(QWidget):
             else:
                 root_key_name, sub_path = path.split("\\", 1)
                 
-            # 获取根键
-            root_keys = {
-                "HKEY_CLASSES_ROOT": winreg.HKEY_CLASSES_ROOT,
-                "HKEY_CURRENT_USER": winreg.HKEY_CURRENT_USER,
-                "HKEY_LOCAL_MACHINE": winreg.HKEY_LOCAL_MACHINE,
-                "HKEY_USERS": winreg.HKEY_USERS,
-                "HKEY_CURRENT_CONFIG": winreg.HKEY_CURRENT_CONFIG
-            }
-            
-            if root_key_name not in root_keys:
+            # 查找对应的根键项
+            root_item = None
+            for i in range(self.registry_tree.topLevelItemCount()):
+                item = self.registry_tree.topLevelItem(i)
+                if item.text(0) == root_key_name:
+                    root_item = item
+                    break
+                    
+            if not root_item:
                 QMessageBox.warning(self, "路径错误", f"无效的根键: {root_key_name}")
                 return
                 
-            root_key = root_keys[root_key_name]
-            
-            # 打开注册表项并加载
-            self.load_registry_key(root_key, sub_path, root_key_name)
+            # 展开根键
+            self.registry_tree.setCurrentItem(root_item)
+            if sub_path:
+                # 处理子路径
+                self._expand_path(root_item, root_key_name, sub_path)
+            else:
+                # 只有根键，直接展开
+                self.registry_tree.expandItem(root_item)
+                self.load_subkeys(root_item)
+                
         except Exception as e:
-            logger.error(f"导航注册表项失败: {e}", exc_info=True)
-            QMessageBox.critical(self, "错误", f"无法导航到注册表项: {str(e)}")
-            
-    def load_registry_key(self, root_key, sub_path, root_key_name):
-        """加载注册表项"""
-        try:
-            # 打开注册表键
-            key_handle = winreg.OpenKey(root_key, sub_path)
-            
-            # 清空当前显示
-            self.registry_tree.clear()
-            
-            # 添加根项
-            root_item = QTreeWidgetItem(self.registry_tree, [root_key_name])
-            self.registry_tree.addTopLevelItem(root_item)
-            
-            # 读取子键和值
-            self._read_registry_content(key_handle, root_item, sub_path)
-            
-            # 关闭键
-            winreg.CloseKey(key_handle)
-        except FileNotFoundError:
-            QMessageBox.warning(self, "路径错误", f"注册表路径不存在: {sub_path}")
-        except PermissionError:
-            QMessageBox.warning(self, "权限错误", f"没有权限访问注册表项: {sub_path}")
-        except Exception as e:
-            logger.error(f"加载注册表项失败: {e}", exc_info=True)
-            QMessageBox.critical(self, "错误", f"加载注册表项失败: {str(e)}")
+            logger.error(f"导航到注册表项时出错: {e}")
+            QMessageBox.critical(self, "错误", f"导航到注册表项时出错: {str(e)}")
     
-    def _read_registry_content(self, key_handle, parent_item, path):
-        """读取注册表内容（子键和值）"""
+    def _expand_path(self, root_item, root_key_name, sub_path):
+        """展开到指定路径"""
         try:
-            # 读取子键
-            i = 0
-            while True:
-                try:
-                    subkey_name = winreg.EnumKey(key_handle, i)
-                    sub_item = QTreeWidgetItem(parent_item, [subkey_name, "项", ""])
-                    # 设置子项指示器，表示可能还有子项
-                    sub_item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
-                    i += 1
-                except WindowsError:
-                    break
+            # 获取根键句柄
+            root_key_handle = self._get_root_key_handle(root_key_name)
+            if not root_key_handle:
+                return
+                
+            # 分割子路径
+            path_parts = sub_path.split("\\")
             
-            # 读取值
-            i = 0
-            while True:
-                try:
-                    name, value, value_type = winreg.EnumValue(key_handle, i)
-                    type_name = self._get_value_type_name(value_type)
-                    value_str = self._format_value(value, value_type)
-                    QTreeWidgetItem(parent_item, [name, type_name, value_str])
-                    i += 1
-                except WindowsError:
+            # 逐级展开
+            current_item = root_item
+            current_key = root_key_handle
+            
+            for i, part in enumerate(path_parts):
+                if not part:  # 跳过空部分
+                    continue
+                    
+                # 展开当前项
+                self.registry_tree.expandItem(current_item)
+                self.load_subkeys(current_item)
+                
+                # 查找下一个子项
+                found = False
+                for j in range(current_item.childCount()):
+                    child_item = current_item.child(j)
+                    if child_item.text(0) == part:
+                        current_item = child_item
+                        # 打开对应的注册表键
+                        try:
+                            current_key = winreg.OpenKey(current_key, part)
+                            found = True
+                            break
+                        except Exception as e:
+                            logger.error(f"打开注册表键失败: {e}")
+                            break
+                            
+                if not found:
+                    QMessageBox.warning(self, "路径错误", f"找不到路径: {'\\'.join(path_parts[:i+1])}")
                     break
+                    
+            # 设置当前选中项
+            self.registry_tree.setCurrentItem(current_item)
+            
         except Exception as e:
-            logger.error(f"读取注册表内容失败: {e}", exc_info=True)
+            logger.error(f"展开路径时出错: {e}")
+            QMessageBox.critical(self, "错误", f"展开路径时出错: {str(e)}")
     
-    def _get_value_type_name(self, value_type):
-        """获取值类型的名称"""
-        type_names = {
-            winreg.REG_SZ: "REG_SZ",
-            winreg.REG_EXPAND_SZ: "REG_EXPAND_SZ",
-            winreg.REG_BINARY: "REG_BINARY",
-            winreg.REG_DWORD: "REG_DWORD",
-            winreg.REG_MULTI_SZ: "REG_MULTI_SZ",
-            winreg.REG_QWORD: "REG_QWORD"
+    def _get_root_key_handle(self, root_key_name):
+        """获取根键句柄"""
+        root_keys = {
+            "HKEY_CLASSES_ROOT": winreg.HKEY_CLASSES_ROOT,
+            "HKEY_CURRENT_USER": winreg.HKEY_CURRENT_USER,
+            "HKEY_LOCAL_MACHINE": winreg.HKEY_LOCAL_MACHINE,
+            "HKEY_USERS": winreg.HKEY_USERS,
+            "HKEY_CURRENT_CONFIG": winreg.HKEY_CURRENT_CONFIG
         }
-        return type_names.get(value_type, f"未知({value_type})")
+        return root_keys.get(root_key_name)
     
-    def _format_value(self, value, value_type):
-        """格式化值用于显示"""
-        if value_type == winreg.REG_BINARY:
-            return " ".join(f"{b:02x}" for b in value[:32])  # 只显示前32字节
-        elif value_type == winreg.REG_MULTI_SZ:
-            return "; ".join(value)
-        else:
-            return str(value)
+    def refresh_current_key(self):
+        """刷新当前选中的键"""
+        try:
+            current_item = self.registry_tree.currentItem()
+            if current_item:
+                # 重新加载子项
+                self.load_subkeys(current_item)
+                self.statusBar().showMessage("注册表项已刷新")
+            else:
+                # 刷新根键
+                self.load_root_keys()
+                self.statusBar().showMessage("根键已刷新")
+        except Exception as e:
+            logger.error(f"刷新注册表项时出错: {e}")
+            self.statusBar().showMessage("刷新失败")
     
     def load_subkeys(self, item):
         """加载子键"""
         try:
-            # 获取项的完整路径
-            path_parts = []
-            current_item = item
-            while current_item:
-                path_parts.insert(0, current_item.text(0))
-                current_item = current_item.parent()
-            
-            full_path = "\\".join(path_parts)
-            
-            # 移除已有的子项
-            item.takeChildren()
-            
-            # 解析根键和子路径
-            if "\\" in full_path:
-                root_key_name, sub_path = full_path.split("\\", 1)
-            else:
-                root_key_name = full_path
-                sub_path = ""
-            
-            # 映射根键名称到实际的winreg键
-            root_key_map = {
-                "HKEY_CLASSES_ROOT": winreg.HKEY_CLASSES_ROOT,
-                "HKEY_CURRENT_USER": winreg.HKEY_CURRENT_USER,
-                "HKEY_LOCAL_MACHINE": winreg.HKEY_LOCAL_MACHINE,
-                "HKEY_USERS": winreg.HKEY_USERS,
-                "HKEY_CURRENT_CONFIG": winreg.HKEY_CURRENT_CONFIG
-            }
-            
-            if root_key_name not in root_key_map:
-                logger.warning(f"未知的根键: {root_key_name}")
+            # 如果已经有子项，先清空
+            if item.childCount() > 0 and item.child(0).text(0) != "(已加载)":
+                # 不是第一次加载，不需要重复加载
                 return
                 
-            root_key = root_key_map[root_key_name]
+            # 清空现有子项
+            item.takeChildren()
             
-            # 打开注册表键
-            try:
-                with winreg.OpenKey(root_key, sub_path) as key:
-                    # 枚举子键
-                    i = 0
-                    while True:
-                        try:
-                            subkey_name = winreg.EnumKey(key, i)
-                            sub_item = QTreeWidgetItem(item, [subkey_name])
-                            sub_item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
-                            i += 1
-                        except OSError:
-                            # 没有更多子键
-                            break
+            # 获取项的路径
+            path_parts = []
+            current = item
+            while current:
+                path_parts.insert(0, current.text(0))
+                current = current.parent()
+                
+            if len(path_parts) == 1:
+                # 根键，加载其子键
+                root_key_name = path_parts[0]
+                root_key_handle = self._get_root_key_handle(root_key_name)
+                if root_key_handle:
+                    self._load_keys_and_values(root_key_handle, item)
+            else:
+                # 子键，需要打开对应的注册表键
+                root_key_name = path_parts[0]
+                sub_path = "\\".join(path_parts[1:])
+                root_key_handle = self._get_root_key_handle(root_key_name)
+                if root_key_handle:
+                    try:
+                        # 打开到指定子键
+                        key_handle = winreg.OpenKey(root_key_handle, sub_path)
+                        self._load_keys_and_values(key_handle, item)
+                        winreg.CloseKey(key_handle)
+                    except Exception as e:
+                        logger.error(f"打开注册表键失败: {e}")
+                        
+        except Exception as e:
+            logger.error(f"加载子键时出错: {e}")
+    
+    def _load_keys_and_values(self, key_handle, parent_item):
+        """加载键和值"""
+        try:
+            # 加载子键
+            i = 0
+            while True:
+                try:
+                    subkey_name = winreg.EnumKey(key_handle, i)
+                    subkey_item = QTreeWidgetItem(parent_item, [subkey_name])
+                    subkey_item.setChildIndicatorPolicy(QTreeWidgetItem.ShowIndicator)
+                    i += 1
+                except WindowsError:
+                    break
                     
-                    # 枚举值
-                    i = 0
-                    while True:
-                        try:
-                            value_name, value_data, value_type = winreg.EnumValue(key, i)
-                            type_name = self.get_value_type_name(value_type)
-                            formatted_value = self.format_value_for_display(value_data, value_type)
-                            QTreeWidgetItem(item, [value_name, type_name, formatted_value])
-                            i += 1
-                        except OSError:
-                            # 没有更多值
-                            break
-                            
-            except FileNotFoundError:
-                logger.warning(f"注册表项未找到: {full_path}")
-            except PermissionError:
-                logger.warning(f"没有权限访问注册表项: {full_path}")
-            except Exception as e:
-                logger.error(f"加载注册表子键时出错: {e}")
+            # 如果没有子键，添加一个提示项
+            if parent_item.childCount() == 0:
+                QTreeWidgetItem(parent_item, ["(空)"])
                 
         except Exception as e:
-            logger.error(f"加载子键时发生错误: {e}")
-        
-    def refresh_current_key(self):
-        """刷新当前键"""
-        try:
-            current_item = self.registry_tree.currentItem()
-            if current_item:
-                # 获取父项
-                parent = current_item.parent()
-                if parent:
-                    # 重新加载父项的子项
-                    self.load_subkeys(parent)
-                else:
-                    # 如果是根项，重新加载根键
-                    self.load_root_keys()
-                logger.info("注册表项刷新完成")
-            else:
-                # 如果没有选中项，刷新根键
-                self.load_root_keys()
-                logger.info("注册表根键刷新完成")
-        except Exception as e:
-            logger.error(f"刷新注册表项时出错: {e}")
-            QMessageBox.critical(self, "错误", f"刷新注册表项时出错: {e}")
+            logger.error(f"加载键和值时出错: {e}")
     
     def show_context_menu(self, position):
-        """显示右键菜单"""
-        menu = QMenu()
-        refresh_action = QAction("刷新", self)
-        refresh_action.triggered.connect(self.refresh_current_key)
-        menu.addAction(refresh_action)
-        
-        # 添加启动项相关菜单项
-        startup_menu = menu.addMenu("启动项")
-        manage_startup_action = QAction("管理启动项", self)
-        manage_startup_action.triggered.connect(self.open_startup_manager)
-        startup_menu.addAction(manage_startup_action)
-        
-        menu.exec_(self.registry_tree.viewport().mapToGlobal(position))
+        """显示上下文菜单"""
+        try:
+            item = self.registry_tree.itemAt(position)
+            if not item:
+                return
+                
+            menu = QMenu()
+            
+            # 添加操作菜单项
+            refresh_action = QAction("刷新", self)
+            refresh_action.triggered.connect(lambda: self.load_subkeys(item))
+            menu.addAction(refresh_action)
+            
+            menu.addSeparator()
+            
+            expand_all_action = QAction("展开所有", self)
+            expand_all_action.triggered.connect(self.registry_tree.expandAll)
+            menu.addAction(expand_all_action)
+            
+            collapse_all_action = QAction("折叠所有", self)
+            collapse_all_action.triggered.connect(self.registry_tree.collapseAll)
+            menu.addAction(collapse_all_action)
+            
+            menu.exec_(self.registry_tree.viewport().mapToGlobal(position))
+            
+        except Exception as e:
+            logger.error(f"显示上下文菜单时出错: {e}")
     
     def open_startup_manager(self):
         """打开启动项管理器"""
-        # 获取主窗口
+        try:
+            # 获取主窗口
+            main_window = self.window()
+            if main_window:
+                # 查找启动项标签页
+                for i in range(main_window.tab_widget.count()):
+                    if main_window.tab_widget.tabText(i) == "🚀 启动项监控":
+                        main_window.tab_widget.setCurrentIndex(i)
+                        main_window.statusBar().showMessage("已切换到启动项监控标签页")
+                        return
+                        
+            QMessageBox.warning(self, "错误", "无法找到启动项监控标签页")
+        except Exception as e:
+            logger.error(f"打开启动项管理器时出错: {e}")
+            QMessageBox.critical(self, "错误", f"打开启动项管理器时出错: {str(e)}")
+    
+    def refresh_display(self):
+        """刷新显示"""
+        try:
+            self.load_root_keys()
+            self.statusBar().showMessage("注册表监控已刷新")
+        except Exception as e:
+            logger.error(f"刷新注册表显示时出错: {e}")
+            self.statusBar().showMessage("刷新失败")
+    
+    def statusBar(self):
+        """获取状态栏"""
+        # 获取主窗口的状态栏
         main_window = self.window()
-        if hasattr(main_window, 'tab_widget'):
-            # 查找启动项标签页
-            tab_widget = main_window.tab_widget
-            for i in range(tab_widget.count()):
-                if tab_widget.tabText(i) == "启动项管理":
-                    tab_widget.setCurrentIndex(i)
-                    return
-            
-            # 如果没有找到启动项标签页，则显示提示
-            QMessageBox.information(self, "提示", "未找到启动项管理标签页")
-        else:
-            # 尝试通过父级查找
-            parent = self.parent()
-            while parent:
-                if hasattr(parent, 'tab_widget'):
-                    tab_widget = parent.tab_widget
-                    for i in range(tab_widget.count()):
-                        if tab_widget.tabText(i) == "启动项管理":
-                            tab_widget.setCurrentIndex(i)
-                            return
-                    QMessageBox.information(self, "提示", "未找到启动项管理标签页")
-                    return
-                parent = parent.parent()
-            
-            QMessageBox.warning(self, "错误", "无法找到主窗口标签页")
+        if main_window and hasattr(main_window, 'statusBar'):
+            return main_window.statusBar()
+        return None
+    
+    def cleanup(self):
+        """清理资源"""
+        try:
+            logger.info("注册表标签页资源清理完成")
+        except Exception as e:
+            logger.error(f"清理注册表标签页资源时出错: {e}")

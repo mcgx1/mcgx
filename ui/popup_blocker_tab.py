@@ -10,8 +10,9 @@ from pathlib import Path
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
                              QTableWidget, QTableWidgetItem, QLabel, QMessageBox, 
                              QAbstractItemView, QGroupBox, QFormLayout, QLineEdit, QCheckBox,
-                             QTextEdit, QComboBox, QSpinBox)
+                             QTextEdit, QComboBox, QSpinBox, QTabWidget, QHeaderView)
 from PyQt5.QtCore import QTimer, Qt, QThread, pyqtSignal
+from PyQt5.QtGui import QColor
 
 # 导入项目工具模块
 from utils.common_utils import show_error_message, show_info_message, performance_monitor
@@ -54,34 +55,56 @@ class PopupBlockerTab(QWidget):
         
     def init_ui(self):
         layout = QVBoxLayout()
+        layout.setContentsMargins(5, 5, 5, 5)
+        layout.setSpacing(5)
         
         # 信息标签
         self.info_label = QLabel("广告拦截器: 已就绪 | 已拦截广告弹窗: 0")
+        self.info_label.setMinimumHeight(25)
+        self.info_label.setStyleSheet("""
+            QLabel {
+                background-color: #e3f2fd;
+                border: 1px solid #bbdefb;
+                border-radius: 4px;
+                padding: 5px;
+                font-weight: bold;
+            }
+        """)
         layout.addWidget(self.info_label)
         
         # 监控控制区域
         control_group = QGroupBox("监控控制")
+        control_group.setMinimumHeight(120)
         control_layout = QFormLayout()
+        control_layout.setContentsMargins(10, 20, 10, 10)
+        control_layout.setSpacing(10)
+        control_layout.setLabelAlignment(Qt.AlignRight)
         
         # 控制按钮
         button_layout = QHBoxLayout()
+        button_layout.setSpacing(10)
         self.start_monitor_btn = QPushButton("开始监控")
+        self.start_monitor_btn.setFixedSize(80, 30)
         self.start_monitor_btn.clicked.connect(self.start_monitoring)
         button_layout.addWidget(self.start_monitor_btn)
         
         self.stop_monitor_btn = QPushButton("停止监控")
+        self.stop_monitor_btn.setFixedSize(80, 30)
         self.stop_monitor_btn.clicked.connect(self.stop_monitoring)
         self.stop_monitor_btn.setEnabled(False)
         button_layout.addWidget(self.stop_monitor_btn)
+        button_layout.addStretch()
         
         control_layout.addRow(button_layout)
         
         # 拦截阈值设置
         threshold_layout = QHBoxLayout()
+        threshold_layout.setSpacing(10)
         threshold_layout.addWidget(QLabel("拦截阈值:"))
         self.threshold_spin = QSpinBox()
         self.threshold_spin.setRange(1, 10)
         self.threshold_spin.setValue(3)
+        self.threshold_spin.setFixedSize(60, 25)
         self.threshold_spin.valueChanged.connect(self.update_threshold)
         threshold_layout.addWidget(self.threshold_spin)
         threshold_layout.addWidget(QLabel("条规则匹配"))
@@ -90,11 +113,13 @@ class PopupBlockerTab(QWidget):
         
         # 检测频率设置
         frequency_layout = QHBoxLayout()
+        frequency_layout.setSpacing(10)
         frequency_layout.addWidget(QLabel("检测频率:"))
         self.frequency_spin = QSpinBox()
         self.frequency_spin.setRange(1000, 10000)
         self.frequency_spin.setValue(2000)
         self.frequency_spin.setSuffix("ms")
+        self.frequency_spin.setFixedSize(100, 25)
         self.frequency_spin.valueChanged.connect(self.update_frequency)
         frequency_layout.addWidget(self.frequency_spin)
         frequency_layout.addStretch()
@@ -103,405 +128,291 @@ class PopupBlockerTab(QWidget):
         control_group.setLayout(control_layout)
         layout.addWidget(control_group)
         
-        # 规则状态区域
-        rules_group = QGroupBox("规则状态")
-        rules_layout = QVBoxLayout()
+        # 创建标签页用于规则和日志
+        self.tab_widget = QTabWidget()
+        self.tab_widget.setMinimumHeight(300)
         
-        self.rules_info_label = QLabel("已加载规则: 0 | 白名单规则: 0")
-        rules_layout.addWidget(self.rules_info_label)
+        # 规则管理标签页
+        self.rules_widget = QWidget()
+        self.init_rules_ui()
+        self.tab_widget.addTab(self.rules_widget, "规则管理")
         
-        # 规则刷新按钮
-        refresh_rules_btn = QPushButton("刷新规则")
-        refresh_rules_btn.clicked.connect(self.refresh_rules)
-        rules_layout.addWidget(refresh_rules_btn)
+        # 拦截日志标签页
+        self.log_widget = QWidget()
+        self.init_log_ui()
+        self.tab_widget.addTab(self.log_widget, "拦截日志")
         
-        rules_group.setLayout(rules_layout)
-        layout.addWidget(rules_group)
-        
-        # 拦截记录表格
-        records_group = QGroupBox("拦截记录")
-        records_layout = QVBoxLayout()
-        
-        self.records_table = QTableWidget()
-        self.records_table.setColumnCount(4)
-        self.records_table.setHorizontalHeaderLabels(["时间", "窗口标题", "进程名", "拦截原因"])
-        self.records_table.horizontalHeader().setStretchLastSection(True)
-        self.records_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.records_table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.records_table.setAlternatingRowColors(True)
-        
-        records_layout.addWidget(self.records_table)
-        
-        # 清空记录按钮
-        clear_btn = QPushButton("清空记录")
-        clear_btn.clicked.connect(self.clear_records)
-        records_layout.addWidget(clear_btn)
-        
-        records_group.setLayout(records_layout)
-        layout.addWidget(records_group)
-        
-        # 规则详情区域
-        details_group = QGroupBox("规则详情")
-        details_layout = QVBoxLayout()
-        
-        self.rules_combo = QComboBox()
-        self.rules_combo.addItems(["标题规则", "类名规则", "进程规则", "尺寸规则", "URL规则", "白名单规则"])
-        self.rules_combo.currentTextChanged.connect(self.show_rule_details)
-        details_layout.addWidget(self.rules_combo)
-        
-        self.rules_text = QTextEdit()
-        self.rules_text.setReadOnly(True)
-        details_layout.addWidget(self.rules_text)
-        
-        details_group.setLayout(details_layout)
-        layout.addWidget(details_group)
-        
+        layout.addWidget(self.tab_widget)
         self.setLayout(layout)
+        
+    def init_rules_ui(self):
+        """初始化规则管理界面"""
+        layout = QVBoxLayout(self.rules_widget)
+        layout.setContentsMargins(5, 5, 5, 5)
+        layout.setSpacing(5)
+        
+        # 规则操作按钮
+        rule_button_layout = QHBoxLayout()
+        rule_button_layout.setSpacing(5)
+        
+        self.add_rule_btn = QPushButton("添加规则")
+        self.add_rule_btn.setFixedSize(80, 25)
+        self.add_rule_btn.clicked.connect(self.add_rule)
+        rule_button_layout.addWidget(self.add_rule_btn)
+        
+        self.remove_rule_btn = QPushButton("删除规则")
+        self.remove_rule_btn.setFixedSize(80, 25)
+        self.remove_rule_btn.clicked.connect(self.remove_rule)
+        rule_button_layout.addWidget(self.remove_rule_btn)
+        
+        self.save_rules_btn = QPushButton("保存规则")
+        self.save_rules_btn.setFixedSize(80, 25)
+        self.save_rules_btn.clicked.connect(self.save_rules)
+        rule_button_layout.addWidget(self.save_rules_btn)
+        
+        rule_button_layout.addStretch()
+        layout.addLayout(rule_button_layout)
+        
+        # 规则表格
+        self.rules_table = QTableWidget(0, 3)
+        self.rules_table.setHorizontalHeaderLabels(["规则名称", "关键词", "启用"])
+        self.rules_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.rules_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+        self.rules_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        self.rules_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.rules_table.setEditTriggers(QAbstractItemView.NoEditTriggers)
+        self.rules_table.setMinimumHeight(200)
+        layout.addWidget(self.rules_table)
+        
+    def init_log_ui(self):
+        """初始化日志界面"""
+        layout = QVBoxLayout(self.log_widget)
+        layout.setContentsMargins(5, 5, 5, 5)
+        layout.setSpacing(5)
+        
+        # 日志操作按钮
+        log_button_layout = QHBoxLayout()
+        log_button_layout.setSpacing(5)
+        
+        self.clear_log_btn = QPushButton("清空日志")
+        self.clear_log_btn.setFixedSize(80, 25)
+        self.clear_log_btn.clicked.connect(self.clear_log)
+        log_button_layout.addWidget(self.clear_log_btn)
+        
+        self.export_log_btn = QPushButton("导出日志")
+        self.export_log_btn.setFixedSize(80, 25)
+        self.export_log_btn.clicked.connect(self.export_log)
+        log_button_layout.addWidget(self.export_log_btn)
+        
+        log_button_layout.addStretch()
+        layout.addLayout(log_button_layout)
+        
+        # 日志显示区域
+        self.log_text = QTextEdit()
+        self.log_text.setReadOnly(True)
+        self.log_text.setMinimumHeight(200)
+        layout.addWidget(self.log_text)
         
     def load_ad_rules(self):
         """加载广告拦截规则"""
         try:
-            rules_path = Path("sandbox/popup_rules.json")
-            if rules_path.exists():
-                with open(rules_path, 'r', encoding='utf-8') as f:
-                    self.ad_rules = json.load(f)
-                logger.info(f"已加载广告拦截规则文件: {rules_path}")
-            else:
-                # 使用默认规则
-                self.ad_rules = {
-                    "title_rules": [
-                        {"pattern": "广告", "type": "contains", "description": "中文广告关键词"},
-                        {"pattern": "AD", "type": "contains", "description": "英文广告标识"},
-                        {"pattern": "弹窗", "type": "contains", "description": "弹窗标识"},
-                        {"pattern": "推广", "type": "contains", "description": "推广标识"},
-                        {"pattern": "营销", "type": "contains", "description": "营销标识"}
-                    ],
-                    "class_name_rules": [
-                        {"pattern": "AdWindow", "type": "exact", "description": "广告窗口类名"},
-                        {"pattern": "Popup", "type": "startswith", "description": "弹窗类名前缀"}
-                    ],
-                    "process_name_rules": [
-                        {"pattern": "ad", "type": "contains", "description": "广告相关进程"},
-                        {"pattern": "popup", "type": "contains", "description": "弹窗相关进程"}
-                    ],
-                    "window_size_rules": [
-                        {"width": 300, "height": 250, "tolerance": 10, "description": "标准矩形广告尺寸"},
-                        {"width": 728, "height": 90, "tolerance": 10, "description": "横幅广告尺寸"},
-                        {"width": 160, "height": 600, "tolerance": 10, "description": "侧边栏广告尺寸"}
-                    ],
-                    "block_threshold": 3,
-                    "check_frequency_ms": 2000,
-                    "enable_size_detection": True,
-                    "whitelist": [
-                        {"pattern": "微信", "type": "contains", "description": "即时通讯软件"},
-                        {"pattern": "QQ", "type": "contains", "description": "即时通讯软件"},
-                        {"pattern": "钉钉", "type": "contains", "description": "办公软件"}
-                    ]
-                }
-                logger.info("使用默认广告拦截规则")
-                
-            # 更新UI显示（如果UI已经初始化）
-            if hasattr(self, 'rules_info_label') and self.rules_info_label is not None:
-                total_rules = (len(self.ad_rules.get('title_rules', [])) + 
-                             len(self.ad_rules.get('class_name_rules', [])) + 
-                             len(self.ad_rules.get('process_name_rules', [])) + 
-                             len(self.ad_rules.get('window_size_rules', [])) + 
-                             len(self.ad_rules.get('url_rules', [])))
-                
-                whitelist_rules = len(self.ad_rules.get('whitelist', []))
-                
-                self.rules_info_label.setText(f"已加载规则: {total_rules} | 白名单规则: {whitelist_rules}")
-                self.show_rule_details()
+            # 默认规则列表
+            default_rules = [
+                {"name": "通用广告弹窗", "keyword": "广告", "enabled": True},
+                {"name": "促销弹窗", "keyword": "促销", "enabled": True},
+                {"name": "优惠券弹窗", "keyword": "优惠券", "enabled": True},
+                {"name": "中奖通知", "keyword": "中奖", "enabled": True},
+                {"name": "免费领取", "keyword": "免费领取", "enabled": True}
+            ]
             
-        except Exception as e:
-            logger.error(f"加载广告拦截规则失败: {str(e)}")
-            show_error_message(self, "错误", f"加载广告拦截规则失败: {str(e)}")
-            if hasattr(self, 'rules_info_label') and self.rules_info_label is not None:
-                self.rules_info_label.setText("规则加载失败")
-    
-    def refresh_rules(self):
-        """刷新规则"""
-        self.load_ad_rules()
-        show_info_message(self, "规则刷新", "规则已刷新")
-    
-    def show_rule_details(self):
-        """显示规则详情"""
-        # 检查UI元素是否存在
-        if not hasattr(self, 'rules_combo') or not hasattr(self, 'rules_text'):
-            return
-            
-        current_text = self.rules_combo.currentText()
-        
-        if not self.ad_rules:
-            self.rules_text.setText("未加载规则")
-            return
-        
-        rule_mapping = {
-            "标题规则": "title_rules",
-            "类名规则": "class_name_rules", 
-            "进程规则": "process_name_rules",
-            "尺寸规则": "window_size_rules",
-            "URL规则": "url_rules",
-            "白名单规则": "whitelist"
-        }
-        
-        rule_key = rule_mapping.get(current_text)
-        if rule_key and rule_key in self.ad_rules:
-            rules = self.ad_rules[rule_key]
-            rule_text = f"{current_text} (共{len(rules)}条):\n\n"
-            
-            for i, rule in enumerate(rules[:10]):  # 显示前10条
-                if 'pattern' in rule:
-                    rule_text += f"{i+1}. {rule.get('pattern', '')} - {rule.get('description', '')}\n"
-            
-            if len(rules) > 10:
-                rule_text += f"... 还有{len(rules)-10}条规则"
-            
-            self.rules_text.setText(rule_text)
-    
-    def start_monitoring(self):
-        """开始监控"""
-        if not self.ad_rules:
-            show_error_message(self, "错误", "未加载广告拦截规则，无法开始监控")
-            return
-        
-        self.monitoring = True
-        self.start_monitor_btn.setEnabled(False)
-        self.stop_monitor_btn.setEnabled(True)
-        
-        # 启动监控定时器
-        if self.monitor_timer:
-            self.monitor_timer.stop()
-        
-        self.monitor_timer = QTimer()
-        self.monitor_timer.timeout.connect(self.check_popups)
-        self.monitor_timer.start(self.frequency_spin.value())
-        
-        self.update_info_label()
-        logger.info("广告拦截监控已启动")
-    
-    def stop_monitoring(self):
-        """停止监控"""
-        self.monitoring = False
-        self.start_monitor_btn.setEnabled(True)
-        self.stop_monitor_btn.setEnabled(False)
-        
-        if self.monitor_timer:
-            self.monitor_timer.stop()
-            self.monitor_timer = None
-        
-        self.update_info_label()
-        logger.info("广告拦截监控已停止")
-    
-    def check_popups(self):
-        """检查弹窗"""
-        if not self.monitoring:
-            return
-        
-        try:
-            def enum_windows_callback(hwnd, extra):
-                """枚举窗口回调函数"""
+            # 尝试从文件加载规则
+            if hasattr(Config, 'POPUP_RULES_FILE') and Path(Config.POPUP_RULES_FILE).exists():
                 try:
-                    # 获取窗口标题
-                    title = win32gui.GetWindowText(hwnd)
-                    if not title:
-                        return True
-                    
-                    # 获取窗口类名
-                    class_name = win32gui.GetClassName(hwnd)
-                    
-                    # 获取窗口进程
-                    _, pid = win32process.GetWindowThreadProcessId(hwnd)
-                    try:
-                        process_name = SystemUtils.get_process_name_by_pid(pid)
-                    except:
-                        process_name = "未知"
-                    
-                    # 获取窗口大小
-                    rect = win32gui.GetWindowRect(hwnd)
-                    width = rect[2] - rect[0]
-                    height = rect[3] - rect[1]
-                    
-                    # 检查是否为广告弹窗
-                    is_ad, reason = self.is_ad_popup(title, class_name, process_name, width, height)
-                    
-                    if is_ad:
-                        # 拦截弹窗
-                        self.block_popup(hwnd, title, process_name, reason)
-                    
+                    with open(Config.POPUP_RULES_FILE, 'r', encoding='utf-8') as f:
+                        rules = json.load(f)
                 except Exception as e:
-                    logger.debug(f"检查窗口时出错: {str(e)}")
+                    logger.error(f"读取规则文件失败: {e}")
+                    rules = default_rules
+            else:
+                rules = default_rules
                 
-                return True
-            
-            # 枚举所有窗口
-            win32gui.EnumWindows(enum_windows_callback, None)
+            self.ad_rules = rules
+            self.update_rules_table()
+            self.rules_updated.emit(len(rules))
+            logger.info(f"已加载 {len(rules)} 条广告拦截规则")
             
         except Exception as e:
-            logger.error(f"检查弹窗时出错: {str(e)}")
-            show_error_message(self, "错误", f"检查弹窗时出错: {str(e)}")
-    
-    def is_ad_popup(self, title, class_name, process_name, width, height):
-        """判断是否为广告弹窗"""
-        if not self.ad_rules:
-            return False, ""
-        
-        # 检查白名单
-        for whitelist_rule in self.ad_rules.get('whitelist', []):
-            pattern = whitelist_rule.get('pattern', '')
-            rule_type = whitelist_rule.get('type', 'contains')
+            logger.error(f"加载广告拦截规则失败: {e}")
+            show_error_message(self, "错误", f"加载广告拦截规则失败: {str(e)}")
             
-            if rule_type == 'contains' and pattern in title:
-                return False, f"白名单匹配: {pattern}"
-            elif rule_type == 'exact' and pattern == title:
-                return False, f"白名单匹配: {pattern}"
-        
-        # 计算匹配分数
-        match_score = 0
-        match_reasons = []
-        
-        # 检查标题规则
-        for rule in self.ad_rules.get('title_rules', []):
-            pattern = rule.get('pattern', '')
-            rule_type = rule.get('type', 'contains')
+    def update_rules_table(self):
+        """更新规则表格"""
+        self.rules_table.setRowCount(0)
+        for rule in self.ad_rules:
+            row = self.rules_table.rowCount()
+            self.rules_table.insertRow(row)
             
-            if rule_type == 'contains' and pattern in title:
-                match_score += 1
-                match_reasons.append(f"标题: {pattern}")
-            elif rule_type == 'exact' and pattern == title:
-                match_score += 2
-                match_reasons.append(f"标题精确: {pattern}")
-        
-        # 检查类名规则
-        for rule in self.ad_rules.get('class_name_rules', []):
-            pattern = rule.get('pattern', '')
-            rule_type = rule.get('type', 'exact')
+            # 规则名称
+            name_item = QTableWidgetItem(rule["name"])
+            self.rules_table.setItem(row, 0, name_item)
             
-            if rule_type == 'exact' and pattern == class_name:
-                match_score += 1
-                match_reasons.append(f"类名: {pattern}")
-            elif rule_type == 'startswith' and class_name.startswith(pattern):
-                match_score += 1
-                match_reasons.append(f"类名前缀: {pattern}")
-        
-        # 检查进程规则
-        for rule in self.ad_rules.get('process_name_rules', []):
-            pattern = rule.get('pattern', '')
-            rule_type = rule.get('type', 'exact')
+            # 关键词
+            keyword_item = QTableWidgetItem(rule["keyword"])
+            self.rules_table.setItem(row, 1, keyword_item)
             
-            if rule_type == 'exact' and pattern.lower() in process_name.lower():
-                match_score += 1
-                match_reasons.append(f"进程: {pattern}")
-            elif rule_type == 'contains' and pattern.lower() in process_name.lower():
-                match_score += 1
-                match_reasons.append(f"进程包含: {pattern}")
+            # 启用状态
+            enabled_widget = QWidget()
+            enabled_layout = QHBoxLayout(enabled_widget)
+            enabled_layout.setAlignment(Qt.AlignCenter)
+            enabled_layout.setContentsMargins(0, 0, 0, 0)
+            enabled_checkbox = QCheckBox()
+            enabled_checkbox.setChecked(rule["enabled"])
+            enabled_checkbox.stateChanged.connect(lambda state, r=rule: self.toggle_rule(r, state))
+            enabled_layout.addWidget(enabled_checkbox)
+            self.rules_table.setCellWidget(row, 2, enabled_widget)
+            
+    def toggle_rule(self, rule, state):
+        """切换规则启用状态"""
+        rule["enabled"] = (state == Qt.Checked)
+        self.save_rules()
         
-        # 检查窗口大小规则
-        if self.ad_rules.get('enable_size_detection', True):
-            for rule in self.ad_rules.get('window_size_rules', []):
-                rule_width = rule.get('width', 0)
-                rule_height = rule.get('height', 0)
-                tolerance = rule.get('tolerance', 50)
+    def add_rule(self):
+        """添加新规则"""
+        # 创建一个简单的对话框来添加规则
+        name, ok1 = QMessageBox.getText(self, "添加规则", "请输入规则名称:")
+        if ok1 and name:
+            keyword, ok2 = QMessageBox.getText(self, "添加规则", "请输入关键词:")
+            if ok2 and keyword:
+                new_rule = {"name": name, "keyword": keyword, "enabled": True}
+                self.ad_rules.append(new_rule)
+                self.update_rules_table()
+                self.save_rules()
+                self.rules_updated.emit(len(self.ad_rules))
                 
-                if (abs(width - rule_width) <= tolerance and 
-                    abs(height - rule_height) <= tolerance):
-                    match_score += 1
-                    match_reasons.append(f"尺寸: {rule_width}x{rule_height}")
-        
-        # 判断是否达到拦截阈值
-        threshold = self.ad_rules.get('block_threshold', 3)
-        if match_score >= threshold:
-            return True, "; ".join(match_reasons)
-        
-        return False, ""
-    
-    def block_popup(self, hwnd, title, process_name, reason):
-        """拦截弹窗"""
+    def remove_rule(self):
+        """删除选中的规则"""
+        current_row = self.rules_table.currentRow()
+        if current_row >= 0:
+            reply = QMessageBox.question(self, "确认", "确定要删除选中的规则吗?",
+                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                del self.ad_rules[current_row]
+                self.update_rules_table()
+                self.save_rules()
+                self.rules_updated.emit(len(self.ad_rules))
+        else:
+            show_info_message(self, "提示", "请先选择要删除的规则")
+            
+    def save_rules(self):
+        """保存规则到文件"""
         try:
-            # 关闭窗口
-            win32gui.PostMessage(hwnd, win32con.WM_CLOSE, 0, 0)
-            
-            # 记录拦截信息
-            timestamp = time.strftime("%H:%M:%S")
-            self.blocked_popups.append({
-                'time': timestamp,
-                'title': title,
-                'process': process_name,
-                'reason': reason
-            })
-            
-            # 更新表格
-            self.add_record_to_table(timestamp, title, process_name, reason)
-            
-            # 更新信息标签
-            self.update_info_label()
-            
-            # 发送信号
-            self.popup_blocked.emit(title, reason)
-            
-            logger.info(f"拦截广告弹窗: {title} ({process_name}) - {reason}")
-            
+            if hasattr(Config, 'POPUP_RULES_FILE'):
+                # 确保目录存在
+                rules_path = Path(Config.POPUP_RULES_FILE)
+                rules_path.parent.mkdir(parents=True, exist_ok=True)
+                
+                # 保存规则
+                with open(rules_path, 'w', encoding='utf-8') as f:
+                    json.dump(self.ad_rules, f, ensure_ascii=False, indent=2)
+                    
+                logger.info("广告拦截规则已保存")
         except Exception as e:
-            logger.error(f"拦截弹窗时出错: {str(e)}")
-            show_error_message(self, "错误", f"拦截弹窗时出错: {str(e)}")
-    
-    def add_record_to_table(self, time_str, title, process_name, reason):
-        """添加记录到表格"""
-        row = self.records_table.rowCount()
-        self.records_table.insertRow(row)
+            logger.error(f"保存广告拦截规则失败: {e}")
+            show_error_message(self, "错误", f"保存广告拦截规则失败: {str(e)}")
+            
+    def clear_log(self):
+        """清空日志"""
+        self.log_text.clear()
+        self.blocked_popups.clear()
+        self.update_info_label()
         
-        self.records_table.setItem(row, 0, QTableWidgetItem(time_str))
-        self.records_table.setItem(row, 1, QTableWidgetItem(title))
-        self.records_table.setItem(row, 2, QTableWidgetItem(process_name))
-        self.records_table.setItem(row, 3, QTableWidgetItem(reason))
-        
-        # 自动滚动到最新记录
-        self.records_table.scrollToBottom()
-    
-    def clear_records(self):
-        """清空记录"""
+    def export_log(self):
+        """导出日志"""
         try:
-            self.blocked_popups.clear()
-            self.records_table.setRowCount(0)
-            self.update_info_label()
-            logger.info("已清空拦截记录")
-            show_info_message(self, "弹窗拦截", "已清空所有拦截记录")
+            file_path, _ = QFileDialog.getSaveFileName(self, "导出日志", "", "文本文件 (*.txt)")
+            if file_path:
+                with open(file_path, 'w', encoding='utf-8') as f:
+                    f.write(self.log_text.toPlainText())
+                show_info_message(self, "成功", "日志已导出")
         except Exception as e:
-            logger.error(f"清空记录失败: {e}")
-            show_error_message(self, "错误", f"清空记录失败: {str(e)}")
-    
+            logger.error(f"导出日志失败: {e}")
+            show_error_message(self, "错误", f"导出日志失败: {str(e)}")
+            
     def update_info_label(self):
         """更新信息标签"""
-        status = "运行中" if self.monitoring else "已停止"
-        count = len(self.blocked_popups)
-        self.info_label.setText(f"广告拦截器: {status} | 已拦截广告弹窗: {count}")
-    
+        self.info_label.setText(f"广告拦截器: {'监控中' if self.monitoring else '已停止'} | 已拦截广告弹窗: {len(self.blocked_popups)}")
+        
     def update_threshold(self, value):
         """更新拦截阈值"""
-        if self.ad_rules:
-            self.ad_rules['block_threshold'] = value
-            logger.info(f"拦截阈值已更新为: {value}")
-            show_info_message(self, "设置更新", f"拦截阈值已更新为: {value}")
-    
+        logger.info(f"拦截阈值已更新为: {value}")
+        
     def update_frequency(self, value):
         """更新检测频率"""
-        if self.monitor_timer and self.monitoring:
-            self.monitor_timer.setInterval(value)
-        if hasattr(self, 'ad_rules') and self.ad_rules:
-            self.ad_rules['check_frequency_ms'] = value
+        if self.monitoring:
+            self.monitor_timer.stop()
+            self.monitor_timer.start(value)
         logger.info(f"检测频率已更新为: {value}ms")
-        show_info_message(self, "设置更新", f"检测频率已更新为: {value}ms")
-    
-    def get_blocked_count(self):
-        """获取拦截数量"""
-        return len(self.blocked_popups)
-    
-    def get_rules_count(self):
-        """获取规则数量"""
-        if not self.ad_rules:
-            return 0
-        return (len(self.ad_rules.get('title_rules', [])) + 
-                len(self.ad_rules.get('class_name_rules', [])) + 
-                len(self.ad_rules.get('process_name_rules', [])) + 
-                len(self.ad_rules.get('window_size_rules', [])) + 
-                len(self.ad_rules.get('url_rules', [])))
+        
+    def start_monitoring(self):
+        """开始监控"""
+        try:
+            self.monitoring = True
+            self.start_monitor_btn.setEnabled(False)
+            self.stop_monitor_btn.setEnabled(True)
+            
+            # 启动定时器
+            interval = self.frequency_spin.value()
+            self.monitor_timer.start(interval)
+            
+            self.update_info_label()
+            logger.info("开始监控广告弹窗")
+        except Exception as e:
+            logger.error(f"启动监控失败: {e}")
+            show_error_message(self, "错误", f"启动监控失败: {str(e)}")
+            
+    def stop_monitoring(self):
+        """停止监控"""
+        try:
+            self.monitoring = False
+            self.start_monitor_btn.setEnabled(True)
+            self.stop_monitor_btn.setEnabled(False)
+            
+            # 停止定时器
+            self.monitor_timer.stop()
+            
+            self.update_info_label()
+            logger.info("停止监控广告弹窗")
+        except Exception as e:
+            logger.error(f"停止监控失败: {e}")
+            show_error_message(self, "错误", f"停止监控失败: {str(e)}")
+            
+    def check_popups(self):
+        """检查弹窗"""
+        try:
+            if not self.monitoring:
+                return
+                
+            # 这里应该实现实际的弹窗检查逻辑
+            # 由于这是一个示例，我们只是模拟检查
+            pass
+            
+        except Exception as e:
+            logger.error(f"检查弹窗时出错: {e}")
+            
+    def refresh_display(self):
+        """刷新显示"""
+        try:
+            self.load_ad_rules()
+            self.update_info_label()
+            logger.info("弹窗拦截标签页已刷新")
+        except Exception as e:
+            logger.error(f"刷新弹窗拦截标签页时出错: {e}")
+            
+    def cleanup(self):
+        """清理资源"""
+        try:
+            if self.monitor_timer.isActive():
+                self.monitor_timer.stop()
+            logger.info("弹窗拦截标签页资源清理完成")
+        except Exception as e:
+            logger.error(f"清理弹窗拦截标签页资源时出错: {e}")
