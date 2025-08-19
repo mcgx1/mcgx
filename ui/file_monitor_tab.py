@@ -205,6 +205,66 @@ class FileMonitorTab(QWidget):
         except Exception as e:
             logger.error(f"检查文件操作时出错: {e}")
             
+    def update_file_operations_display(self):
+        """更新文件操作显示"""
+        try:
+            # 清空表格
+            self.operation_table.setRowCount(0)
+            
+            # 添加文件操作记录到表格
+            for operation in self.file_operations:
+                row_position = self.operation_table.rowCount()
+                self.operation_table.insertRow(row_position)
+                
+                # 时间
+                time_item = QTableWidgetItem(operation.get("time", ""))
+                time_item.setFlags(time_item.flags() & ~Qt.ItemIsEditable)
+                self.operation_table.setItem(row_position, 0, time_item)
+                
+                # 进程
+                process_item = QTableWidgetItem(operation.get("process", ""))
+                process_item.setFlags(process_item.flags() & ~Qt.ItemIsEditable)
+                self.operation_table.setItem(row_position, 1, process_item)
+                
+                # 操作类型
+                operation_item = QTableWidgetItem(operation.get("operation", ""))
+                operation_item.setFlags(operation_item.flags() & ~Qt.ItemIsEditable)
+                self.operation_table.setItem(row_position, 2, operation_item)
+                
+                # 文件路径
+                file_path_item = QTableWidgetItem(operation.get("file_path", ""))
+                file_path_item.setFlags(file_path_item.flags() & ~Qt.ItemIsEditable)
+                self.operation_table.setItem(row_position, 3, file_path_item)
+                
+                # 详细信息
+                details_item = QTableWidgetItem(operation.get("details", ""))
+                details_item.setFlags(details_item.flags() & ~Qt.ItemIsEditable)
+                self.operation_table.setItem(row_position, 4, details_item)
+                
+            # 更新统计信息
+            self.update_stats()
+            
+            # 滚动到最后一行
+            if self.file_operations:
+                self.operation_table.scrollToBottom()
+                
+        except Exception as e:
+            logger.error(f"更新文件操作显示时出错: {e}")
+            
+    def update_stats(self):
+        """更新统计信息"""
+        try:
+            total_count = len(self.file_operations)
+            create_count = sum(1 for op in self.file_operations if op.get("operation") == FILE_OPERATION_CREATE)
+            modify_count = sum(1 for op in self.file_operations if op.get("operation") == FILE_OPERATION_MODIFY)
+            delete_count = sum(1 for op in self.file_operations if op.get("operation") == FILE_OPERATION_DELETE)
+            access_count = sum(1 for op in self.file_operations if op.get("operation") == FILE_OPERATION_ACCESS)
+            
+            stats_text = f"总操作数: {total_count} | 创建: {create_count} | 修改: {modify_count} | 删除: {delete_count} | 访问: {access_count}"
+            self.stats_label.setText(stats_text)
+        except Exception as e:
+            logger.error(f"更新统计信息时出错: {e}")
+            
     def generate_simulation_data(self):
         """生成模拟数据"""
         # 生成随机文件操作
@@ -236,7 +296,4 @@ class FileMonitorTab(QWidget):
         
         # 添加到操作列表
         self.file_operations.append(operation_record)
-        
-
-
 
