@@ -108,6 +108,8 @@ class Config:
     # 弹窗拦截配置
     POPUP_MONITOR_INTERVAL = 2000  # 弹窗监控间隔（毫秒）
     POPUP_BLOCK_THRESHOLD = 3  # 弹窗拦截阈值
+    POPUP_ONLINE_RULES_URL = "https://easylist-downloads.adblockplus.org/easylist.txt"  # 在线规则URL
+    POPUP_ONLINE_RULES_LOCAL_TEST = "file:///" + os.path.abspath("./features/popup_blocker_rules.json").replace("\\", "/")  # 本地测试规则URL
     
     # 文件行为分析配置
     FILE_BEHAVIOR_ANALYSIS_TIME_RANGES = {

@@ -171,37 +171,90 @@ class SandboxTab(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
         
-        # 添加沙箱功能说明
-        info_label = QLabel("""
-        <h3>🛡️ 沙箱安全分析功能</h3>
-        <p>沙箱提供了一个隔离的环境来运行和分析可疑程序，保护您的系统免受潜在威胁。</p>
-        <p><b>主要功能：</b></p>
-        <ul>
-        <li>🔒 进程隔离：在受限环境中运行程序</li>
-        <li>🛡️ 反检测：检测恶意软件的沙箱/虚拟机检测行为</li>
-        <li>🔍 行为监控：监控文件、网络和注册表操作</li>
-        <li>📊 资源监控：实时监控程序资源使用情况</li>
-        <li>📝 安全事件记录：记录所有安全相关事件</li>
-        <li>⚙️ 灵活配置：支持多种安全级别和自定义配置</li>
-        </ul>
-        <p><b>使用建议：</b></p>
-        <ul>
-        <li>在运行可疑程序前，建议先创建沙箱环境</li>
-        <li>选择合适的安全配置文件（严格/中等/宽松）</li>
-        <li>启用监控功能以捕获程序行为</li>
-        <li>分析完成后查看安全事件和行为日志</li>
-        </ul>
-        """)
-        info_label.setWordWrap(True)
-        info_label.setStyleSheet("""
-            QLabel {
-                background-color: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 5px;
-                padding: 10px;
+        # 创建信息展示面板
+        info_panel = QGroupBox("沙箱安全分析功能说明")
+        info_panel.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                border: 1px solid #bdc3c7;
+                border-radius: 6px;
+                margin-top: 1ex;
+                padding-top: 15px;
+            }
+            
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px;
+                font-size: 14px;
             }
         """)
-        layout.addWidget(info_label)
+        
+        info_layout = QVBoxLayout()
+        
+        # 功能描述
+        description_label = QLabel("沙箱提供了一个隔离的环境来运行和分析可疑程序，保护您的系统免受潜在威胁。")
+        description_label.setWordWrap(True)
+        description_label.setStyleSheet("padding: 5px 0;")
+        info_layout.addWidget(description_label)
+        
+        # 创建网格布局用于功能和建议
+        grid_layout = QHBoxLayout()
+        
+        # 功能列表
+        features_widget = QWidget()
+        features_layout = QVBoxLayout()
+        
+        features_title = QLabel("✅ 主要功能")
+        features_title.setStyleSheet("font-weight: bold; padding: 5px 0;")
+        features_layout.addWidget(features_title)
+        
+        features = [
+            "🔒 进程隔离：在受限环境中运行程序",
+            "🛡️ 反检测：检测恶意软件的沙箱/虚拟机检测行为",
+            "🔍 行为监控：监控文件、网络和注册表操作",
+            "📊 资源监控：实时监控程序资源使用情况",
+            "📝 安全事件记录：记录所有安全相关事件",
+            "⚙️ 灵活配置：支持多种安全级别和自定义配置"
+        ]
+        
+        for feature in features:
+            label = QLabel(f"• {feature}")
+            label.setWordWrap(True)
+            features_layout.addWidget(label)
+        
+        features_widget.setLayout(features_layout)
+        
+        # 使用建议
+        tips_widget = QWidget()
+        tips_layout = QVBoxLayout()
+        
+        tips_title = QLabel("💡 使用建议")
+        tips_title.setStyleSheet("font-weight: bold; padding: 5px 0;")
+        tips_layout.addWidget(tips_title)
+        
+        tips = [
+            "在运行可疑程序前，建议先创建沙箱环境",
+            "选择合适的安全配置文件（严格/中等/宽松）",
+            "启用监控功能以捕获程序行为",
+            "分析完成后查看安全事件和行为日志"
+        ]
+        
+        for tip in tips:
+            label = QLabel(f"• {tip}")
+            label.setWordWrap(True)
+            tips_layout.addWidget(label)
+        
+        tips_widget.setLayout(tips_layout)
+        
+        # 添加到网格布局
+        grid_layout.addWidget(features_widget, 60)
+        grid_layout.addWidget(tips_widget, 40)
+        
+        info_layout.addLayout(grid_layout)
+        
+        info_panel.setLayout(info_layout)
+        layout.addWidget(info_panel)
         
         if SANDBOX_AVAILABLE:
             try:

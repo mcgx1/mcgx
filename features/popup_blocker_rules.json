@@ -69,6 +69,20 @@
       "action": "block",
       "priority": 1,
       "description": "包含'钜惠'关键词的窗口"
+    },
+    {
+      "pattern": "爆款",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'爆款'关键词的窗口"
+    },
+    {
+      "pattern": "秒杀",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'秒杀'关键词的窗口"
     }
   ]
 }

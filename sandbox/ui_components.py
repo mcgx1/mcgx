@@ -7,10 +7,12 @@ import logging
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
                             QTableWidget, QTableWidgetItem, QHeaderView, 
                             QTextEdit, QGroupBox, QLabel, QSpinBox, QCheckBox,
-                            QSplitter, QLineEdit, QAbstractItemView, QFileDialog, QMessageBox)
+                            QSplitter, QLineEdit, QAbstractItemView, QFileDialog, QMessageBox,
+                            QGridLayout)
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QColor
 import time
+import os
 
 # 导入项目工具模块
 from utils.common_utils import show_error_message, show_info_message, performance_monitor
@@ -46,6 +48,19 @@ class SandboxListWidget(QTableWidget):
             self.setSelectionBehavior(QAbstractItemView.SelectRows)
             self.setSortingEnabled(True)
             
+            # 设置空列表提示
+            self.setRowCount(1)
+            empty_item = QTableWidgetItem("尚未创建任何沙箱，请点击\"创建沙箱\"按钮开始分析。")
+            empty_item.setFlags(empty_item.flags() & ~Qt.ItemIsEditable)
+            empty_item.setTextAlignment(Qt.AlignCenter)
+            empty_item.setBackground(QColor(248, 249, 250))
+            self.setItem(0, 0, empty_item)
+            # 合并单元格以居中显示提示
+            self.setSpan(0, 0, 1, 5)
+            
+            # 设置行高
+            self.verticalHeader().setDefaultSectionSize(25)
+            
             # 连接信号
             self.itemSelectionChanged.connect(self.on_selection_changed)
             self.itemDoubleClicked.connect(self.on_item_double_clicked)
@@ -57,6 +72,13 @@ class SandboxListWidget(QTableWidget):
     def add_sandbox(self, sandbox_info):
         """添加沙箱"""
         try:
+            # 如果是第一次添加，清除空列表提示
+            if len(self.sandboxes) == 0 and self.rowCount() == 1:
+                item = self.item(0, 0)
+                if item and "尚未创建任何沙箱" in item.text():
+                    self.clearContents()
+                    self.setRowCount(0)
+            
             # 添加到列表
             self.sandboxes.append(sandbox_info)
             
@@ -92,8 +114,9 @@ class SandboxListWidget(QTableWidget):
                         self.setItem(row, i, item)
             except Exception as item_error:
                 logger.error(f"创建沙箱列表项时出错: {item_error}")
-                # 清理已插入的行
-                self.removeRow(row)
+                # 安全检查行是否存在再移除
+                if row < self.rowCount():
+                    self.removeRow(row)
                 # 从列表中移除
                 if self.sandboxes:
                     self.sandboxes.pop()
@@ -106,11 +129,25 @@ class SandboxListWidget(QTableWidget):
     def update_sandbox(self, sandbox_id, updates):
         """更新沙箱信息"""
         try:
+            # 参数有效性检查
+            if not sandbox_id or not isinstance(sandbox_id, (str, int)) or not updates:
+                logger.warning(f"无效的更新参数: sandbox_id={sandbox_id}, updates={updates}")
+                return
+            
             # 查找并更新沙箱数据
+            sandbox_found = False
             for i, sandbox in enumerate(self.sandboxes):
-                if sandbox.get('id') == sandbox_id:
-                    self.sandboxes[i].update(updates)
+                if sandbox.get('id') == str(sandbox_id):
+                    # 仅更新存在的字段
+                    for key, value in updates.items():
+                        if key in ['status', 'resource_usage', 'log', 'created_time']:
+                            self.sandboxes[i][key] = value
+                    sandbox_found = True
                     break
+            
+            if not sandbox_found:
+                logger.warning(f"未找到要更新的沙箱: {sandbox_id}")
+                return
             
             # 更新表格显示
             for row in range(self.rowCount()):
@@ -129,33 +166,75 @@ class SandboxListWidget(QTableWidget):
                                     cell_item.setBackground(color)
                     
                     # 更新资源使用列
-                    if 'resource_usage' in updates:
+                    if 'resource_usage' in updates and len(updates['resource_usage']) > 0:
                         resource_item = self.item(row, 4)
                         if resource_item:
-                            resource_item.setText(updates['resource_usage'])
+                            # 尝试解析资源使用信息并格式化显示
+                            try:
+                                if isinstance(updates['resource_usage'], dict):
+                                    formatted_usage = format_resource_usage(updates['resource_usage'])
+                                    resource_item.setText(formatted_usage)
+                                else:
+                                    resource_item.setText(str(updates['resource_usage']))
+                            except Exception as format_error:
+                                logger.error(f"格式化资源使用信息时出错: {format_error}")
+                                resource_item.setText("格式错误")
+                    
+                    # 更新其他可能的字段
+                    if 'log' in updates:
+                        log_item = self.item(row, 5)
+                        if log_item:
+                            log_item.setText(updates['log'][-50:] + '...' if len(updates['log']) > 50 else updates['log'])
                     
                     break
             
             logger.info(f"更新沙箱信息: {sandbox_id}")
         except Exception as e:
-            logger.error(f"更新沙箱信息时出错: {e}")
+            logger.error(f"更新沙箱信息时出错: {e}", exc_info=True)
     
     def remove_sandbox(self, sandbox_id):
         """移除沙箱"""
         try:
+            # 参数有效性检查
+            if sandbox_id is None or not isinstance(sandbox_id, (str, int)):
+                logger.warning(f"无效的沙箱ID: {sandbox_id}")
+                return False
+            
+            sandbox_id = str(sandbox_id)  # 确保ID是字符串类型
+            
+            # 记录原始沙箱数量
+            original_count = len(self.sandboxes)
+            
             # 从数据列表中移除
+            before_removal = len(self.sandboxes)
             self.sandboxes = [s for s in self.sandboxes if s.get('id') != sandbox_id]
+            removed_count = before_removal - len(self.sandboxes)
+            
+            # 如果没有找到要移除的沙箱，记录警告
+            if removed_count == 0:
+                logger.warning(f"未找到要移除的沙箱: {sandbox_id}")
+                return False
             
             # 从表格中移除
+            rows_removed = 0
             for row in range(self.rowCount()):
                 item = self.item(row, 0)
-                if item and item.text() == str(sandbox_id):
+                if item and item.text() == sandbox_id:
                     self.removeRow(row)
+                    rows_removed += 1
+                    # 只移除第一个匹配项（理论上每个沙箱ID应该是唯一的）
                     break
             
-            logger.info(f"移除沙箱: {sandbox_id}")
+            # 验证数据一致性和完整性
+            if removed_count != rows_removed:
+                logger.warning(f"数据不一致: 沙箱列表中移除了{removed_count}个沙箱，但表格中只移除了{rows_removed}行")
+            
+            logger.info(f"成功移除沙箱: {sandbox_id} (数据列表中移除了{removed_count}个, 表格中移除了{rows_removed}行)")
+            return True
+            
         except Exception as e:
-            logger.error(f"移除沙箱时出错: {e}")
+            logger.error(f"移除沙箱时出错: {e}", exc_info=True)
+            return False
     
     def on_selection_changed(self):
         """选择改变事件"""
@@ -165,7 +244,8 @@ class SandboxListWidget(QTableWidget):
             if selected_items:
                 # 获取选中行的行号
                 row = selected_items[0].row()
-                if row < len(self.sandboxes):
+                # 安全检查行号是否有效
+                if 0 <= row < len(self.sandboxes):
                     sandbox_info = self.sandboxes[row]
                     self.sandbox_selected.emit(sandbox_info)
         except Exception as e:
@@ -176,7 +256,8 @@ class SandboxListWidget(QTableWidget):
         try:
             if item:
                 row = item.row()
-                if row < len(self.sandboxes):
+                # 安全检查行号是否有效
+                if 0 <= row < len(self.sandboxes):
                     sandbox_info = self.sandboxes[row]
                     self.sandbox_double_clicked.emit(sandbox_info)
         except Exception as e:
@@ -187,7 +268,7 @@ class SandboxListWidget(QTableWidget):
         try:
             # 安全断开信号连接以防止在清空过程中触发事件
             try:
-                if hasattr(self, 'itemSelectionChanged'):
+                if hasattr(self, 'itemSelectionChanged') and self.receivers(self.itemSelectionChanged) > 0:
                     self.itemSelectionChanged.disconnect(self.on_selection_changed)
             except TypeError:
                 # 信号可能未连接，忽略 TypeError
@@ -196,7 +277,7 @@ class SandboxListWidget(QTableWidget):
                 logger.warning(f"断开selectionChanged信号时发生异常: {e}")
 
             try:
-                if hasattr(self, 'itemDoubleClicked'):
+                if hasattr(self, 'itemDoubleClicked') and self.receivers(self.itemDoubleClicked) > 0:
                     self.itemDoubleClicked.disconnect(self.on_item_double_clicked)
             except TypeError:
                 # 信号可能未连接，忽略 TypeError
@@ -266,80 +347,113 @@ class SandboxControlPanel(QWidget):
             # 可执行文件选择区域
             exe_group = QGroupBox("可执行文件")
             exe_layout = QHBoxLayout(exe_group)
+            exe_layout.setSpacing(5)
             
             self.exe_path_edit = QLineEdit()
             self.exe_path_edit.setPlaceholderText("请选择要运行的可执行文件...")
             
             self.browse_button = QPushButton("浏览")
             self.browse_button.clicked.connect(self.browse_executable)
+            self.browse_button.setFixedWidth(80)
             
-            exe_layout.addWidget(QLabel("路径:"))
-            exe_layout.addWidget(self.exe_path_edit)
-            exe_layout.addWidget(self.browse_button)
+            exe_layout.addWidget(QLabel("路径:"), 0)
+            exe_layout.addWidget(self.exe_path_edit, 1)
+            exe_layout.addWidget(self.browse_button, 0)
             
             # 配置区域
             config_group = QGroupBox("沙箱配置")
-            config_layout = QVBoxLayout(config_group)
+            config_layout = QGridLayout(config_group)
+            config_layout.setColumnStretch(1, 1)
+            config_layout.setHorizontalSpacing(15)
+            config_layout.setVerticalSpacing(10)
             
             # 超时设置
-            timeout_layout = QHBoxLayout()
-            timeout_layout.addWidget(QLabel("超时时间(秒):"))
+            timeout_label = QLabel("超时时间(秒):")
+            timeout_label.setMinimumWidth(100)
+            config_layout.addWidget(timeout_label, 0, 0, Qt.AlignRight)
             self.timeout_spinbox = QSpinBox()
             self.timeout_spinbox.setRange(10, 300)
             self.timeout_spinbox.setValue(30)
+            self.timeout_spinbox.setFixedWidth(120)
             self.timeout_spinbox.valueChanged.connect(self.on_config_changed)
-            timeout_layout.addWidget(self.timeout_spinbox)
-            timeout_layout.addStretch()
+            config_layout.addWidget(self.timeout_spinbox, 0, 1, Qt.AlignLeft)
             
             # 内存限制设置
-            memory_layout = QHBoxLayout()
-            memory_layout.addWidget(QLabel("内存限制(MB):"))
+            memory_label = QLabel("内存限制(MB):")
+            memory_label.setMinimumWidth(100)
+            config_layout.addWidget(memory_label, 1, 0, Qt.AlignRight)
             self.memory_spinbox = QSpinBox()
             self.memory_spinbox.setRange(64, 2048)
             self.memory_spinbox.setValue(512)
             self.memory_spinbox.setSingleStep(64)
+            self.memory_spinbox.setFixedWidth(120)
             self.memory_spinbox.valueChanged.connect(self.on_config_changed)
-            memory_layout.addWidget(self.memory_spinbox)
-            memory_layout.addStretch()
+            config_layout.addWidget(self.memory_spinbox, 1, 1, Qt.AlignLeft)
             
             # 进程数限制设置
-            process_layout = QHBoxLayout()
-            process_layout.addWidget(QLabel("最大进程数:"))
+            process_label = QLabel("最大进程数:")
+            process_label.setMinimumWidth(100)
+            config_layout.addWidget(process_label, 2, 0, Qt.AlignRight)
             self.process_spinbox = QSpinBox()
             self.process_spinbox.setRange(1, 100)
             self.process_spinbox.setValue(20)
+            self.process_spinbox.setFixedWidth(120)
             self.process_spinbox.valueChanged.connect(self.on_config_changed)
-            process_layout.addWidget(self.process_spinbox)
-            process_layout.addStretch()
-            
-            config_layout.addLayout(timeout_layout)
-            config_layout.addLayout(memory_layout)
-            config_layout.addLayout(process_layout)
+            config_layout.addWidget(self.process_spinbox, 2, 1, Qt.AlignLeft)
             
             # 控制按钮区域
-            control_group = QGroupBox("控制")
+            control_group = QGroupBox("沙箱控制")
             control_layout = QHBoxLayout(control_group)
+            control_layout.setSpacing(10)
+            
+            self.create_button = QPushButton("创建沙箱")
+            self.create_button.clicked.connect(self.on_create_clicked)
+            self.create_button.setFixedSize(90, 30)
             
             self.start_button = QPushButton("启动沙箱")
             self.start_button.clicked.connect(self.on_start_clicked)
+            self.start_button.setEnabled(False)
+            self.start_button.setFixedSize(90, 30)
             
             self.stop_button = QPushButton("停止沙箱")
             self.stop_button.clicked.connect(self.on_stop_clicked)
             self.stop_button.setEnabled(False)
+            self.stop_button.setFixedSize(90, 30)
+            
+            self.delete_button = QPushButton("删除沙箱")
+            self.delete_button.clicked.connect(self.on_delete_clicked)
+            self.delete_button.setEnabled(False)
+            self.delete_button.setFixedSize(90, 30)
+            
+            control_layout.addWidget(self.create_button)
+            control_layout.addWidget(self.start_button)
+            control_layout.addWidget(self.stop_button)
+            control_layout.addWidget(self.delete_button)
+            control_layout.addStretch()
+            
+            # 操作按钮区域
+            operation_group = QGroupBox("沙箱操作")
+            operation_layout = QHBoxLayout(operation_group)
+            operation_layout.setSpacing(10)
             
             self.pause_button = QPushButton("暂停沙箱")
             self.pause_button.clicked.connect(self.on_pause_clicked)
             self.pause_button.setEnabled(False)
+            self.pause_button.setFixedSize(90, 30)
             
             self.resume_button = QPushButton("恢复沙箱")
             self.resume_button.clicked.connect(self.on_resume_clicked)
             self.resume_button.setEnabled(False)
+            self.resume_button.setFixedSize(90, 30)
             
-            control_layout.addWidget(self.start_button)
-            control_layout.addWidget(self.stop_button)
-            control_layout.addWidget(self.pause_button)
-            control_layout.addWidget(self.resume_button)
-            control_layout.addStretch()
+            self.config_button = QPushButton("配置")
+            self.config_button.clicked.connect(self.on_config_clicked)
+            self.config_button.setFixedSize(90, 30)
+            
+            operation_layout.addWidget(self.pause_button)
+            operation_layout.addWidget(self.resume_button)
+            operation_layout.addWidget(self.config_button)
+            operation_layout.addStretch()
             
             # 创建沙箱列表和详情组件
             self.sandbox_list = SandboxListWidget()
@@ -355,9 +469,9 @@ class SandboxControlPanel(QWidget):
             main_layout.addWidget(exe_group)
             main_layout.addWidget(config_group)
             main_layout.addWidget(control_group)
+            main_layout.addWidget(operation_group)
             main_layout.addWidget(QLabel("沙箱列表:"))
             main_layout.addWidget(splitter)
-            main_layout.addStretch()
             
             # 连接沙箱列表信号
             self.sandbox_list.sandbox_selected.connect(self.on_sandbox_selected)
@@ -391,11 +505,16 @@ class SandboxControlPanel(QWidget):
             logger.error(f"浏览可执行文件时出错: {e}")
             show_error_message(self, "错误", f"选择文件时出错: {str(e)}")
     
-    def on_start_clicked(self):
-        """启动按钮点击事件"""
+    def on_create_clicked(self):
+        """创建按钮点击事件"""
         try:
             exe_path = self.exe_path_edit.text().strip()
-            if not validate_executable_path(self, exe_path):
+            if not exe_path:
+                show_error_message(self, "错误", "请选择要运行的可执行文件")
+                return
+            
+            if not os.path.exists(exe_path):
+                show_error_message(self, "错误", "选择的可执行文件不存在")
                 return
             
             # 更新配置
@@ -405,8 +524,74 @@ class SandboxControlPanel(QWidget):
             import uuid
             sandbox_id = str(uuid.uuid4())[:8]
             
-            # 发出创建信号（这将触发on_sandbox_created方法）
+            # 发出创建信号
             self.sandbox_created.emit(sandbox_id)
+            
+            logger.info(f"创建沙箱: {exe_path}")
+        except Exception as e:
+            logger.error(f"创建沙箱时出错: {e}")
+            show_error_message(self, "错误", f"创建沙箱时出错: {str(e)}")
+    
+    def on_delete_clicked(self):
+        """删除按钮点击事件"""
+        try:
+            if self.current_sandbox:
+                sandbox_id = self.current_sandbox.get('id')
+                reply = QMessageBox.question(
+                    self, 
+                    "确认删除", 
+                    f"确定要删除沙箱 '{self.current_sandbox.get('name', '未知')}' 吗？",
+                    QMessageBox.Yes | QMessageBox.No, 
+                    QMessageBox.No
+                )
+                
+                if reply == QMessageBox.Yes:
+                    # 从列表中移除
+                    self.sandbox_list.remove_sandbox(sandbox_id)
+                    self.current_sandbox = None
+                    
+                    # 重置按钮状态
+                    self.start_button.setEnabled(False)
+                    self.stop_button.setEnabled(False)
+                    self.pause_button.setEnabled(False)
+                    self.resume_button.setEnabled(False)
+                    self.delete_button.setEnabled(False)
+                    
+                    # 清空详情显示
+                    if self.sandbox_details:
+                        self.sandbox_details.clear()
+                    
+                    logger.info(f"删除沙箱: {sandbox_id}")
+            else:
+                show_info_message(self, "提示", "请先选择一个沙箱")
+        except Exception as e:
+            logger.error(f"删除沙箱时出错: {e}")
+            show_error_message(self, "错误", f"删除沙箱时出错: {str(e)}")
+    
+    def on_config_clicked(self):
+        """配置按钮点击事件"""
+        try:
+            # 这里可以打开配置对话框
+            show_info_message(self, "提示", "配置功能将在后续版本中实现")
+            logger.info("打开沙箱配置")
+        except Exception as e:
+            logger.error(f"打开配置时出错: {e}")
+            show_error_message(self, "错误", f"打开配置时出错: {str(e)}")
+    
+    def on_start_clicked(self):
+        """启动按钮点击事件"""
+        try:
+            if not self.current_sandbox:
+                show_error_message(self, "错误", "请先选择或创建一个沙箱")
+                return
+                
+            exe_path = self.exe_path_edit.text().strip()
+            if not exe_path:
+                show_error_message(self, "错误", "请选择要运行的可执行文件")
+                return
+            
+            # 更新配置
+            self.update_config()
             
             # 发出启动信号
             self.start_sandbox.emit(exe_path, self.config.copy())
@@ -426,11 +611,15 @@ class SandboxControlPanel(QWidget):
                 sandbox_id = "current"
             self.stop_sandbox.emit(sandbox_id)
             
-            # 更新按钮状态
-            self.start_button.setEnabled(True)
-            self.stop_button.setEnabled(False)
-            self.pause_button.setEnabled(False)
-            self.resume_button.setEnabled(False)
+            # 安全更新按钮状态
+            if hasattr(self, 'start_button') and self.start_button:
+                self.start_button.setEnabled(True)
+            if hasattr(self, 'stop_button') and self.stop_button:
+                self.stop_button.setEnabled(False)
+            if hasattr(self, 'pause_button') and self.pause_button:
+                self.pause_button.setEnabled(False)
+            if hasattr(self, 'resume_button') and self.resume_button:
+                self.resume_button.setEnabled(False)
             
             logger.info("停止沙箱")
         except Exception as e:
@@ -447,9 +636,11 @@ class SandboxControlPanel(QWidget):
                 sandbox_id = "current"
             self.pause_sandbox.emit(sandbox_id)
             
-            # 更新按钮状态
-            self.pause_button.setEnabled(False)
-            self.resume_button.setEnabled(True)
+            # 安全更新按钮状态
+            if hasattr(self, 'pause_button') and self.pause_button:
+                self.pause_button.setEnabled(False)
+            if hasattr(self, 'resume_button') and self.resume_button:
+                self.resume_button.setEnabled(True)
             
             logger.info("暂停沙箱")
         except Exception as e:
@@ -466,15 +657,17 @@ class SandboxControlPanel(QWidget):
                 sandbox_id = "current"
             self.resume_sandbox.emit(sandbox_id)
             
-            # 更新按钮状态
-            self.pause_button.setEnabled(True)
-            self.resume_button.setEnabled(False)
+            # 安全更新按钮状态
+            if hasattr(self, 'pause_button') and self.pause_button:
+                self.pause_button.setEnabled(True)
+            if hasattr(self, 'resume_button') and self.resume_button:
+                self.resume_button.setEnabled(False)
             
             logger.info("恢复沙箱")
         except Exception as e:
             logger.error(f"恢复沙箱时出错: {e}")
             show_error_message(self, "错误", f"恢复沙箱时出错: {str(e)}")
-    
+
     def update_config(self):
         """更新配置"""
         try:
@@ -503,9 +696,9 @@ class SandboxControlPanel(QWidget):
             sandbox_info = {
                 'id': sandbox_id,
                 'name': f'沙箱-{sandbox_id}',
-                'status': '运行中',
+                'status': '已停止',
                 'created_time': time.strftime('%Y-%m-%d %H:%M:%S'),
-                'resource_usage': '正在初始化...',
+                'resource_usage': '未运行',
                 'executable': self.exe_path_edit.text().strip() if self.exe_path_edit else '未知',
                 'timeout': self.config.get('timeout', 30),
                 'memory_limit': self.config.get('memory_limit', 512 * 1024 * 1024),
@@ -520,12 +713,11 @@ class SandboxControlPanel(QWidget):
             self.current_sandbox = sandbox_info
             
             # 更新UI状态
-            if self.stop_button:
-                self.stop_button.setEnabled(True)
-            if self.pause_button:
-                self.pause_button.setEnabled(True)
-            if self.resume_button:
-                self.resume_button.setEnabled(False)
+            self.start_button.setEnabled(True)
+            self.stop_button.setEnabled(False)
+            self.pause_button.setEnabled(False)
+            self.resume_button.setEnabled(False)
+            self.delete_button.setEnabled(True)
             
             logger.info(f"沙箱已创建: {sandbox_id}")
         except Exception as e:
@@ -540,12 +732,12 @@ class SandboxControlPanel(QWidget):
             # 如果这是当前沙箱，更新当前沙箱状态
             if self.current_sandbox and self.current_sandbox.get('id') == sandbox_id:
                 self.current_sandbox['status'] = '运行中'
-                # 更新按钮状态
-                if self.pause_button:
+                # 安全更新按钮状态
+                if hasattr(self, 'pause_button') and self.pause_button:
                     self.pause_button.setEnabled(True)
-                if self.stop_button:
+                if hasattr(self, 'stop_button') and self.stop_button:
                     self.stop_button.setEnabled(True)
-                if self.resume_button:
+                if hasattr(self, 'resume_button') and self.resume_button:
                     self.resume_button.setEnabled(False)
             
             logger.info(f"沙箱已启动: {sandbox_id}")
@@ -582,8 +774,10 @@ class SandboxControlPanel(QWidget):
             # 如果这是当前沙箱，更新当前沙箱状态并更新按钮
             if self.current_sandbox and self.current_sandbox.get('id') == sandbox_id:
                 self.current_sandbox['status'] = '已暂停'
-                self.pause_button.setEnabled(False)
-                self.resume_button.setEnabled(True)
+                if hasattr(self, 'pause_button') and self.pause_button:
+                    self.pause_button.setEnabled(False)
+                if hasattr(self, 'resume_button') and self.resume_button:
+                    self.resume_button.setEnabled(True)
             
             logger.info(f"沙箱已暂停: {sandbox_id}")
         except Exception as e:
@@ -598,8 +792,10 @@ class SandboxControlPanel(QWidget):
             # 如果这是当前沙箱，更新当前沙箱状态并更新按钮
             if self.current_sandbox and self.current_sandbox.get('id') == sandbox_id:
                 self.current_sandbox['status'] = '运行中'
-                self.pause_button.setEnabled(True)
-                self.resume_button.setEnabled(False)
+                if hasattr(self, 'pause_button') and self.pause_button:
+                    self.pause_button.setEnabled(True)
+                if hasattr(self, 'resume_button') and self.resume_button:
+                    self.resume_button.setEnabled(False)
             
             logger.info(f"沙箱已恢复: {sandbox_id}")
         except Exception as e:
@@ -612,12 +808,19 @@ class SandboxControlPanel(QWidget):
             self.sandbox_details.display_sandbox_info(sandbox_info)
             # 根据沙箱状态启用/禁用按钮，增加安全检查
             status = sandbox_info.get('status', '未知')
+            
+            # 安全检查所有按钮是否存在再设置状态
+            if hasattr(self, 'start_button') and self.start_button:
+                self.start_button.setEnabled(status in ['已停止', '未知'])
             if hasattr(self, 'stop_button') and self.stop_button:
                 self.stop_button.setEnabled(status in ['运行中', '已暂停'])
             if hasattr(self, 'pause_button') and self.pause_button:
                 self.pause_button.setEnabled(status == '运行中')
             if hasattr(self, 'resume_button') and self.resume_button:
                 self.resume_button.setEnabled(status == '已暂停')
+            if hasattr(self, 'delete_button') and self.delete_button:
+                self.delete_button.setEnabled(True)
+                
             logger.info(f"选中沙箱: {sandbox_info.get('name', '未知')}")
         except Exception as e:
             logger.error(f"处理沙箱选中事件时出错: {e}")
@@ -626,7 +829,7 @@ class SandboxControlPanel(QWidget):
         """沙箱被双击事件处理"""
         try:
             # 双击沙箱时可以执行特定操作，例如显示详细信息对话框
-            if self.sandbox_details and sandbox_info:
+            if hasattr(self, 'sandbox_details') and self.sandbox_details and sandbox_info:
                 self.sandbox_details.display_sandbox_info(sandbox_info)
             logger.info(f"双击沙箱: {sandbox_info.get('name', '未知') if sandbox_info else '未知'}")
         except Exception as e:
@@ -636,14 +839,18 @@ class SandboxControlPanel(QWidget):
         """重置控制按钮状态"""
         try:
             # 安全检查按钮是否存在再设置状态
+            if hasattr(self, 'create_button') and self.create_button:
+                self.create_button.setEnabled(True)
             if hasattr(self, 'start_button') and self.start_button:
-                self.start_button.setEnabled(True)
+                self.start_button.setEnabled(False)
             if hasattr(self, 'stop_button') and self.stop_button:
                 self.stop_button.setEnabled(False)
             if hasattr(self, 'pause_button') and self.pause_button:
                 self.pause_button.setEnabled(False)
             if hasattr(self, 'resume_button') and self.resume_button:
                 self.resume_button.setEnabled(False)
+            if hasattr(self, 'delete_button') and self.delete_button:
+                self.delete_button.setEnabled(False)
             self.current_sandbox = None  # 重置当前选中的沙箱
             if hasattr(self, 'exe_path_edit') and self.exe_path_edit:
                 self.exe_path_edit.clear()
@@ -673,6 +880,10 @@ class SandboxControlPanel(QWidget):
             if self.sandbox_list:
                 self.sandbox_list.clear_list()
             self.current_sandbox = None
+            
+            # 重置所有按钮状态
+            self.reset_controls()
+            
             logger.info("清理沙箱控制面板资源")
         except Exception as e:
             logger.error(f"清理沙箱控制面板资源时出错: {e}")
@@ -693,9 +904,22 @@ class SandboxDetailsWidget(QTextEdit):
         try:
             self.setReadOnly(True)
             self.setPlaceholderText("选择一个沙箱以查看详细信息...")
+            
+            # 设置字体
+            font = self.font()
+            font.setPointSize(10)
+            self.setFont(font)
+            
             logger.info("沙箱详情UI初始化完成")
         except Exception as e:
             logger.error(f"初始化沙箱详情UI时出错: {e}")
+    
+    def clear(self):
+        """清空显示内容"""
+        try:
+            self.setPlainText("")
+        except Exception as e:
+            logger.error(f"清空沙箱详情时出错: {e}")
     
     def display_sandbox_info(self, sandbox_info):
         """显示沙箱信息"""
@@ -707,20 +931,20 @@ class SandboxDetailsWidget(QTextEdit):
                 
             # 格式化显示信息
             try:
-                info_text = f"""沙箱详细信息:
+                info_text = f"""沙箱详细信息
 ========================
 
 基本信息:
-  ID: {sandbox_info.get('id', '未知')}
-  名称: {sandbox_info.get('name', '未知')}
-  状态: {sandbox_info.get('status', '未知')}
-  可执行文件: {sandbox_info.get('executable', '未知')}
-  创建时间: {sandbox_info.get('created_time', '未知')}
+  ID:          {sandbox_info.get('id', '未知')}
+  名称:        {sandbox_info.get('name', '未知')}
+  状态:        {sandbox_info.get('status', '未知')}
+  可执行文件:  {sandbox_info.get('executable', '未知')}
+  创建时间:    {sandbox_info.get('created_time', '未知')}
 
 资源配置:
-  超时时间: {sandbox_info.get('timeout', '未知')} 秒
-  内存限制: {format_resource_usage(sandbox_info.get('memory_limit', 0), 0) if sandbox_info.get('memory_limit') else '未知'}
-  进程数限制: {sandbox_info.get('max_processes', '未知')} 个
+  超时时间:    {sandbox_info.get('timeout', '未知')} 秒
+  内存限制:    {self._format_memory(sandbox_info.get('memory_limit', 0)) if sandbox_info.get('memory_limit') else '未知'}
+  进程数限制:  {sandbox_info.get('max_processes', '未知')} 个
 
 当前资源使用:
   {sandbox_info.get('resource_usage', '暂无数据')}
@@ -737,3 +961,17 @@ class SandboxDetailsWidget(QTextEdit):
         except Exception as e:
             logger.error(f"显示沙箱信息时出错: {e}")
             self.setPlainText("无法显示沙箱信息")
+    
+    def _format_memory(self, memory_bytes):
+        """格式化内存显示"""
+        try:
+            if memory_bytes < 1024:
+                return f"{memory_bytes} B"
+            elif memory_bytes < 1024 * 1024:
+                return f"{memory_bytes / 1024:.1f} KB"
+            elif memory_bytes < 1024 * 1024 * 1024:
+                return f"{memory_bytes / (1024 * 1024):.1f} MB"
+            else:
+                return f"{memory_bytes / (1024 * 1024 * 1024):.1f} GB"
+        except Exception:
+            return "未知"
