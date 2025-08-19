@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+"""
+弹窗拦截标签页模块
+提供弹窗检测和拦截功能
+"""
 import logging
 import json
 import time
@@ -14,8 +19,8 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
 from PyQt5.QtCore import QTimer, Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QColor
 
-# 导入项目工具模块
-from utils.common_utils import show_error_message, show_info_message, performance_monitor
+# 导入项目工具模块 - 修复导入问题
+from utils.common_utils import show_error_message, show_info_message
 from utils.system_utils import SystemUtils
 from config import Config
 

@@ -1,0 +1,306 @@
+2025-08-19 18:11:49,382 - INFO - 开始执行优化验证...
+2025-08-19 18:11:49,382 - INFO - 开始验证目录结构...
+2025-08-19 18:11:49,383 - INFO - 目录存在: config
+2025-08-19 18:11:49,383 - INFO - 目录存在: ui
+2025-08-19 18:11:49,383 - INFO - 目录存在: utils
+2025-08-19 18:11:49,384 - INFO - 目录存在: modules
+2025-08-19 18:11:49,384 - INFO - 目录存在: modules/analysis
+2025-08-19 18:11:49,384 - INFO - 目录存在: modules/security
+2025-08-19 18:11:49,384 - INFO - 目录存在: modules/system
+2025-08-19 18:11:49,385 - INFO - 目录存在: logs
+2025-08-19 18:11:49,395 - INFO - 目录存在: exports
+2025-08-19 18:11:49,395 - INFO - 目录存在: temp
+2025-08-19 18:11:49,396 - INFO - 目录存在: docs
+2025-08-19 18:11:49,396 - INFO - 目录存在: tests
+2025-08-19 18:11:49,396 - INFO - ✅ 目录结构验证通过
+2025-08-19 18:11:49,396 - INFO - 开始验证__init__.py文件...
+2025-08-19 18:11:49,397 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\__init__.py
+2025-08-19 18:11:49,397 - ERROR - 缺少__init__.py文件: E:\程序\xiangmu\mcgx\config\__init__.py
+2025-08-19 18:11:49,397 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\ui\__init__.py
+2025-08-19 18:11:49,397 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\utils\__init__.py
+2025-08-19 18:11:49,398 - ERROR - 缺少__init__.py文件: E:\程序\xiangmu\mcgx\modules\__init__.py
+2025-08-19 18:11:49,398 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\analysis\__init__.py
+2025-08-19 18:11:49,398 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\security\__init__.py
+2025-08-19 18:11:49,398 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\system\__init__.py
+2025-08-19 18:11:49,399 - ERROR - ❌ __init__.py文件验证失败，缺少 2 个文件
+2025-08-19 18:11:49,399 - INFO - 开始验证模块导入...
+2025-08-19 18:11:49,420 - INFO - ✅ 成功导入模块: config
+2025-08-19 18:11:49,429 - ERROR - ❌ 导入模块失败: utils.system_utils - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:11:49,467 - INFO - ✅ 成功导入模块: utils.common_utils
+2025-08-19 18:11:49,515 - ERROR - ❌ 标签页类导入失败: cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:11:49,517 - ERROR - ❌ 导入模块失败: ui.process_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:11:49,519 - ERROR - ❌ 导入模块失败: ui.network_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:11:49,520 - ERROR - ❌ 导入模块失败: ui.startup_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:11:49,522 - ERROR - ❌ 导入模块失败: ui.registry_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:11:49,524 - ERROR - ❌ 导入模块失败: ui.file_monitor_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:11:49,525 - ERROR - ❌ 导入模块失败: ui.popup_blocker_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:11:49,528 - ERROR - ❌ 导入模块失败: ui.modules_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:11:49,530 - ERROR - ❌ 导入模块失败: ui.sandbox_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:11:49,530 - INFO - ✅ 成功导入模块: ui.main_window
+2025-08-19 18:11:49,530 - INFO - 模块导入验证完成: 3/12 成功
+2025-08-19 18:11:49,530 - ERROR - ❌ 模块导入验证失败，9 个模块无法导入
+2025-08-19 18:11:49,530 - INFO - 开始验证文档...
+2025-08-19 18:11:49,531 - INFO - 文档存在: docs/PROJECT_STRUCTURE.md
+2025-08-19 18:11:49,531 - INFO - 文档存在: README.md
+2025-08-19 18:11:49,531 - INFO - ✅ 文档验证通过
+2025-08-19 18:11:49,531 - INFO - 开始验证性能监控...
+2025-08-19 18:11:49,532 - INFO - ✅ 性能监控验证通过
+2025-08-19 18:11:49,532 - INFO - 开始验证文档字符串...
+2025-08-19 18:11:49,535 - WARNING - 文件缺少文档字符串: ui/modules_tab.py
+2025-08-19 18:11:49,536 - WARNING - ⚠️ 部分文件缺少文档字符串，1 个文件需要改进
+2025-08-19 18:11:49,536 - WARNING - ⚠️ 部分验证失败，请检查上面的错误信息
+2025-08-19 18:13:10,598 - INFO - 开始执行优化验证...
+2025-08-19 18:13:10,598 - INFO - 开始验证目录结构...
+2025-08-19 18:13:10,599 - INFO - 目录存在: config
+2025-08-19 18:13:10,599 - INFO - 目录存在: ui
+2025-08-19 18:13:10,599 - INFO - 目录存在: utils
+2025-08-19 18:13:10,599 - INFO - 目录存在: modules
+2025-08-19 18:13:10,600 - INFO - 目录存在: modules/analysis
+2025-08-19 18:13:10,600 - INFO - 目录存在: modules/security
+2025-08-19 18:13:10,600 - INFO - 目录存在: modules/system
+2025-08-19 18:13:10,600 - INFO - 目录存在: logs
+2025-08-19 18:13:10,600 - INFO - 目录存在: exports
+2025-08-19 18:13:10,601 - INFO - 目录存在: temp
+2025-08-19 18:13:10,601 - INFO - 目录存在: docs
+2025-08-19 18:13:10,601 - INFO - 目录存在: tests
+2025-08-19 18:13:10,601 - INFO - ✅ 目录结构验证通过
+2025-08-19 18:13:10,601 - INFO - 开始验证__init__.py文件...
+2025-08-19 18:13:10,602 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\__init__.py
+2025-08-19 18:13:10,602 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\config\__init__.py
+2025-08-19 18:13:10,602 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\ui\__init__.py
+2025-08-19 18:13:10,602 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\utils\__init__.py
+2025-08-19 18:13:10,603 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\__init__.py
+2025-08-19 18:13:10,603 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\analysis\__init__.py
+2025-08-19 18:13:10,603 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\security\__init__.py
+2025-08-19 18:13:10,603 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\system\__init__.py
+2025-08-19 18:13:10,603 - INFO - ✅ __init__.py文件验证通过
+2025-08-19 18:13:10,604 - INFO - 开始验证模块导入...
+2025-08-19 18:13:10,641 - ERROR - ❌ 导入模块失败: config - No module named 'config.config'
+2025-08-19 18:13:10,648 - ERROR - ❌ 导入模块失败: utils.system_utils - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:13:10,685 - INFO - ✅ 成功导入模块: utils.common_utils
+2025-08-19 18:13:10,732 - ERROR - ❌ 标签页类导入失败: cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:13:10,734 - ERROR - ❌ 导入模块失败: ui.process_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:13:10,736 - ERROR - ❌ 导入模块失败: ui.network_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:13:10,737 - ERROR - ❌ 导入模块失败: ui.startup_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:13:10,739 - ERROR - ❌ 导入模块失败: ui.registry_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:13:10,740 - ERROR - ❌ 导入模块失败: ui.file_monitor_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:13:10,742 - ERROR - ❌ 导入模块失败: ui.popup_blocker_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:13:10,744 - ERROR - ❌ 导入模块失败: ui.modules_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:13:10,746 - ERROR - ❌ 导入模块失败: ui.sandbox_tab - cannot import name 'performance_monitor' from partially initialized module 'utils.system_utils' (most likely due to a circular import) (E:\程序\xiangmu\mcgx\utils\system_utils.py)
+2025-08-19 18:13:10,746 - INFO - ✅ 成功导入模块: ui.main_window
+2025-08-19 18:13:10,746 - INFO - 模块导入验证完成: 2/12 成功
+2025-08-19 18:13:10,747 - ERROR - ❌ 模块导入验证失败，10 个模块无法导入
+2025-08-19 18:13:10,747 - INFO - 开始验证文档...
+2025-08-19 18:13:10,747 - INFO - 文档存在: docs/PROJECT_STRUCTURE.md
+2025-08-19 18:13:10,747 - INFO - 文档存在: README.md
+2025-08-19 18:13:10,747 - INFO - ✅ 文档验证通过
+2025-08-19 18:13:10,748 - INFO - 开始验证性能监控...
+2025-08-19 18:13:10,749 - INFO - ✅ 性能监控验证通过
+2025-08-19 18:13:10,749 - INFO - 开始验证文档字符串...
+2025-08-19 18:13:10,751 - WARNING - 文件缺少文档字符串: ui/modules_tab.py
+2025-08-19 18:13:10,752 - WARNING - ⚠️ 部分文件缺少文档字符串，1 个文件需要改进
+2025-08-19 18:13:10,752 - WARNING - ⚠️ 部分验证失败，请检查上面的错误信息
+2025-08-19 18:15:16,028 - INFO - 开始执行优化验证...
+2025-08-19 18:15:16,028 - INFO - 开始验证目录结构...
+2025-08-19 18:15:16,028 - INFO - 目录存在: config
+2025-08-19 18:15:16,029 - INFO - 目录存在: ui
+2025-08-19 18:15:16,029 - INFO - 目录存在: utils
+2025-08-19 18:15:16,029 - INFO - 目录存在: modules
+2025-08-19 18:15:16,030 - INFO - 目录存在: modules/analysis
+2025-08-19 18:15:16,030 - INFO - 目录存在: modules/security
+2025-08-19 18:15:16,030 - INFO - 目录存在: modules/system
+2025-08-19 18:15:16,030 - INFO - 目录存在: logs
+2025-08-19 18:15:16,031 - INFO - 目录存在: exports
+2025-08-19 18:15:16,031 - INFO - 目录存在: temp
+2025-08-19 18:15:16,031 - INFO - 目录存在: docs
+2025-08-19 18:15:16,032 - INFO - 目录存在: tests
+2025-08-19 18:15:16,032 - INFO - ✅ 目录结构验证通过
+2025-08-19 18:15:16,032 - INFO - 开始验证__init__.py文件...
+2025-08-19 18:15:16,032 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\__init__.py
+2025-08-19 18:15:16,032 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\config\__init__.py
+2025-08-19 18:15:16,033 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\ui\__init__.py
+2025-08-19 18:15:16,033 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\utils\__init__.py
+2025-08-19 18:15:16,033 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\__init__.py
+2025-08-19 18:15:16,033 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\analysis\__init__.py
+2025-08-19 18:15:16,034 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\security\__init__.py
+2025-08-19 18:15:16,034 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\system\__init__.py
+2025-08-19 18:15:16,034 - INFO - ✅ __init__.py文件验证通过
+2025-08-19 18:15:16,034 - INFO - 开始验证模块导入...
+2025-08-19 18:15:16,035 - ERROR - ❌ 导入模块失败: config - No module named 'config.config'
+2025-08-19 18:15:16,084 - INFO - ✅ 成功导入模块: utils.system_utils
+2025-08-19 18:15:16,119 - INFO - ✅ 成功导入模块: utils.common_utils
+2025-08-19 18:15:16,259 - ERROR - ❌ 标签页类导入失败: No module named 'config.config'
+2025-08-19 18:15:16,260 - ERROR - ❌ 导入模块失败: ui.process_tab - No module named 'config.config'
+2025-08-19 18:15:16,261 - ERROR - ❌ 导入模块失败: ui.network_tab - No module named 'config.config'
+2025-08-19 18:15:16,263 - ERROR - ❌ 导入模块失败: ui.startup_tab - No module named 'config.config'
+2025-08-19 18:15:16,265 - ERROR - ❌ 导入模块失败: ui.registry_tab - No module named 'config.config'
+2025-08-19 18:15:16,266 - ERROR - ❌ 导入模块失败: ui.file_monitor_tab - No module named 'config.config'
+2025-08-19 18:15:16,268 - ERROR - ❌ 导入模块失败: ui.popup_blocker_tab - No module named 'config.config'
+2025-08-19 18:15:16,270 - ERROR - ❌ 导入模块失败: ui.modules_tab - No module named 'config.config'
+2025-08-19 18:15:16,272 - ERROR - ❌ 导入模块失败: ui.sandbox_tab - No module named 'config.config'
+2025-08-19 18:15:16,272 - INFO - ✅ 成功导入模块: ui.main_window
+2025-08-19 18:15:16,272 - INFO - 模块导入验证完成: 3/12 成功
+2025-08-19 18:15:16,272 - ERROR - ❌ 模块导入验证失败，9 个模块无法导入
+2025-08-19 18:15:16,273 - INFO - 开始验证文档...
+2025-08-19 18:15:16,273 - INFO - 文档存在: docs/PROJECT_STRUCTURE.md
+2025-08-19 18:15:16,273 - INFO - 文档存在: README.md
+2025-08-19 18:15:16,273 - INFO - ✅ 文档验证通过
+2025-08-19 18:15:16,274 - INFO - 开始验证性能监控...
+2025-08-19 18:15:16,274 - INFO - ✅ 性能监控验证通过
+2025-08-19 18:15:16,275 - INFO - 开始验证文档字符串...
+2025-08-19 18:15:16,277 - WARNING - 文件缺少文档字符串: ui/modules_tab.py
+2025-08-19 18:15:16,278 - WARNING - ⚠️ 部分文件缺少文档字符串，1 个文件需要改进
+2025-08-19 18:15:16,278 - WARNING - ⚠️ 部分验证失败，请检查上面的错误信息
+2025-08-19 18:30:29,988 - INFO - 开始执行优化验证...
+2025-08-19 18:30:29,988 - INFO - 开始验证目录结构...
+2025-08-19 18:30:29,989 - INFO - 目录存在: config
+2025-08-19 18:30:29,989 - INFO - 目录存在: ui
+2025-08-19 18:30:29,989 - INFO - 目录存在: utils
+2025-08-19 18:30:29,989 - INFO - 目录存在: modules
+2025-08-19 18:30:29,990 - INFO - 目录存在: modules/analysis
+2025-08-19 18:30:29,990 - INFO - 目录存在: modules/security
+2025-08-19 18:30:29,990 - INFO - 目录存在: modules/system
+2025-08-19 18:30:29,990 - INFO - 目录存在: logs
+2025-08-19 18:30:29,990 - INFO - 目录存在: exports
+2025-08-19 18:30:29,991 - INFO - 目录存在: temp
+2025-08-19 18:30:29,991 - INFO - 目录存在: docs
+2025-08-19 18:30:29,991 - INFO - 目录存在: tests
+2025-08-19 18:30:29,991 - INFO - ✅ 目录结构验证通过
+2025-08-19 18:30:29,992 - INFO - 开始验证__init__.py文件...
+2025-08-19 18:30:29,992 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\__init__.py
+2025-08-19 18:30:29,992 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\config\__init__.py
+2025-08-19 18:30:29,992 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\ui\__init__.py
+2025-08-19 18:30:29,993 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\utils\__init__.py
+2025-08-19 18:30:29,993 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\__init__.py
+2025-08-19 18:30:29,993 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\analysis\__init__.py
+2025-08-19 18:30:29,993 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\security\__init__.py
+2025-08-19 18:30:29,994 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\system\__init__.py
+2025-08-19 18:30:29,994 - INFO - ✅ __init__.py文件验证通过
+2025-08-19 18:30:29,994 - INFO - 开始验证模块导入...
+2025-08-19 18:30:29,997 - ERROR - ❌ 导入模块失败: config - No module named 'config.config'
+2025-08-19 18:30:30,042 - INFO - ✅ 成功导入模块: utils.system_utils
+2025-08-19 18:30:30,076 - INFO - ✅ 成功导入模块: utils.common_utils
+2025-08-19 18:30:30,155 - ERROR - ❌ 标签页类导入失败: No module named 'config.config'
+2025-08-19 18:30:30,156 - ERROR - ❌ 导入模块失败: ui.process_tab - No module named 'config.config'
+2025-08-19 18:30:30,158 - ERROR - ❌ 导入模块失败: ui.network_tab - No module named 'config.config'
+2025-08-19 18:30:30,159 - ERROR - ❌ 导入模块失败: ui.startup_tab - No module named 'config.config'
+2025-08-19 18:30:30,161 - ERROR - ❌ 导入模块失败: ui.registry_tab - No module named 'config.config'
+2025-08-19 18:30:30,162 - ERROR - ❌ 导入模块失败: ui.file_monitor_tab - No module named 'config.config'
+2025-08-19 18:30:30,164 - ERROR - ❌ 导入模块失败: ui.popup_blocker_tab - No module named 'config.config'
+2025-08-19 18:30:30,165 - ERROR - ❌ 导入模块失败: ui.modules_tab - No module named 'config.config'
+2025-08-19 18:30:30,167 - ERROR - ❌ 导入模块失败: ui.sandbox_tab - No module named 'config.config'
+2025-08-19 18:30:30,167 - INFO - ✅ 成功导入模块: ui.main_window
+2025-08-19 18:30:30,168 - INFO - 模块导入验证完成: 3/12 成功
+2025-08-19 18:30:30,168 - ERROR - ❌ 模块导入验证失败，9 个模块无法导入
+2025-08-19 18:30:30,168 - INFO - 开始验证文档...
+2025-08-19 18:30:30,168 - INFO - 文档存在: docs/PROJECT_STRUCTURE.md
+2025-08-19 18:30:30,169 - INFO - 文档存在: README.md
+2025-08-19 18:30:30,169 - INFO - ✅ 文档验证通过
+2025-08-19 18:30:30,169 - INFO - 开始验证性能监控...
+2025-08-19 18:30:30,170 - INFO - ✅ 性能监控验证通过
+2025-08-19 18:30:30,170 - INFO - 开始验证文档字符串...
+2025-08-19 18:30:30,173 - WARNING - 文件缺少文档字符串: ui/modules_tab.py
+2025-08-19 18:30:30,174 - WARNING - ⚠️ 部分文件缺少文档字符串，1 个文件需要改进
+2025-08-19 18:30:30,174 - WARNING - ⚠️ 部分验证失败，请检查上面的错误信息
+2025-08-19 18:32:11,875 - INFO - 开始执行优化验证...
+2025-08-19 18:32:11,875 - INFO - 开始验证目录结构...
+2025-08-19 18:32:11,875 - INFO - 目录存在: config
+2025-08-19 18:32:11,876 - INFO - 目录存在: ui
+2025-08-19 18:32:11,876 - INFO - 目录存在: utils
+2025-08-19 18:32:11,876 - INFO - 目录存在: modules
+2025-08-19 18:32:11,876 - INFO - 目录存在: modules/analysis
+2025-08-19 18:32:11,876 - INFO - 目录存在: modules/security
+2025-08-19 18:32:11,877 - INFO - 目录存在: modules/system
+2025-08-19 18:32:11,877 - INFO - 目录存在: logs
+2025-08-19 18:32:11,877 - INFO - 目录存在: exports
+2025-08-19 18:32:11,877 - INFO - 目录存在: temp
+2025-08-19 18:32:11,877 - INFO - 目录存在: docs
+2025-08-19 18:32:11,878 - INFO - 目录存在: tests
+2025-08-19 18:32:11,878 - INFO - ✅ 目录结构验证通过
+2025-08-19 18:32:11,878 - INFO - 开始验证__init__.py文件...
+2025-08-19 18:32:11,878 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\__init__.py
+2025-08-19 18:32:11,878 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\config\__init__.py
+2025-08-19 18:32:11,879 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\ui\__init__.py
+2025-08-19 18:32:11,879 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\utils\__init__.py
+2025-08-19 18:32:11,879 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\__init__.py
+2025-08-19 18:32:11,879 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\analysis\__init__.py
+2025-08-19 18:32:11,879 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\security\__init__.py
+2025-08-19 18:32:11,880 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\system\__init__.py
+2025-08-19 18:32:11,880 - INFO - ✅ __init__.py文件验证通过
+2025-08-19 18:32:11,880 - INFO - 开始验证模块导入...
+2025-08-19 18:32:11,881 - ERROR - ❌ 导入模块失败: config - No module named 'config.config'
+2025-08-19 18:32:11,925 - INFO - ✅ 成功导入模块: utils.system_utils
+2025-08-19 18:32:11,957 - INFO - ✅ 成功导入模块: utils.common_utils
+2025-08-19 18:32:11,969 - ERROR - ❌ 标签页类导入失败: No module named 'config.config'
+2025-08-19 18:32:11,970 - ERROR - ❌ 导入模块失败: ui.process_tab - No module named 'config.config'
+2025-08-19 18:32:11,972 - ERROR - ❌ 导入模块失败: ui.network_tab - No module named 'config.config'
+2025-08-19 18:32:11,973 - ERROR - ❌ 导入模块失败: ui.startup_tab - No module named 'config.config'
+2025-08-19 18:32:11,975 - ERROR - ❌ 导入模块失败: ui.registry_tab - No module named 'config.config'
+2025-08-19 18:32:11,977 - ERROR - ❌ 导入模块失败: ui.file_monitor_tab - No module named 'config.config'
+2025-08-19 18:32:11,978 - ERROR - ❌ 导入模块失败: ui.popup_blocker_tab - No module named 'config.config'
+2025-08-19 18:32:11,980 - ERROR - ❌ 导入模块失败: ui.modules_tab - No module named 'config.config'
+2025-08-19 18:32:11,981 - ERROR - ❌ 导入模块失败: ui.sandbox_tab - No module named 'config.config'
+2025-08-19 18:32:11,981 - INFO - ✅ 成功导入模块: ui.main_window
+2025-08-19 18:32:11,981 - INFO - 模块导入验证完成: 3/12 成功
+2025-08-19 18:32:11,982 - ERROR - ❌ 模块导入验证失败，9 个模块无法导入
+2025-08-19 18:32:11,982 - INFO - 开始验证文档...
+2025-08-19 18:32:11,982 - INFO - 文档存在: docs/PROJECT_STRUCTURE.md
+2025-08-19 18:32:11,983 - INFO - 文档存在: README.md
+2025-08-19 18:32:11,983 - INFO - ✅ 文档验证通过
+2025-08-19 18:32:11,983 - INFO - 开始验证性能监控...
+2025-08-19 18:32:11,984 - INFO - ✅ 性能监控验证通过
+2025-08-19 18:32:11,984 - INFO - 开始验证文档字符串...
+2025-08-19 18:32:11,986 - WARNING - 文件缺少文档字符串: ui/modules_tab.py
+2025-08-19 18:32:11,987 - WARNING - ⚠️ 部分文件缺少文档字符串，1 个文件需要改进
+2025-08-19 18:32:11,988 - WARNING - ⚠️ 部分验证失败，请检查上面的错误信息
+2025-08-19 18:32:34,886 - INFO - 开始执行优化验证...
+2025-08-19 18:32:34,887 - INFO - 开始验证目录结构...
+2025-08-19 18:32:34,887 - INFO - 目录存在: config
+2025-08-19 18:32:34,888 - INFO - 目录存在: ui
+2025-08-19 18:32:34,888 - INFO - 目录存在: utils
+2025-08-19 18:32:34,888 - INFO - 目录存在: modules
+2025-08-19 18:32:34,888 - INFO - 目录存在: modules/analysis
+2025-08-19 18:32:34,889 - INFO - 目录存在: modules/security
+2025-08-19 18:32:34,889 - INFO - 目录存在: modules/system
+2025-08-19 18:32:34,889 - INFO - 目录存在: logs
+2025-08-19 18:32:34,889 - INFO - 目录存在: exports
+2025-08-19 18:32:34,890 - INFO - 目录存在: temp
+2025-08-19 18:32:34,890 - INFO - 目录存在: docs
+2025-08-19 18:32:34,890 - INFO - 目录存在: tests
+2025-08-19 18:32:34,890 - INFO - ✅ 目录结构验证通过
+2025-08-19 18:32:34,891 - INFO - 开始验证__init__.py文件...
+2025-08-19 18:32:34,891 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\__init__.py
+2025-08-19 18:32:34,891 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\config\__init__.py
+2025-08-19 18:32:34,892 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\ui\__init__.py
+2025-08-19 18:32:34,892 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\utils\__init__.py
+2025-08-19 18:32:34,892 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\__init__.py
+2025-08-19 18:32:34,892 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\analysis\__init__.py
+2025-08-19 18:32:34,893 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\security\__init__.py
+2025-08-19 18:32:34,893 - INFO - __init__.py文件存在: E:\程序\xiangmu\mcgx\modules\system\__init__.py
+2025-08-19 18:32:34,893 - INFO - ✅ __init__.py文件验证通过
+2025-08-19 18:32:34,893 - INFO - 开始验证模块导入...
+2025-08-19 18:32:34,894 - ERROR - ❌ 导入模块失败: config - No module named 'config.config'
+2025-08-19 18:32:34,945 - INFO - ✅ 成功导入模块: utils.system_utils
+2025-08-19 18:32:34,980 - INFO - ✅ 成功导入模块: utils.common_utils
+2025-08-19 18:32:34,987 - ERROR - ❌ 标签页类导入失败: No module named 'config.config'
+2025-08-19 18:32:34,988 - ERROR - ❌ 导入模块失败: ui.process_tab - No module named 'config.config'
+2025-08-19 18:32:34,990 - ERROR - ❌ 导入模块失败: ui.network_tab - No module named 'config.config'
+2025-08-19 18:32:34,991 - ERROR - ❌ 导入模块失败: ui.startup_tab - No module named 'config.config'
+2025-08-19 18:32:34,993 - ERROR - ❌ 导入模块失败: ui.registry_tab - No module named 'config.config'
+2025-08-19 18:32:34,994 - ERROR - ❌ 导入模块失败: ui.file_monitor_tab - No module named 'config.config'
+2025-08-19 18:32:34,995 - ERROR - ❌ 导入模块失败: ui.popup_blocker_tab - No module named 'config.config'
+2025-08-19 18:32:34,997 - ERROR - ❌ 导入模块失败: ui.modules_tab - No module named 'config.config'
+2025-08-19 18:32:34,999 - ERROR - ❌ 导入模块失败: ui.sandbox_tab - No module named 'config.config'
+2025-08-19 18:32:34,999 - INFO - ✅ 成功导入模块: ui.main_window
+2025-08-19 18:32:35,000 - INFO - 模块导入验证完成: 3/12 成功
+2025-08-19 18:32:35,000 - ERROR - ❌ 模块导入验证失败，9 个模块无法导入
+2025-08-19 18:32:35,000 - INFO - 开始验证文档...
+2025-08-19 18:32:35,000 - INFO - 文档存在: docs/PROJECT_STRUCTURE.md
+2025-08-19 18:32:35,000 - INFO - 文档存在: README.md
+2025-08-19 18:32:35,001 - INFO - ✅ 文档验证通过
+2025-08-19 18:32:35,001 - INFO - 开始验证性能监控...
+2025-08-19 18:32:35,002 - INFO - ✅ 性能监控验证通过
+2025-08-19 18:32:35,002 - INFO - 开始验证文档字符串...
+2025-08-19 18:32:35,004 - WARNING - 文件缺少文档字符串: ui/modules_tab.py
+2025-08-19 18:32:35,005 - WARNING - ⚠️ 部分文件缺少文档字符串，1 个文件需要改进
+2025-08-19 18:32:35,005 - WARNING - ⚠️ 部分验证失败，请检查上面的错误信息

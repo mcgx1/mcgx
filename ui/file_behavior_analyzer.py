@@ -13,7 +13,7 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                              QAbstractItemView, QGroupBox, QFormLayout, QLineEdit,
                              QTextEdit, QFileDialog, QProgressBar, QComboBox)
 from PyQt5.QtCore import QTimer, Qt, QThread, pyqtSignal
-from utils.system_utils import SystemUtils
+from utils.system_utils import SystemUtils, performance_monitor
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +25,8 @@ class FileBehaviorAnalyzer(QWidget):
         super().__init__()
         self.analyze_worker = None
         self.last_analysis_results = None
+        self.auto_analysis_timer = QTimer()
+        self.auto_analysis_timer.timeout.connect(self.start_analysis)
         self.init_ui()
         
     def init_ui(self):
@@ -46,6 +48,15 @@ class FileBehaviorAnalyzer(QWidget):
         self.start_analyze_btn.setObjectName("start_analyze_btn")
         self.start_analyze_btn.clicked.connect(self.start_analysis)
         button_layout.addWidget(self.start_analyze_btn)
+        
+        self.advanced_analyze_btn = QPushButton("高级分析")
+        self.advanced_analyze_btn.clicked.connect(self.start_advanced_analysis)
+        button_layout.addWidget(self.advanced_analyze_btn)
+        
+        self.auto_analyze_btn = QPushButton("自动分析")
+        self.auto_analyze_btn.setCheckable(True)
+        self.auto_analyze_btn.toggled.connect(self.toggle_auto_analysis)
+        button_layout.addWidget(self.auto_analyze_btn)
         
         self.export_btn = QPushButton("导出报告")
         self.export_btn.clicked.connect(self.export_report)
@@ -101,6 +112,7 @@ class FileBehaviorAnalyzer(QWidget):
             
             # 禁用开始按钮，显示进度条
             self.start_analyze_btn.setEnabled(False)
+            self.advanced_analyze_btn.setEnabled(False)
             self.export_btn.setEnabled(False)
             self.progress_bar.setVisible(True)
             self.progress_bar.setRange(0, 0)  # 设置为不确定模式
@@ -121,6 +133,50 @@ class FileBehaviorAnalyzer(QWidget):
             logger.error(f"启动系统文件行为分析时出错: {e}", exc_info=True)
             QMessageBox.critical(self, "错误", f"启动系统文件行为分析时出错: {e}")
             self.start_analyze_btn.setEnabled(True)
+            self.advanced_analyze_btn.setEnabled(True)
+            self.progress_bar.setVisible(False)
+    
+    def start_advanced_analysis(self):
+        """
+        开始高级分析系统文件行为
+        """
+        try:
+            # 获取分析时间范围（分钟）
+            time_range_text = self.time_range_combo.currentText()
+            time_ranges = {
+                "最近5分钟": 5,
+                "最近10分钟": 10,
+                "最近30分钟": 30,
+                "最近1小时": 60,
+                "最近2小时": 120,
+                "最近24小时": 1440
+            }
+            minutes = time_ranges.get(time_range_text, 10)
+            
+            # 禁用开始按钮，显示进度条
+            self.start_analyze_btn.setEnabled(False)
+            self.advanced_analyze_btn.setEnabled(False)
+            self.export_btn.setEnabled(False)
+            self.progress_bar.setVisible(True)
+            self.progress_bar.setRange(0, 0)  # 设置为不确定模式
+            
+            # 清空之前的结果
+            self.result_table.setRowCount(0)
+            self.stats_text.clear()
+            
+            # 启动高级分析工作线程
+            self.analyze_worker = AdvancedFileAnalyzeWorker(minutes)
+            self.analyze_worker.analysis_finished.connect(self.on_analysis_finished)
+            self.analyze_worker.analysis_error.connect(self.on_analysis_error)
+            self.analyze_worker.start()
+            
+            logger.info(f"开始高级分析系统文件行为，时间范围: {minutes}分钟")
+            
+        except Exception as e:
+            logger.error(f"启动系统文件行为高级分析时出错: {e}", exc_info=True)
+            QMessageBox.critical(self, "错误", f"启动系统文件行为高级分析时出错: {e}")
+            self.start_analyze_btn.setEnabled(True)
+            self.advanced_analyze_btn.setEnabled(True)
             self.progress_bar.setVisible(False)
     
     def on_analysis_finished(self, results):
@@ -134,6 +190,7 @@ class FileBehaviorAnalyzer(QWidget):
             # 隐藏进度条，启用开始按钮
             self.progress_bar.setVisible(False)
             self.start_analyze_btn.setEnabled(True)
+            self.advanced_analyze_btn.setEnabled(True)
             
             # 显示结果
             self.display_results(results)
@@ -141,12 +198,15 @@ class FileBehaviorAnalyzer(QWidget):
             # 启用导出按钮
             self.export_btn.setEnabled(True)
             
-            logger.info("系统文件行为分析完成")
+            # 显示分析类型提示
+            analysis_type = results.get('analysis_type', '基础')
+            logger.info(f"系统文件行为{analysis_type}分析完成")
             
         except Exception as e:
             logger.error(f"处理分析结果时出错: {e}", exc_info=True)
             QMessageBox.critical(self, "错误", f"处理分析结果时出错: {e}")
             self.start_analyze_btn.setEnabled(True)
+            self.advanced_analyze_btn.setEnabled(True)
             self.progress_bar.setVisible(False)
     
     def on_analysis_error(self, error_msg):
@@ -210,7 +270,8 @@ class FileBehaviorAnalyzer(QWidget):
         格式化统计信息
         """
         try:
-            stats_text = "系统文件行为分析统计报告\n"
+            analysis_type = stats_info.get('analysis_type', '基础')
+            stats_text = f"系统文件行为分析统计报告 ({analysis_type}分析)\n"
             stats_text += "=" * 50 + "\n"
             stats_text += f"分析时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
             stats_text += f"时间范围: {stats_info.get('time_range', '未知')}\n\n"
@@ -264,6 +325,51 @@ class FileBehaviorAnalyzer(QWidget):
                     stats_text += f"  ... 还有 {len(temp_operations) - 10} 个临时目录操作\n"
                 stats_text += "\n"
             
+            # 文件类型统计
+            file_type_stats = stats_info.get('file_type_statistics', {})
+            if file_type_stats:
+                stats_text += "文件类型统计 (前10个):\n"
+                sorted_file_types = sorted(file_type_stats.items(), key=lambda x: x[1], reverse=True)
+                for file_type, count in sorted_file_types[:10]:
+                    stats_text += f"  {file_type}: {count} 次操作\n"
+                stats_text += "\n"
+            
+            # 高频操作文件
+            frequent_files = stats_info.get('frequent_files', [])
+            if frequent_files:
+                stats_text += "高频操作文件 (前10个):\n"
+                for file_info in frequent_files[:10]:
+                    stats_text += f"  {file_info['path']}: {file_info['count']} 次操作\n"
+                stats_text += "\n"
+            
+            # 高级分析特有的统计信息
+            if analysis_type == "高级":
+                # 按时间分布统计
+                time_distribution = stats_info.get('time_distribution', {})
+                if time_distribution:
+                    stats_text += "时间分布统计:\n"
+                    for hour, count in sorted(time_distribution.items()):
+                        stats_text += f"  {hour}:00 - {hour+1}:00  {count} 次操作\n"
+                    stats_text += "\n"
+                
+                # 异常行为统计
+                anomaly_stats = stats_info.get('anomaly_statistics', {})
+                if anomaly_stats:
+                    stats_text += "异常行为统计:\n"
+                    for anomaly_type, count in anomaly_stats.items():
+                        stats_text += f"  {anomaly_type}: {count} 次\n"
+                    stats_text += "\n"
+                
+                # 进程行为模式分析
+                process_behavior = stats_info.get('process_behavior_patterns', {})
+                if process_behavior:
+                    stats_text += "进程行为模式分析:\n"
+                    for process, behaviors in list(process_behavior.items())[:5]:  # 仅显示前5个进程
+                        stats_text += f"  {process}:\n"
+                        for behavior, count in list(behaviors.items())[:3]:  # 仅显示前3种行为
+                            stats_text += f"    {behavior}: {count} 次\n"
+                    stats_text += "\n"
+            
             return stats_text
             
         except Exception as e:
@@ -281,11 +387,11 @@ class FileBehaviorAnalyzer(QWidget):
                 return
                 
             # 获取文件保存路径
-            file_path, _ = QFileDialog.getSaveFileName(
+            file_path, selected_filter = QFileDialog.getSaveFileName(
                 self, 
                 "导出分析报告", 
                 f"系统文件行为分析报告_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-                "JSON文件 (*.json);;文本文件 (*.txt)"
+                "JSON文件 (*.json);;文本文件 (*.txt);;CSV文件 (*.csv)"
             )
             
             if not file_path:
@@ -313,6 +419,18 @@ class FileBehaviorAnalyzer(QWidget):
             if file_path.endswith('.json'):
                 with open(file_path, 'w', encoding='utf-8') as f:
                     json.dump(report_data, f, ensure_ascii=False, indent=2)
+            elif file_path.endswith('.csv'):
+                import csv
+                with open(file_path, 'w', encoding='utf-8', newline='') as f:
+                    if report_data['table_data']:
+                        fieldnames = list(report_data['table_data'][0].keys())
+                        writer = csv.DictWriter(f, fieldnames=fieldnames)
+                        writer.writeheader()
+                        writer.writerows(report_data['table_data'])
+                    
+                    # 添加统计信息
+                    f.write('\n统计信息:\n')
+                    f.write(report_data['statistics'])
             else:
                 with open(file_path, 'w', encoding='utf-8') as f:
                     f.write(f"系统文件行为分析报告\n")
@@ -340,14 +458,55 @@ class FileBehaviorAnalyzer(QWidget):
         # 如果有之前的分析结果，重新显示
         if self.last_analysis_results:
             self.display_results(self.last_analysis_results)
+            
+            # 如果启用了自动分析，保持其状态
+            if self.auto_analyze_btn.isChecked():
+                self.toggle_auto_analysis(True)
     
     def cleanup(self):
         """
         清理资源
         """
+        # 停止自动分析
+        if self.auto_analysis_timer.isActive():
+            self.auto_analysis_timer.stop()
+            
+        # 停止分析工作线程
         if self.analyze_worker and self.analyze_worker.isRunning():
             self.analyze_worker.quit()
             self.analyze_worker.wait()
+    
+    def toggle_auto_analysis(self, checked):
+        """
+        切换自动分析状态
+        """
+        if checked:
+            # 获取分析间隔（基于当前选择的时间范围）
+            time_range_text = self.time_range_combo.currentText()
+            time_ranges = {
+                "最近5分钟": 5,
+                "最近10分钟": 10,
+                "最近30分钟": 30,
+                "最近1小时": 60,
+                "最近2小时": 120,
+                "最近24小时": 1440
+            }
+            minutes = time_ranges.get(time_range_text, 10)
+            
+            # 设置自动分析间隔为分析时间范围的1/4，但不少于1分钟，不大于30分钟
+            interval = max(1, min(30, minutes // 4)) * 60 * 1000  # 转换为毫秒
+            
+            self.auto_analysis_timer.start(interval)
+            self.time_range_combo.setEnabled(False)
+            self.start_analyze_btn.setEnabled(False)
+            self.auto_analyze_btn.setText("停止自动分析")
+            logger.info(f"自动文件行为分析已启动，间隔: {interval//1000}秒")
+        else:
+            self.auto_analysis_timer.stop()
+            self.time_range_combo.setEnabled(True)
+            self.start_analyze_btn.setEnabled(True)
+            self.auto_analyze_btn.setText("自动分析")
+            logger.info("自动文件行为分析已停止")
 
 
 class FileAnalyzeWorker(QThread):
@@ -416,6 +575,7 @@ class FileAnalyzeWorker(QThread):
                 'create_operations': len([e for e in events if 'create' in e.get('type', '').lower()]),
                 'modify_operations': len([e for e in events if 'modify' in e.get('type', '').lower()]),
                 'delete_operations': len([e for e in events if 'delete' in e.get('type', '').lower()]),
+                'analysis_type': '基础'
             }
             
             # 进程统计
@@ -449,8 +609,225 @@ class FileAnalyzeWorker(QThread):
                     temp_dir_operations.append(event)
             statistics['temp_dir_operations'] = temp_dir_operations
             
+            # 文件类型统计
+            file_type_stats = {}
+            for event in events:
+                path = event.get('path', '')
+                _, ext = os.path.splitext(path)
+                if ext:
+                    file_type_stats[ext] = file_type_stats.get(ext, 0) + 1
+                else:
+                    file_type_stats['无扩展名'] = file_type_stats.get('无扩展名', 0) + 1
+            statistics['file_type_statistics'] = file_type_stats
+            
+            # 高频操作文件
+            file_operation_count = {}
+            for event in events:
+                path = event.get('path', '')
+                file_operation_count[path] = file_operation_count.get(path, 0) + 1
+            
+            # 获取操作次数最多的文件
+            frequent_files = []
+            for path, count in file_operation_count.items():
+                if count > 1:  # 只包含操作次数大于1的文件
+                    frequent_files.append({'path': path, 'count': count})
+            
+            # 按操作次数排序
+            frequent_files.sort(key=lambda x: x['count'], reverse=True)
+            statistics['frequent_files'] = frequent_files
+            
             return statistics
             
         except Exception as e:
             logger.error(f"分析统计数据时出错: {e}", exc_info=True)
             return {}
+
+
+class AdvancedFileAnalyzeWorker(QThread):
+    """
+    高级系统文件行为分析工作线程
+    """
+    analysis_finished = pyqtSignal(dict)
+    analysis_error = pyqtSignal(str)
+    
+    def __init__(self, time_minutes):
+        super().__init__()
+        self.time_minutes = time_minutes
+        
+    def run(self):
+        """
+        执行高级分析任务
+        """
+        try:
+            # 模拟分析过程
+            time.sleep(3)  # 模拟分析耗时更长
+            
+            # 获取文件事件（模拟数据）
+            all_events = SystemUtils.get_file_events(self.time_minutes * 2)  # 获取更多数据用于高级分析
+            
+            # 过滤事件（模拟根据时间过滤）
+            filtered_events = []
+            current_time = time.time()
+            
+            for event in all_events:
+                # 检查事件时间是否在指定范围内
+                event_time = event.get('timestamp', 0)
+                time_diff_minutes = (current_time - event_time) / 60  # 转换为分钟
+                
+                if time_diff_minutes <= self.time_minutes and time_diff_minutes >= 0:
+                    # 格式化时间显示
+                    formatted_time = datetime.fromtimestamp(event_time).strftime('%Y-%m-%d %H:%M:%S')
+                    event['time'] = formatted_time
+                    event['operation'] = event.get('type', '').capitalize()
+                    event['details'] = '模拟数据'
+                    filtered_events.append(event)
+            
+            # 分析统计信息
+            statistics = self.analyze_statistics(filtered_events)
+            statistics['time_range'] = f"最近{self.time_minutes}分钟"
+            statistics['analysis_type'] = '高级'
+            
+            # 构造结果
+            results = {
+                'file_operations': filtered_events,
+                'statistics': statistics
+            }
+            
+            # 发送完成信号
+            self.analysis_finished.emit(results)
+            
+        except Exception as e:
+            logger.error(f"系统文件行为高级分析过程中出错: {e}", exc_info=True)
+            self.analysis_error.emit(str(e))
+    
+    def analyze_statistics(self, events):
+        """
+        高级分析事件统计数据
+        """
+        try:
+            statistics = {
+                'total_operations': len(events),
+                'create_operations': len([e for e in events if 'create' in e.get('type', '').lower()]),
+                'modify_operations': len([e for e in events if 'modify' in e.get('type', '').lower()]),
+                'delete_operations': len([e for e in events if 'delete' in e.get('type', '').lower()]),
+                'analysis_type': '高级'
+            }
+            
+            # 进程统计
+            process_stats = {}
+            for event in events:
+                process = event.get('process', 'Unknown')
+                process_stats[process] = process_stats.get(process, 0) + 1
+            statistics['process_statistics'] = process_stats
+            
+            # 目录统计
+            directory_stats = {}
+            for event in events:
+                path = event.get('path', '')
+                directory = os.path.dirname(path)
+                if directory:
+                    directory_stats[directory] = directory_stats.get(directory, 0) + 1
+            statistics['directory_statistics'] = directory_stats
+            
+            # 可疑行为检测
+            suspicious_operations = []
+            for event in events:
+                if SystemUtils.is_suspicious_file_event(event):
+                    suspicious_operations.append(event)
+            statistics['suspicious_operations'] = suspicious_operations
+            
+            # 临时目录操作
+            temp_dir_operations = []
+            for event in events:
+                path = event.get('path', '').lower()
+                if any(temp_dir in path for temp_dir in ['temp\\', 'tmp\\', r'appdata\local\temp']):
+                    temp_dir_operations.append(event)
+            statistics['temp_dir_operations'] = temp_dir_operations
+            
+            # 文件类型统计
+            file_type_stats = {}
+            for event in events:
+                path = event.get('path', '')
+                _, ext = os.path.splitext(path)
+                if ext:
+                    file_type_stats[ext] = file_type_stats.get(ext, 0) + 1
+                else:
+                    file_type_stats['无扩展名'] = file_type_stats.get('无扩展名', 0) + 1
+            statistics['file_type_statistics'] = file_type_stats
+            
+            # 高频操作文件
+            file_operation_count = {}
+            for event in events:
+                path = event.get('path', '')
+                file_operation_count[path] = file_operation_count.get(path, 0) + 1
+            
+            # 获取操作次数最多的文件
+            frequent_files = []
+            for path, count in file_operation_count.items():
+                if count > 1:  # 只包含操作次数大于1的文件
+                    frequent_files.append({'path': path, 'count': count})
+            
+            # 按操作次数排序
+            frequent_files.sort(key=lambda x: x['count'], reverse=True)
+            statistics['frequent_files'] = frequent_files
+            
+            # 时间分布统计（按小时）
+            time_distribution = {}
+            for event in events:
+                event_time = event.get('timestamp', 0)
+                hour = datetime.fromtimestamp(event_time).hour
+                time_distribution[hour] = time_distribution.get(hour, 0) + 1
+            statistics['time_distribution'] = time_distribution
+            
+            # 异常行为统计
+            anomaly_stats = {
+                'suspicious_paths': len([e for e in events if self.is_suspicious_path(e.get('path', ''))]),
+                'temp_dir_activity': len([e for e in events if self.is_temp_dir_activity(e)]),
+                'executable_file_operations': len([e for e in events if self.is_executable_operation(e)]),
+                'rapid_operations': len([e for e in events if self.is_rapid_operation(e, events)])
+            }
+            statistics['anomaly_statistics'] = anomaly_stats
+            
+            # 进程行为模式分析
+            process_behavior_patterns = {}
+            for event in events:
+                process = event.get('process', 'Unknown')
+                operation = event.get('type', '').lower()
+                
+                if process not in process_behavior_patterns:
+                    process_behavior_patterns[process] = {}
+                
+                process_behavior_patterns[process][operation] = process_behavior_patterns[process].get(operation, 0) + 1
+            
+            statistics['process_behavior_patterns'] = process_behavior_patterns
+            
+            return statistics
+            
+        except Exception as e:
+            logger.error(f"高级分析统计数据时出错: {e}", exc_info=True)
+            return {}
+    
+    def is_suspicious_path(self, path):
+        """判断路径是否可疑"""
+        suspicious_patterns = [
+            'users\\public\\', 'programdata\\', '\\windows\\temp\\',
+            '\\appdata\\local\\temp\\', '\\temp\\', '\\tmp\\'
+        ]
+        path_lower = path.lower()
+        return any(pattern in path_lower for pattern in suspicious_patterns)
+    
+    def is_temp_dir_activity(self, event):
+        """判断是否为临时目录活动"""
+        path = event.get('path', '').lower()
+        return any(temp_dir in path for temp_dir in ['temp\\', 'tmp\\', r'appdata\local\temp'])
+    
+    def is_executable_operation(self, event):
+        """判断是否为可执行文件操作"""
+        path = event.get('path', '')
+        _, ext = os.path.splitext(path)
+        return ext.lower() in ['.exe', '.dll', '.bat', '.cmd', '.vbs', '.scr', '.com']
+    
+    def is_rapid_operation(self, target_event, all_events):
+        """判断是否为快速操作（短时间内同一进程对同一目录的多次操作）"""
+        # 这里简化实现，实际应该更复杂
+        return False

@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+"""
+主窗口模块
+提供主界面和标签页管理功能
+"""
+
 from PyQt5.QtWidgets import (QMainWindow, QTabWidget, QWidget, QVBoxLayout, 
                             QStatusBar, QMenuBar, QMenu, QAction, QMessageBox,
                             QSplitter, QFrame, QToolBar, QSizePolicy, QLabel, QApplication)
@@ -8,7 +13,22 @@ import logging
 import sys
 import os
 import ctypes  # 请求管理员权限
+import codecs  # 添加编码处理模块
 from datetime import datetime
+
+# 导入配置模块
+from config import Config
+
+# 全局使用codecs.open替代open，确保文件读写使用UTF-8编码
+def read_file(filename):
+    """读取文件内容"""
+    with codecs.open(filename, 'r', encoding='utf-8') as f:
+        return f.read()
+
+def write_file(filename, content):
+    """写入文件内容"""
+    with codecs.open(filename, 'w', encoding='utf-8') as f:
+        f.write(content)
 
 # 设置logger
 logger = logging.getLogger(__name__)
@@ -17,17 +37,17 @@ logger.setLevel(logging.INFO)
 # 导入项目工具模块
 from utils.common_utils import show_error_message, show_info_message, show_warning_message
 
-# 修复导入路径问题
+# 从UI包直接导入所有标签页类
+# 使用直接导入避免触发ui.__init__.py中的警告
 try:
-    # 尝试相对导入所有UI模块
-    from .process_tab import ProcessTab
-    from .network_tab import NetworkTab
-    from .startup_tab import StartupTab
-    from .registry_tab import RegistryTab
-    from .file_monitor_tab import FileMonitorTab
-    from .popup_blocker_tab import PopupBlockerTab
-    from .modules_tab import ModulesTab
-    from .sandbox_tab import SandboxTab  # 添加沙箱模块导入
+    from ui.process_tab import ProcessTab
+    from ui.network_tab import NetworkTab
+    from ui.startup_tab import StartupTab
+    from ui.registry_tab import RegistryTab
+    from ui.file_monitor_tab import FileMonitorTab
+    from ui.popup_blocker_tab import PopupBlockerTab
+    from ui.modules_tab import ModulesTab
+    from ui.sandbox_tab import SandboxTab
     
     logger.info("✅ 所有标签页类导入成功")
     
@@ -73,12 +93,15 @@ class MainWindow(QMainWindow):
         super().__init__()
         
         # 设置窗口属性
-        self.setWindowTitle("系统安全分析工具")
-        self.setGeometry(100, 100, 1400, 900)
+        self.setWindowTitle(Config.WINDOW_TITLE)
+        self.setGeometry(100, 100, Config.WINDOW_WIDTH, Config.WINDOW_HEIGHT)
         self.setMinimumSize(1200, 800)  # 设置最小尺寸，防止窗口过小导致界面元素错乱
         
         # 初始化状态
         self.initialized_tabs = set()  # 记录已初始化的标签页
+        # 延迟初始化配置
+        self.enable_delayed_init = Config.ENABLE_DELAYED_INITIALIZATION
+        self.delayed_init_delay = Config.DELAYED_INIT_DELAY  # 500ms延迟
         self.current_tab_index = -1    # 当前标签页索引
         self.tab_widgets = {}          # 保存标签页控件引用
 
@@ -91,10 +114,25 @@ class MainWindow(QMainWindow):
         # 延迟初始化第一个标签页
         QTimer.singleShot(100, self.init_first_tab)
         
+        # 设置内存清理定时器
+        if getattr(Config, 'ENABLE_MEMORY_OPTIMIZATION', True):
+            self.memory_cleanup_timer = QTimer()
+            self.memory_cleanup_timer.timeout.connect(self.cleanup_memory)
+            self.memory_cleanup_timer.start(Config.MEMORY_CLEANUP_INTERVAL)
+        
         # 状态栏消息
         self.statusBar().showMessage("就绪")
         logger.info("主窗口初始化完成")
-        
+    
+    def cleanup_memory(self):
+        """清理内存，释放不需要的资源"""
+        try:
+            import gc
+            collected = gc.collect()
+            logger.debug(f"内存清理完成，回收了 {collected} 个对象")
+        except Exception as e:
+            logger.error(f"内存清理时出错: {e}")
+    
     def is_admin(self):
         """检查当前是否具有管理员权限"""
         try:
@@ -541,6 +579,11 @@ class MainWindow(QMainWindow):
             if index not in self.initialized_tabs:
                 self.initialized_tabs.add(index)
                 self.load_tab_data(index)
+            else:
+                # 对于已初始化的标签页，启动自动刷新（如果支持）
+                current_widget = self.tab_widget.widget(index)
+                if hasattr(current_widget, 'start_auto_refresh'):
+                    current_widget.start_auto_refresh()
     
     def load_tab_data(self, index):
         """加载标签页数据"""
@@ -552,8 +595,35 @@ class MainWindow(QMainWindow):
             if hasattr(current_widget, 'refresh_display'):
                 current_widget.refresh_display()
                 logger.info(f"已刷新标签页 {self.tab_widget.tabText(index)} 的数据")
+                
+            # 如果标签页支持自动刷新，启动它
+            if hasattr(current_widget, 'start_auto_refresh'):
+                current_widget.start_auto_refresh()
         except Exception as e:
             logger.error(f"加载标签页 {index} 数据时出错: {e}")
+    
+    def stop_all_auto_refresh(self):
+        """停止所有标签页的自动刷新"""
+        for i in range(self.tab_widget.count()):
+            widget = self.tab_widget.widget(i)
+            if hasattr(widget, 'stop_auto_refresh'):
+                widget.stop_auto_refresh()
+    
+    def pause_all_auto_refresh(self):
+        """暂停所有标签页的自动刷新"""
+        for i in range(self.tab_widget.count()):
+            widget = self.tab_widget.widget(i)
+            if hasattr(widget, 'stop_auto_refresh'):
+                widget.stop_auto_refresh()
+    
+    def resume_all_auto_refresh(self):
+        """恢复所有标签页的自动刷新"""
+        current_index = self.tab_widget.currentIndex()
+        for i in range(self.tab_widget.count()):
+            widget = self.tab_widget.widget(i)
+            # 只恢复当前标签页的自动刷新，其他标签页在切换时恢复
+            if hasattr(widget, 'start_auto_refresh') and i == current_index:
+                widget.start_auto_refresh()
     
     def refresh_current_tab(self):
         """刷新当前标签页"""
@@ -607,10 +677,24 @@ class MainWindow(QMainWindow):
                          "系统安全分析工具\n\n"
                          "一款功能强大的Windows系统安全分析工具\n"
                          "帮助用户深入了解系统运行状态，检测恶意软件，优化系统性能")
+
+    def changeEvent(self, event):
+        """处理窗口状态变化事件"""
+        if event.type() == event.WindowStateChange:
+            if self.windowState() & Qt.WindowMinimized:
+                # 窗口最小化时暂停自动刷新以节省资源
+                self.pause_all_auto_refresh()
+            else:
+                # 窗口恢复时恢复自动刷新
+                self.resume_all_auto_refresh()
+        super().changeEvent(event)
     
     def closeEvent(self, event):
         """窗口关闭事件"""
         try:
+            # 停止所有自动刷新
+            self.stop_all_auto_refresh()
+            
             # 清理各标签页资源
             for widget in self.tab_widgets.values():
                 if hasattr(widget, 'cleanup'):
@@ -619,6 +703,13 @@ class MainWindow(QMainWindow):
             # 停止定时器
             if hasattr(self, 'time_timer'):
                 self.time_timer.stop()
+                
+            # 停止内存清理定时器
+            if hasattr(self, 'memory_cleanup_timer'):
+                self.memory_cleanup_timer.stop()
+            
+            # 执行最终的内存清理
+            self.cleanup_memory()
             
             # 记录日志
             logger.info("应用程序已关闭")

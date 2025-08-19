@@ -1,0 +1,46 @@
+2025-08-19 17:48:10,726 - INFO - 开始执行项目优化...
+2025-08-19 17:48:10,727 - INFO - 开始优化导入语句...
+2025-08-19 17:48:10,728 - ERROR - 处理文件 ui/main_window.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,729 - ERROR - 处理文件 ui/process_tab.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,729 - ERROR - 处理文件 ui/network_tab.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,730 - ERROR - 处理文件 ui/startup_tab.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,730 - ERROR - 处理文件 ui/registry_tab.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,731 - ERROR - 处理文件 ui/file_monitor_tab.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,732 - ERROR - 处理文件 ui/popup_blocker_tab.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,733 - INFO - 优化了文件中的导入语句: ui/modules_tab.py
+2025-08-19 17:48:10,733 - ERROR - 处理文件 ui/sandbox_tab.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,734 - ERROR - 处理文件 ui/file_behavior_analyzer.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,735 - ERROR - 处理文件 utils/system_utils.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,736 - INFO - 优化了文件中的导入语句: utils/common_utils.py
+2025-08-19 17:48:10,736 - ERROR - 处理文件 sandbox/config_manager.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,737 - ERROR - 处理文件 sandbox/ui_components.py 时出错: name 'imp_striipped' is not defined
+2025-08-19 17:48:10,738 - INFO - 优化了文件中的导入语句: sandbox/sandbox_utils.py
+2025-08-19 17:48:10,738 - INFO - 导入语句优化完成
+2025-08-19 17:48:10,738 - INFO - 开始优化配置文件...
+2025-08-19 17:48:10,739 - INFO - 优化了配置文件格式: config/sandbox_config.json
+2025-08-19 17:48:10,741 - INFO - 优化了配置文件格式: sandbox/sandbox_config.json
+2025-08-19 17:48:10,741 - INFO - 优化了配置文件格式: config/resource_limits.json
+2025-08-19 17:48:10,742 - INFO - 优化了配置文件格式: sandbox/resource_limits.json
+2025-08-19 17:48:10,742 - INFO - 配置文件优化完成
+2025-08-19 17:48:10,743 - INFO - 开始添加缺失的文档字符串...
+2025-08-19 17:48:10,743 - INFO - 为函数 wrapper 添加了文档字符串
+2025-08-19 17:48:10,743 - INFO - 为函数 decorator 添加了文档字符串
+2025-08-19 17:48:10,743 - INFO - 为函数 wrapper 添加了文档字符串
+2025-08-19 17:48:10,744 - INFO - 为函数 wrapper 添加了文档字符串
+2025-08-19 17:48:10,744 - INFO - 为函数 decorator 添加了文档字符串
+2025-08-19 17:48:10,744 - INFO - 为函数 wrapper 添加了文档字符串
+2025-08-19 17:48:10,745 - INFO - 为函数 wrapper 添加了文档字符串
+2025-08-19 17:48:10,745 - INFO - 为函数 decorator 添加了文档字符串
+2025-08-19 17:48:10,746 - INFO - 为函数 wrapper 添加了文档字符串
+2025-08-19 17:48:10,747 - INFO - 文档字符串添加完成
+2025-08-19 17:48:10,747 - INFO - 所有项目优化完成!
+2025-08-19 17:48:50,450 - INFO - 开始执行项目优化...
+2025-08-19 17:48:50,450 - INFO - 开始优化配置文件...
+2025-08-19 17:48:50,451 - INFO - 优化了配置文件格式: config/sandbox_config.json
+2025-08-19 17:48:50,452 - INFO - 优化了配置文件格式: sandbox/sandbox_config.json
+2025-08-19 17:48:50,453 - INFO - 优化了配置文件格式: config/resource_limits.json
+2025-08-19 17:48:50,454 - INFO - 优化了配置文件格式: sandbox/resource_limits.json
+2025-08-19 17:48:50,454 - INFO - 配置文件优化完成
+2025-08-19 17:48:50,454 - INFO - 开始添加缺失的文档字符串...
+2025-08-19 17:48:50,456 - INFO - 文档字符串添加完成
+2025-08-19 17:48:50,456 - INFO - 所有项目优化完成!

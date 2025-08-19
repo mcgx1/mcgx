@@ -1,15 +1,16 @@
+import logging
+import os
+
+from PyQt5.QtWidgets import QMessageBox
+
+from utils.common_utils import show_error_message, show_warning_message, show_info_message, format_bytes
+
 # -*- coding: utf-8 -*-
 """
 沙箱工具模块
 提供沙箱功能的通用工具函数
 """
-import logging
-import os
-from PyQt5.QtWidgets import QMessageBox
-
 # 导入项目通用工具
-from utils.common_utils import show_error_message, show_warning_message, show_info_message, format_bytes
-
 # 设置日志
 logger = logging.getLogger(__name__)
 

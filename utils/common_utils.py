@@ -1,13 +1,21 @@
+
+"""
+通用工具模块
+提供项目中通用的工具函数
+"""
+# -*- coding: utf-8 -*-
+
+import logging
+import functools
+import time
+
+from PyQt5.QtWidgets import QMessageBox
+
 # -*- coding: utf-8 -*-
 """
 通用工具模块
 提供项目中重复使用的通用功能
 """
-import logging
-import functools
-import time
-from PyQt5.QtWidgets import QMessageBox
-
 # 设置日志
 logger = logging.getLogger(__name__)
 
@@ -60,6 +68,9 @@ def performance_monitor(func):
     """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
+        """
+        wrapper函数
+        """
         start_time = time.time()
         try:
             result = func(*args, **kwargs)
@@ -82,11 +93,17 @@ def memoize_with_ttl(ttl_seconds=60):
         ttl_seconds (int): 缓存过期时间（秒）
     """
     def decorator(func):
+        """
+        decorator函数
+        """
         cache = {}
         timestamps = {}
         
         @functools.wraps(func)
         def wrapper(*args, **kwargs):
+            """
+            wrapper函数
+            """
             # 创建缓存键
             key = str(args) + str(sorted(kwargs.items()))
             current_time = time.time()

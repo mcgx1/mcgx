@@ -1,11 +1,36 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, 
-                            QPushButton, QTreeWidget, QTreeWidgetItem, QLabel,
-                            QMessageBox, QSplitter, QMenu, QAction)
-from PyQt5.QtCore import Qt, QThread, pyqtSignal, QSize
-from PyQt5.QtGui import QKeySequence
-import winreg
+
+"""
+注册表标签页模块
+提供注册表监控和管理功能
+"""
 import logging
+import sys
+import os
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
+                             QTreeWidget, QTreeWidgetItem, QLabel, QMessageBox, 
+                             QHeaderView, QComboBox, QGroupBox, QFormLayout,
+                             QSplitter, QTextEdit, QLineEdit, QFileDialog)
+from PyQt5.QtCore import Qt, QTimer, pyqtSignal
+from PyQt5.QtGui import QFont, QColor
+
+# 修复导入问题：使用绝对导入
+try:
+    from utils.system_utils import RegistryMonitor
+    from config import Config
+    from utils.decorators import performance_monitor
+except ImportError:
+    from utils.system_utils import RegistryMonitor
+    from config import Config
+    from utils.decorators import performance_monitor
+
+# 尝试导入winreg模块用于注册表操作
+try:
+    import winreg as winreg
+    WINREG_AVAILABLE = True
+except ImportError:
+    WINREG_AVAILABLE = False
+    logging.warning("无法导入winreg模块，注册表功能将不可用")
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +98,7 @@ class RegistryTab(QWidget):
         # 加载默认根键
         self.load_root_keys()
         
+    @performance_monitor
     def load_root_keys(self):
         """加载根键"""
         self.registry_tree.clear()
@@ -195,6 +221,7 @@ class RegistryTab(QWidget):
         }
         return root_keys.get(root_key_name)
     
+    @performance_monitor
     def refresh_current_key(self):
         """刷新当前选中的键"""
         try:
@@ -211,6 +238,7 @@ class RegistryTab(QWidget):
             logger.error(f"刷新注册表项时出错: {e}")
             self.statusBar().showMessage("刷新失败")
     
+    @performance_monitor
     def load_subkeys(self, item):
         """加载子键"""
         try:
@@ -320,6 +348,7 @@ class RegistryTab(QWidget):
             logger.error(f"打开启动项管理器时出错: {e}")
             QMessageBox.critical(self, "错误", f"打开启动项管理器时出错: {str(e)}")
     
+    @performance_monitor
     def refresh_display(self):
         """刷新显示"""
         try:

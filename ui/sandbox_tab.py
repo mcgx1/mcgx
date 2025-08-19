@@ -1,26 +1,41 @@
 # -*- coding: utf-8 -*-
+
 """
 沙箱标签页模块
-实现沙箱功能的UI界面
+提供文件沙箱分析功能
 """
-
-import sys
-import os
-import ctypes
 import logging
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QLabel, QPushButton, QHBoxLayout
-from PyQt5.QtCore import Qt
+import os
+import hashlib
+import time
+import ctypes
+import sys
+from datetime import datetime
+from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
+                             QTableWidget, QTableWidgetItem, QLabel, QMessageBox, 
+                             QAbstractItemView, QGroupBox, QFormLayout, QTextEdit,
+                             QComboBox, QFileDialog, QHeaderView, QProgressBar,
+                             QTextBrowser, QTabWidget, QLineEdit, QCheckBox, 
+                             QSpinBox, QDoubleSpinBox, QListWidget, QTreeWidget, 
+                             QTreeWidgetItem, QSplitter, QApplication)
+from PyQt5.QtCore import Qt, QTimer, QThread, pyqtSignal, QMutex, QMutexLocker
+from PyQt5.QtGui import QColor, QFont, QTextCharFormat, QTextCursor
 
-# 添加项目根目录到Python路径
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# 定义沙箱功能是否可用
+SANDBOX_AVAILABLE = True
 
-# 导入沙箱UI组件
+# 修复导入问题：使用标准导入方式
 try:
+    from utils.system_utils import PEAnalyzer, FileEntropyAnalyzer
+    from config import Config
+    from utils.common_utils import show_error_message, show_info_message, format_bytes
     from sandbox.ui_components import SandboxControlPanel
-    SANDBOX_AVAILABLE = True
-except ImportError as e:
-    print(f"⚠️ 沙箱UI组件导入失败: {e}")
+except ImportError:
+    # 如果导入失败，则标记沙箱功能不可用
     SANDBOX_AVAILABLE = False
+    from utils.system_utils import PEAnalyzer, FileEntropyAnalyzer
+    from config import Config
+    from utils.common_utils import show_error_message, show_info_message, format_bytes
 
 logger = logging.getLogger(__name__)
 

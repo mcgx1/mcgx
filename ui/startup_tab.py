@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+"""
+启动项标签页模块
+提供系统启动项管理和监控功能
+"""
 import logging
 import time
 import winreg
@@ -9,7 +14,9 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                              QTreeWidgetItem, QHeaderView, QSplitter)
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QIcon
-from utils.system_utils import SystemUtils
+
+# 修复导入问题：使用标准导入方式
+from utils.system_utils import SystemUtils, performance_monitor
 from config import Config
 
 logger = logging.getLogger(__name__)
@@ -194,6 +201,9 @@ class StartupTab(QWidget):
         self._last_refresh_time = 0  # 初始化刷新时间
         self.startup_info_manager = StartupInfoManager()  # 添加启动项信息管理器
         self.init_ui()
+        self.auto_refresh_timer = QTimer()
+        self.auto_refresh_timer.timeout.connect(self.refresh)
+        self.auto_refresh_timer.setInterval(Config.STARTUP_REFRESH_INTERVAL)
         
     def init_ui(self):
         layout = QVBoxLayout()
@@ -274,7 +284,8 @@ class StartupTab(QWidget):
             self.startup_table.show()
             self.toggle_view_btn.setText('切换到树状视图')
 
-    def refresh(self):
+    @performance_monitor
+    def refresh(self, *args):
         # 防止频繁刷新
         current_time = int(time.time() * 1000)
         if current_time - self._last_refresh_time < 2000:  # 2秒内不能重复刷新
@@ -381,6 +392,7 @@ class StartupTab(QWidget):
             
         self._last_refresh_time = current_time
 
+    @performance_monitor
     def update_startup_tree(self, startup_items):
         """
         更新启动项树状视图
@@ -575,12 +587,36 @@ class StartupTab(QWidget):
             except Exception as e:
                 logger.error(f"显示启动项详细信息时出错: {e}")
                 QMessageBox.critical(self, "错误", f"发生未知错误: {str(e)}")
-    
-    def cleanup(self):
-        """
-        清理资源
-        """
+
+    def start_auto_refresh(self):
+        """启动自动刷新"""
+        if getattr(Config, 'ENABLE_AUTO_REFRESH', True) and not self.auto_refresh_timer.isActive():
+            self.auto_refresh_timer.start()
+            logger.info("启动项标签页自动刷新已启动")
+
+    def stop_auto_refresh(self):
+        """停止自动刷新"""
         try:
-            logger.info("StartupTab 资源清理完成")
-        except Exception as e:
-            logger.error(f"StartupTab 清理资源时出错: {e}")
+            if hasattr(self, 'auto_refresh_timer') and self.auto_refresh_timer and self.auto_refresh_timer.isActive():
+                self.auto_refresh_timer.stop()
+                logger.info("启动项标签页自动刷新已停止")
+        except RuntimeError:
+            # Qt对象可能已被删除
+            pass
+
+    def refresh_display(self):
+        """刷新显示数据"""
+        self.refresh()
+        
+    def cleanup(self):
+        """清理资源"""
+        self.stop_auto_refresh()
+        logger.info("StartupTab 资源清理完成")
+        
+    def __del__(self):
+        """析构函数，确保资源释放"""
+        try:
+            self.cleanup()
+        except RuntimeError:
+            # 忽略Qt对象已被删除的错误
+            pass

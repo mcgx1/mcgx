@@ -1,12 +1,16 @@
-# -*- coding: utf-8 -*-
 import logging
 import os
+import sys
+
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
                              QTableWidget, QTableWidgetItem, QLabel, QMessageBox, QAbstractItemView,
                              QHeaderView)
 from PyQt5.QtCore import QTimer, Qt
-from utils.system_utils import SystemUtils
 import psutil
+
+# 修复导入问题：添加项目路径并导入
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.system_utils import SystemUtils
 
 logger = logging.getLogger(__name__)
 

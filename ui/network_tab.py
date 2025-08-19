@@ -1,14 +1,23 @@
 # -*- coding: utf-8 -*-
+
+"""
+网络标签页模块
+提供网络连接监控功能
+"""
 import logging
 import time
 import os
+import sys
 import psutil
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
                              QTableWidget, QTableWidgetItem, QLabel, QMessageBox, 
                              QAbstractItemView, QHeaderView)
 from PyQt5.QtCore import QTimer, Qt, QThread, pyqtSignal
 from PyQt5.QtGui import QIcon, QPixmap
-from utils.system_utils import SystemUtils
+
+# 修复导入问题：移除相对导入，直接导入
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from utils.system_utils import SystemUtils, performance_monitor
 from config import Config
 
 # 尝试导入win32相关模块用于获取进程图标
@@ -48,6 +57,9 @@ class NetworkTab(QWidget):
         self._last_refresh_time = 0  # 初始化刷新时间
         self.init_ui()
         # 不在初始化时立即刷新，由主窗口延迟初始化触发
+        self.auto_refresh_timer = QTimer()
+        self.auto_refresh_timer.timeout.connect(self.refresh)
+        self.auto_refresh_timer.setInterval(Config.NETWORK_REFRESH_INTERVAL)
         
     def init_ui(self):
         layout = QVBoxLayout()
@@ -89,7 +101,8 @@ class NetworkTab(QWidget):
         layout.addWidget(self.connection_table)
         self.setLayout(layout)
         
-    def refresh(self):
+    @performance_monitor
+    def refresh(self, *args):
         # 防止频繁刷新
         current_time = int(time.time() * 1000)
         if current_time - self._last_refresh_time < 2000:  # 2秒内不能重复刷新
@@ -457,21 +470,42 @@ class NetworkTab(QWidget):
             logger.error(f"检查网络连接是否可疑时出错: {e}")
             return False
     
-    def cleanup(self):
-        """
-        清理资源
-        """
+    def start_auto_refresh(self):
+        """启动自动刷新"""
+        if getattr(Config, 'ENABLE_AUTO_REFRESH', True) and not self.auto_refresh_timer.isActive():
+            self.auto_refresh_timer.start()
+            logger.info("网络标签页自动刷新已启动")
+
+    def stop_auto_refresh(self):
+        """停止自动刷新"""
         try:
-            # 如果有任何后台线程正在运行，则停止它们
-            if hasattr(self, 'refresh_worker') and self.refresh_worker:
-                try:
-                    if self.refresh_worker.isRunning():
-                        self.refresh_worker.quit()
-                        self.refresh_worker.wait()
-                except Exception as e:
-                    logger.error(f"停止后台线程时出错: {e}")
-                    pass  # 忽略线程清理过程中的任何异常
-                    
-            logger.info("NetworkTab 资源清理完成")
-        except Exception as e:
-            logger.error(f"NetworkTab 清理资源时出错: {e}")
+            if hasattr(self, 'auto_refresh_timer') and self.auto_refresh_timer and self.auto_refresh_timer.isActive():
+                self.auto_refresh_timer.stop()
+                logger.info("网络标签页自动刷新已停止")
+        except RuntimeError:
+            # Qt对象可能已被删除
+            pass
+
+    def refresh_display(self):
+        """刷新显示数据"""
+        self.refresh()
+        
+    def cleanup(self):
+        """清理资源"""
+        self.stop_auto_refresh()
+        try:
+            if self.refresh_worker and self.refresh_worker.isRunning():
+                self.refresh_worker.quit()
+                self.refresh_worker.wait()
+        except RuntimeError:
+            # Qt对象可能已被删除
+            pass
+        logger.info("NetworkTab 资源清理完成")
+        
+    def __del__(self):
+        """析构函数，确保资源释放"""
+        try:
+            self.cleanup()
+        except RuntimeError:
+            # 忽略Qt对象已被删除的错误
+            pass

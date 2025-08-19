@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+"""
+配置模块
+提供项目配置管理功能
+"""
 import os
 
 # 网络配置
@@ -81,9 +86,19 @@ class Config:
     DELAYED_INIT_DELAY = 500  # 延迟初始化延迟时间（毫秒）
     FUNCTIONAL_INIT_DELAY = 1000  # 功能初始化延迟时间（毫秒）
     
+    # 自动刷新配置
+    ENABLE_AUTO_REFRESH = True  # 启用自动刷新
+    AUTO_REFRESH_CHECK_INTERVAL = 1000  # 自动刷新检查间隔（毫秒）
+    
+    # 内存优化配置
+    ENABLE_MEMORY_OPTIMIZATION = True  # 启用内存优化
+    MEMORY_CLEANUP_INTERVAL = 30000  # 内存清理间隔（毫秒）
+    
     # 缓存配置
     SYSTEM_INFO_CACHE_TTL = 30  # 系统信息缓存时间（秒）
     PROCESS_LIST_CACHE_TTL = 10  # 进程列表缓存时间（秒）
+    NETWORK_CONNECTIONS_CACHE_TTL = 5  # 网络连接缓存时间（秒）
+    STARTUP_ITEMS_CACHE_TTL = 60  # 启动项缓存时间（秒）
     
     # 沙箱配置
     SANDBOX_DEFAULT_TIMEOUT = 30  # 沙箱默认超时时间（秒）
@@ -96,16 +111,17 @@ class Config:
     
     # 文件行为分析配置
     FILE_BEHAVIOR_ANALYSIS_TIME_RANGES = {
-        "最近5分钟": 5,
-        "最近10分钟": 10,
-        "最近30分钟": 30,
-        "最近1小时": 60,
-        "最近2小时": 120,
-        "最近24小时": 1440
+        "last_5_minutes": 5,
+        "last_10_minutes": 10,
+        "last_30_minutes": 30,
+        "last_1_hour": 60,
+        "last_2_hours": 120,
+        "last_24_hours": 1440
     }
     
     # 性能监控配置
     PERFORMANCE_MONITOR_THRESHOLD = 0.1  # 性能监控阈值（秒）
+    PERFORMANCE_MONITOR_ENABLED = True   # 启用性能监控
     
     # 新增：随机事件配置
     MIN_RANDOM_EVENTS = 20  # 最少随机事件数
@@ -125,6 +141,8 @@ class Config:
         cache_ttls = {
             'system_info': cls.SYSTEM_INFO_CACHE_TTL,
             'process_list': cls.PROCESS_LIST_CACHE_TTL,
+            'network_connections': cls.NETWORK_CONNECTIONS_CACHE_TTL,
+            'startup_items': cls.STARTUP_ITEMS_CACHE_TTL,
         }
         return cache_ttls.get(key, 60)  # 默认60秒
     

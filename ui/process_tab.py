@@ -1,14 +1,28 @@
-
 # -*- coding: utf-8 -*-
 
-def is_valid_process(pid):
-    # 过滤特殊系统进程
-    return pid != 0  # 排除System Idle Process (pid=0)
+"""
+进程标签页模块
+提供进程监控和管理功能
+"""
 import logging
 import os
 import platform
 import psutil
 from datetime import datetime
+import sys
+
+# 添加项目根目录到sys.path
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+# 导入项目工具模块
+from utils.common_utils import show_error_message, format_bytes, format_duration
+from utils.decorators import performance_monitor
+
+# 修复导入问题：移除相对导入，直接导入
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from config import Config
 
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
 from PyQt5.QtGui import QColor, QFont, QIcon, QPixmap, QImage
@@ -17,8 +31,13 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QTableWidget,
                              QLineEdit, QComboBox, QMessageBox, QProgressBar,
                              QSplitter, QGroupBox, QFormLayout, QTreeWidget, QTreeWidgetItem)
 
-# 设置日志
+# 设置logger
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+def is_valid_process(pid):
+    # 过滤特殊系统进程
+    return pid != 0  # 排除System Idle Process (pid=0)
 
 # 检查是否可以使用win32 API
 try:
@@ -37,46 +56,344 @@ class ProcessTreeWidget(QTreeWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setHeaderLabels(['PID', '进程名', '状态', 'CPU%', '内存(MB)', '用户'])
-        self.setAlternatingRowColors(True)
-        self.setSortingEnabled(True)
         
-    def populate_processes(self, processes):
-        """
-        填充进程数据到树状结构中
-        :param processes: 进程信息列表
-        """
-        # 清空现有项目
-        self.clear()
+        # 设置列宽
+        header = self.header()
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)  # PID
+        header.setSectionResizeMode(1, QHeaderView.Stretch)           # 进程名
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)  # 状态
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)  # CPU%
+        header.setSectionResizeMode(4, QHeaderView.ResizeToContents)  # 内存
+        header.setSectionResizeMode(5, QHeaderView.ResizeToContents)  # 用户
+
+class ProcessTab(QWidget):
+    """进程管理标签页"""
+    
+    # 信号定义
+    process_killed = pyqtSignal(str)  # 进程被终止时发送信号
+    process_refreshed = pyqtSignal(int)  # 进程列表刷新时发送信号
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.process_tree = None
+        self.refresh_timer = None
+        self.sort_order = Qt.AscendingOrder
+        self.sort_column = 1  # 默认按进程名排序
+        self.last_selected_pid = None
+        self.last_selected_exe = None
+        self.init_ui()
+        self.setup_timer()
+        logger.info("进程标签页初始化完成")
+    
+    def init_ui(self):
+        """初始化UI"""
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(5, 5, 5, 5)
+        layout.setSpacing(5)
         
-        # 创建一个字典来存储进程项，便于构建父子关系
+        # 创建顶部工具栏
+        toolbar_layout = QHBoxLayout()
+        toolbar_layout.setSpacing(10)
+        
+        # 刷新按钮
+        self.refresh_btn = QPushButton("🔄 刷新")
+        self.refresh_btn.clicked.connect(self.refresh_processes)
+        self.refresh_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2980b9;
+            }
+        """)
+        toolbar_layout.addWidget(self.refresh_btn)
+        
+        # 终止进程按钮
+        self.kill_btn = QPushButton("❌ 终止进程")
+        self.kill_btn.clicked.connect(self.kill_selected_process)
+        self.kill_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #e74c3c;
+                color: white;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #c0392b;
+            }
+            QPushButton:disabled {
+                background-color: #95a5a6;
+            }
+        """)
+        self.kill_btn.setEnabled(False)
+        toolbar_layout.addWidget(self.kill_btn)
+        
+        # 搜索框
+        self.search_edit = QLineEdit()
+        self.search_edit.setPlaceholderText("🔍 搜索进程名或PID...")
+        self.search_edit.textChanged.connect(self.filter_processes)
+        self.search_edit.setStyleSheet("""
+            QLineEdit {
+                border: 1px solid #bdc3c7;
+                border-radius: 4px;
+                padding: 5px;
+            }
+        """)
+        toolbar_layout.addWidget(self.search_edit)
+        
+        # 进程数标签
+        self.process_count_label = QLabel("进程数: 0")
+        self.process_count_label.setStyleSheet("""
+            QLabel {
+                font-weight: bold;
+                color: #2c3e50;
+                padding: 0 5px;
+            }
+        """)
+        toolbar_layout.addWidget(self.process_count_label)
+        
+        # 添加弹簧使控件靠左对齐
+        toolbar_layout.addStretch()
+        
+        layout.addLayout(toolbar_layout)
+        
+        # 创建分割器
+        splitter = QSplitter(Qt.Horizontal)
+        splitter.setHandleWidth(5)
+        
+        # 左侧：进程树
+        self.process_tree = ProcessTreeWidget()
+        self.process_tree.itemSelectionChanged.connect(self.on_process_selected)
+        self.process_tree.setSortingEnabled(True)
+        self.process_tree.sortByColumn(self.sort_column, self.sort_order)
+        self.process_tree.header().sectionClicked.connect(self.on_header_clicked)
+        
+        # 右侧：详细信息面板
+        self.detail_group = QGroupBox("进程详细信息")
+        detail_layout = QFormLayout(self.detail_group)
+        detail_layout.setLabelAlignment(Qt.AlignRight)
+        detail_layout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
+        
+        self.detail_pid = QLabel("N/A")
+        self.detail_name = QLabel("N/A")
+        self.detail_status = QLabel("N/A")
+        self.detail_cpu = QLabel("N/A")
+        self.detail_memory = QLabel("N/A")
+        self.detail_user = QLabel("N/A")
+        self.detail_create_time = QLabel("N/A")
+        self.detail_exe = QLabel("N/A")
+        self.detail_cmdline = QLabel("N/A")
+        self.detail_cmdline.setWordWrap(True)
+        
+        detail_layout.addRow("PID:", self.detail_pid)
+        detail_layout.addRow("进程名:", self.detail_name)
+        detail_layout.addRow("状态:", self.detail_status)
+        detail_layout.addRow("CPU使用率:", self.detail_cpu)
+        detail_layout.addRow("内存使用:", self.detail_memory)
+        detail_layout.addRow("用户:", self.detail_user)
+        detail_layout.addRow("启动时间:", self.detail_create_time)
+        detail_layout.addRow("可执行文件:", self.detail_exe)
+        detail_layout.addRow("命令行:", self.detail_cmdline)
+        
+        splitter.addWidget(self.process_tree)
+        splitter.addWidget(self.detail_group)
+        splitter.setSizes([700, 300])  # 设置初始大小
+        
+        layout.addWidget(splitter)
+        
+        # 底部：进度条和状态信息
+        bottom_layout = QHBoxLayout()
+        
+        self.refresh_progress = QProgressBar()
+        self.refresh_progress.setRange(0, 0)  # 设置为忙碌状态
+        self.refresh_progress.setVisible(False)
+        self.refresh_progress.setStyleSheet("""
+            QProgressBar {
+                border: 1px solid #bdc3c7;
+                border-radius: 4px;
+                text-align: center;
+            }
+            QProgressBar::chunk {
+                background-color: #3498db;
+                border-radius: 3px;
+            }
+        """)
+        bottom_layout.addWidget(self.refresh_progress)
+        
+        self.status_label = QLabel("就绪")
+        self.status_label.setStyleSheet("""
+            QLabel {
+                color: #7f8c8d;
+                font-style: italic;
+            }
+        """)
+        bottom_layout.addWidget(self.status_label)
+        
+        layout.addLayout(bottom_layout)
+        
+        # 应用样式表
+        self.setStyleSheet(self.get_stylesheet())
+        
+        # 初始刷新
+        self.refresh_processes()
+    
+    def setup_timer(self):
+        """设置定时刷新"""
+        self.refresh_timer = QTimer(self)
+        self.refresh_timer.timeout.connect(self.refresh_processes)
+        refresh_interval = getattr(Config, 'PROCESS_REFRESH_INTERVAL', 5000)
+        self.refresh_timer.start(refresh_interval)
+    
+    def start_auto_refresh(self):
+        """启动自动刷新"""
+        if getattr(Config, 'ENABLE_AUTO_REFRESH', True) and not self.refresh_timer.isActive():
+            self.refresh_timer.start()
+            logger.info("进程标签页自动刷新已启动")
+
+    def stop_auto_refresh(self):
+        """停止自动刷新"""
+        try:
+            if hasattr(self, 'refresh_timer') and self.refresh_timer and self.refresh_timer.isActive():
+                self.refresh_timer.stop()
+                logger.info("进程标签页自动刷新已停止")
+        except RuntimeError:
+            # Qt对象可能已被删除
+            pass
+            
+    def refresh_display(self):
+        """刷新显示数据"""
+        self.refresh_processes()
+        
+    def cleanup(self):
+        """清理资源"""
+        self.stop_auto_refresh()
+        logger.info("ProcessTab 资源清理完成")
+        
+    def __del__(self):
+        """析构函数，确保资源释放"""
+        try:
+            self.cleanup()
+        except RuntimeError:
+            # 忽略Qt对象已被删除的错误
+            pass
+    
+    def refresh_processes(self):
+        """刷新进程列表"""
+        if not self.process_tree:
+            return
+            
+        try:
+            self.refresh_progress.setVisible(True)
+            self.status_label.setText("正在刷新进程列表...")
+            self.refresh_btn.setEnabled(False)
+            
+            # 获取进程信息
+            processes = self.get_process_info()
+            
+            # 更新UI
+            self.update_process_tree(processes)
+            self.process_count_label.setText(f"进程数: {len(processes)}")
+            self.status_label.setText(f"最后刷新: {datetime.now().strftime('%H:%M:%S')}")
+            
+            # 发送刷新信号
+            self.process_refreshed.emit(len(processes))
+            
+        except Exception as e:
+            logger.error(f"刷新进程列表时出错: {e}")
+            self.status_label.setText(f"刷新失败: {str(e)}")
+        finally:
+            self.refresh_progress.setVisible(False)
+            self.refresh_btn.setEnabled(True)
+    
+    @performance_monitor
+    def get_process_info(self):
+        """获取进程信息"""
+        processes = []
+        try:
+            for proc in psutil.process_iter(['pid', 'name', 'status', 'cpu_percent', 
+                                           'memory_info', 'username', 'create_time',
+                                           'exe', 'cmdline', 'ppid']):
+                try:
+                    if not is_valid_process(proc.info['pid']):
+                        continue
+                        
+                    # 获取父进程PID
+                    parent_pid = proc.info.get('ppid', 0) or 0
+                    
+                    # 获取内存使用（MB）
+                    memory_mb = 0
+                    if proc.info['memory_info']:
+                        memory_mb = round(proc.info['memory_info'].rss / (1024 * 1024), 2)
+                    
+                    # 获取可执行文件路径
+                    exe_path = proc.info.get('exe', '') or ''
+                    
+                    # 获取命令行
+                    cmdline = ''
+                    if proc.info.get('cmdline'):
+                        cmdline = ' '.join(proc.info['cmdline'])
+                    
+                    processes.append({
+                        'pid': proc.info['pid'],
+                        'name': proc.info['name'],
+                        'status': proc.info['status'],
+                        'cpu_percent': proc.info['cpu_percent'],
+                        'memory_mb': memory_mb,
+                        'username': proc.info['username'] or 'N/A',
+                        'create_time': proc.info['create_time'],
+                        'exe': exe_path,
+                        'cmdline': cmdline,
+                        'parent_pid': parent_pid
+                    })
+                except (psutil.NoSuchProcess, psutil.AccessDenied):
+                    # 进程可能已经结束或无权限访问
+                    continue
+        except Exception as e:
+            logger.error(f"获取进程信息时出错: {e}")
+        
+        return processes
+    
+    def update_process_tree(self, processes):
+        """更新进程树"""
+        if not self.process_tree:
+            return
+            
+        self.process_tree.clear()
+        
+        # 创建进程项字典，用于构建树结构
         process_items = {}
         
-        # 首先创建所有进程项
+        # 创建所有进程项
         for proc in processes:
             pid = proc['pid']
-            parent_pid = self._get_parent_pid(pid)
+            parent_pid = proc['parent_pid']
             
-            # 创建树节点
+            # 创建树项
             tree_item = QTreeWidgetItem([
                 str(proc['pid']),
                 proc['name'],
-                proc.get('status', 'N/A'),
-                f"{proc['cpu_percent']:.1f}",
+                proc['status'],
+                f"{proc['cpu_percent']:.1f}%",
                 f"{proc['memory_mb']:.1f}",
-                proc.get('username', 'N/A') or 'N/A'
+                proc['username']
             ])
             
-            # 根据CPU使用率设置颜色
+            # 根据CPU和内存使用率设置颜色
             cpu_percent = proc['cpu_percent']
-            if cpu_percent > 50:
-                tree_item.setForeground(2, QColor('red'))
-            elif cpu_percent > 20:
-                tree_item.setForeground(2, QColor('orange'))
-            elif cpu_percent > 5:
-                tree_item.setForeground(2, QColor('blue'))
-            
-            # 根据内存使用量设置颜色
             memory_mb = proc['memory_mb']
+            
+            if cpu_percent > 50:
+                tree_item.setForeground(3, QColor('red'))
+            elif cpu_percent > 20:
+                tree_item.setForeground(3, QColor('orange'))
+                
             if memory_mb > 500:
                 tree_item.setForeground(4, QColor('red'))
             elif memory_mb > 200:
@@ -99,472 +416,219 @@ class ProcessTreeWidget(QTreeWidget):
                 parent_item.addChild(tree_item)
             else:
                 # 否则添加为顶级项
-                self.addTopLevelItem(tree_item)
+                self.process_tree.addTopLevelItem(tree_item)
         
         # 展开所有节点
-        self.expandAll()
+        self.process_tree.expandAll()
         
         # 调整列宽
-        for i in range(self.columnCount()):
-            self.resizeColumnToContents(i)
+        for i in range(self.process_tree.columnCount()):
+            self.process_tree.resizeColumnToContents(i)
     
-    def _get_parent_pid(self, pid):
-        """
-        获取进程的父进程PID
-        :param pid: 进程PID
-        :return: 父进程PID，如果无法获取则返回None
-        """
+    def on_process_selected(self):
+        """当进程被选中时"""
+        selected_items = self.process_tree.selectedItems()
+        if not selected_items:
+            self.kill_btn.setEnabled(False)
+            self.clear_detail_info()
+            self.last_selected_pid = None
+            self.last_selected_exe = None
+            return
+            
+        item = selected_items[0]
+        pid = int(item.text(0))
+        process_name = item.text(1)
+        
+        self.kill_btn.setEnabled(True)
+        self.last_selected_pid = pid
+        self.update_detail_info(pid, process_name)
+    
+    def update_detail_info(self, pid, process_name):
+        """更新详细信息"""
         try:
-            process = psutil.Process(pid)
-            parent = process.parent()
-            return parent.pid if parent else None
-        except (psutil.NoSuchProcess, psutil.AccessDenied, AttributeError):
-            return None
-
-class ProcessTab(QWidget):
-    """进程管理标签页"""
-    
-    # 信号定义
-    process_killed = pyqtSignal(str)  # 进程被终止时发送信号
-    process_refreshed = pyqtSignal(int)  # 进程列表刷新时发送信号
-    
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.init_ui()
-        self.init_timer()
-        self.load_process_data()
-        
-    def init_ui(self):
-        """初始化UI"""
-        main_layout = QVBoxLayout(self)
-        main_layout.setSpacing(10)
-        main_layout.setContentsMargins(10, 10, 10, 10)
-        
-        # 创建顶部控制栏
-        control_layout = QHBoxLayout()
-        control_layout.setSpacing(8)
-        
-        # 搜索框
-        self.search_edit = QLineEdit()
-        self.search_edit.setPlaceholderText("搜索进程...")
-        self.search_edit.textChanged.connect(self.filter_processes)
-        control_layout.addWidget(self.search_edit)
-        
-        # 刷新按钮
-        self.refresh_btn = QPushButton("刷新")
-        self.refresh_btn.clicked.connect(self.load_process_data)
-        control_layout.addWidget(self.refresh_btn)
-        
-        # 杀进程按钮
-        self.kill_btn = QPushButton("终止进程")
-        self.kill_btn.clicked.connect(self.kill_selected_process)
-        control_layout.addWidget(self.kill_btn)
-        
-        # 添加视图切换按钮
-        self.toggle_view_btn = QPushButton("切换到树状视图")
-        self.toggle_view_btn.clicked.connect(self.toggle_view)
-        control_layout.addWidget(self.toggle_view_btn)
-        
-        # 添加控制栏到主布局
-        main_layout.addLayout(control_layout)
-        
-        # 创建分割器
-        splitter = QSplitter(Qt.Vertical)
-        
-        # 创建包含表格和树状视图的 splitter
-        self.view_splitter = QSplitter(Qt.Horizontal)  # 改为水平分割
-        
-        # 进程表格
-        self.process_table = QTableWidget()
-        self.process_table.setColumnCount(7)  # 设置为7列，没有图标列
-        self.process_table.setHorizontalHeaderLabels(['PID', '进程名', '状态', 'CPU%', '内存(MB)', '用户', '路径'])
-        self.process_table.setEditTriggers(QTableWidget.NoEditTriggers)
-        self.process_table.setSelectionBehavior(QTableWidget.SelectRows)
-        self.process_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.process_table.verticalHeader().setVisible(False)
-        self.process_table.setAlternatingRowColors(True)
-        
-        # 连接表格选择变化信号
-        self.process_table.itemSelectionChanged.connect(self.on_process_selection_changed)
-        
-        # 进程树状视图（默认隐藏）
-        self.process_tree = ProcessTreeWidget()
-        self.process_tree.hide()
-        
-        # 创建表格容器和布局
-        table_container = QWidget()
-        table_layout = QVBoxLayout(table_container)
-        table_layout.setContentsMargins(0, 0, 0, 0)
-        
-        # 添加到 splitter
-        self.view_splitter.addWidget(self.process_table)
-        self.view_splitter.addWidget(self.process_tree)
-        
-        table_layout.addWidget(self.view_splitter)
-        table_container.setLayout(table_layout)
-        
-        # 使用主布局添加控件
-        main_layout.addWidget(table_container)
-        
-        # 创建详细信息区域
-        self.details_group = QGroupBox("进程详细信息")
-        details_layout = QFormLayout(self.details_group)
-        
-        # 详细信息标签
-        self.pid_label = QLabel("N/A")
-        self.name_label = QLabel("N/A")
-        self.status_label = QLabel("N/A")
-        self.cpu_label = QLabel("N/A")
-        self.memory_label = QLabel("N/A")
-        self.user_label = QLabel("N/A")
-        self.path_label = QLabel("N/A")
-        self.cmdline_label = QLabel("N/A")
-        self.threads_label = QLabel("N/A")
-        self.parent_label = QLabel("N/A")
-        
-        # 添加到布局
-        details_layout.addRow("进程ID:", self.pid_label)
-        details_layout.addRow("进程名:", self.name_label)
-        details_layout.addRow("状态:", self.status_label)
-        details_layout.addRow("CPU使用率:", self.cpu_label)
-        details_layout.addRow("内存使用:", self.memory_label)
-        details_layout.addRow("用户:", self.user_label)
-        details_layout.addRow("路径:", self.path_label)
-        details_layout.addRow("命令行:", self.cmdline_label)
-        details_layout.addRow("线程数:", self.threads_label)
-        details_layout.addRow("父进程:", self.parent_label)
-        
-        splitter.addWidget(self.details_group)
-        
-        # 设置分割器比例
-        splitter.setSizes([400, 200])
-        
-        main_layout.addWidget(splitter)
-        
-        # 创建状态栏
-        status_layout = QHBoxLayout()
-        self.status_label_widget = QLabel("就绪")
-        status_layout.addWidget(self.status_label_widget)
-        
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setVisible(False)
-        self.progress_bar.setRange(0, 0)  # 不确定模式
-        status_layout.addWidget(self.progress_bar)
-        
-        main_layout.addLayout(status_layout)
-        
-        # 应用样式表
-        self.setStyleSheet(self.get_stylesheet())
-        
-    def get_process_icon(self, pid):
-        """
-        获取进程图标
-        
-        Args:
-            pid (int): 进程ID
+            proc = psutil.Process(pid)
             
-        Returns:
-            QIcon: 进程图标，如果无法获取则返回空图标
-        """
-        # 为防止程序崩溃，暂时禁用图标功能，直接返回空图标
-        # TODO: 后续需要更彻底地解决图标获取导致的崩溃问题
-        return QIcon()
-        
-    def init_timer(self):
-        """初始化定时器"""
-        self.refresh_timer = QTimer(self)
-        self.refresh_timer.timeout.connect(self.load_process_data)
-        self.refresh_timer.start(5000)  # 每5秒刷新一次
-        
-    def load_process_data(self):
-        """加载进程数据"""
-        try:
-            self.status_label_widget.setText("正在加载进程数据...")
-            self.progress_bar.setVisible(True)
+            # 更新基本信息
+            self.detail_pid.setText(str(pid))
+            self.detail_name.setText(process_name)
             
-            # 清空表格
-            self.process_table.setRowCount(0)
-            
-            # 获取进程列表
-            processes = []
-            for proc in psutil.process_iter(['pid', 'name', 'status', 'cpu_percent', 'memory_info', 'username']):
-                try:
-                    # 获取进程可执行文件路径
-                    try:
-                        exe_path = proc.exe()
-                    except (psutil.AccessDenied, psutil.NoSuchProcess):
-                        exe_path = "N/A"
-                    
-                    processes.append({
-                        'pid': proc.info['pid'],
-                        'name': proc.info['name'] if proc.info['name'] else "未知进程",
-                        'status': proc.info['status'] if proc.info['status'] else "未知",
-                        'cpu_percent': proc.info['cpu_percent'] if isinstance(proc.info['cpu_percent'], (int, float)) else 0.0,
-                        'memory_mb': round(proc.info['memory_info'].rss / (1024 * 1024), 2) if proc.info['memory_info'] else 0,
-                        'username': proc.info['username'] if proc.info['username'] else "未知",
-                        'exe': exe_path
-                    })
-                except (psutil.NoSuchProcess, psutil.AccessDenied):
-                    # 进程可能在这段时间内消失了，跳过它
-                    continue
-                except Exception as e:
-                    # 记录其他异常但不中断整个过程
-                    logger.warning(f"处理进程 {proc.info.get('pid', 'unknown')} 时出错: {e}")
-                    continue
-            
-            # 保存当前进程列表供后续使用
-            self.current_processes = processes
-            
-            # 排序 - 按CPU使用率降序
+            # 获取详细信息
             try:
-                processes.sort(key=lambda x: x['cpu_percent'], reverse=True)
-            except Exception as e:
-                logger.warning(f"进程排序时出错: {e}")
-            
-            # 填充表格
-            for proc in processes:
-                try:
-                    row = self.process_table.rowCount()
-                    self.process_table.insertRow(row)
-                    
-                    # 创建表格项
-                    pid_item = QTableWidgetItem(str(proc['pid']))
-                    name_item = QTableWidgetItem(proc['name'])
-                    status_item = QTableWidgetItem(proc['status'])
-                    cpu_item = QTableWidgetItem(f"{proc['cpu_percent']:.1f}")
-                    memory_item = QTableWidgetItem(f"{proc['memory_mb']:.1f}")
-                    user_item = QTableWidgetItem(proc['username'] or 'N/A')
-                    path_item = QTableWidgetItem(proc['exe'] or 'N/A')  # 使用获取到的路径
-                    
-                    # 设置对齐方式
-                    pid_item.setTextAlignment(Qt.AlignCenter)
-                    cpu_item.setTextAlignment(Qt.AlignCenter)
-                    memory_item.setTextAlignment(Qt.AlignCenter)
-                    
-                    # 根据CPU使用率设置颜色
-                    try:
-                        cpu_percent = proc['cpu_percent']
-                        if isinstance(cpu_percent, (int, float)):
-                            if cpu_percent > 50:
-                                cpu_item.setForeground(QColor('red'))
-                            elif cpu_percent > 20:
-                                cpu_item.setForeground(QColor('orange'))
-                            elif cpu_percent > 5:
-                                cpu_item.setForeground(QColor('blue'))
-                    except Exception as e:
-                        logger.warning(f"设置CPU颜色时出错: {e}")
-                    
-                    # 添加到表格（没有图标列）
-                    self.process_table.setItem(row, 0, pid_item)
-                    self.process_table.setItem(row, 1, name_item)
-                    self.process_table.setItem(row, 2, status_item)
-                    self.process_table.setItem(row, 3, cpu_item)
-                    self.process_table.setItem(row, 4, memory_item)
-                    self.process_table.setItem(row, 5, user_item)
-                    self.process_table.setItem(row, 6, path_item)
-                except Exception as e:
-                    logger.warning(f"添加进程 {proc.get('pid', 'unknown')} 到表格时出错: {e}")
-                    # 如果添加行失败，确保删除可能已添加的行
-                    try:
-                        self.process_table.removeRow(self.process_table.rowCount() - 1)
-                    except Exception:
-                        pass
-                    continue
-            
-            # 发送刷新信号
-            try:
-                self.process_refreshed.emit(len(processes))
-            except Exception as e:
-                logger.warning(f"发送进程刷新信号时出错: {e}")
+                status = proc.status()
+                self.detail_status.setText(status)
+            except:
+                self.detail_status.setText("N/A")
                 
-            self.status_label_widget.setText(f"已加载 {len(processes)} 个进程")
-            
-            # 更新进程树状视图（无论是否可见都更新，确保切换视图时能立即显示）
-            if hasattr(self, 'process_tree') and self.process_tree:
-                try:
-                    self.process_tree.populate_processes(processes)
-                except Exception as e:
-                    logger.warning(f"更新进程树时出错: {e}")
-            
-        except Exception as e:
-            logger.error(f"加载进程数据时出错: {e}")
-            self.status_label_widget.setText(f"加载进程数据时出错: {e}")
-        finally:
             try:
-                self.progress_bar.setVisible(False)
-            except Exception as e:
-                logger.warning(f"隐藏进度条时出错: {e}")
-            
-    def filter_processes(self):
-        """过滤进程"""
-        search_text = self.search_edit.text().lower()
-        for row in range(self.process_table.rowCount()):
-            should_hide = True
-            for col in range(self.process_table.columnCount()):
-                item = self.process_table.item(row, col)
-                if item and search_text in item.text().lower():
-                    should_hide = False
-                    break
-            self.process_table.setRowHidden(row, should_hide)
-            
+                cpu_percent = proc.cpu_percent()
+                self.detail_cpu.setText(f"{cpu_percent:.1f}%")
+            except:
+                self.detail_cpu.setText("N/A")
+                
+            try:
+                memory_info = proc.memory_info()
+                memory_mb = round(memory_info.rss / (1024 * 1024), 2)
+                self.detail_memory.setText(f"{memory_mb:.1f} MB")
+            except:
+                self.detail_memory.setText("N/A")
+                
+            try:
+                username = proc.username()
+                self.detail_user.setText(username)
+            except:
+                self.detail_user.setText("N/A")
+                
+            try:
+                create_time = datetime.fromtimestamp(proc.create_time())
+                self.detail_create_time.setText(create_time.strftime("%Y-%m-%d %H:%M:%S"))
+            except:
+                self.detail_create_time.setText("N/A")
+                
+            try:
+                exe = proc.exe()
+                self.detail_exe.setText(exe)
+                self.last_selected_exe = exe
+            except:
+                self.detail_exe.setText("N/A")
+                self.last_selected_exe = None
+                
+            try:
+                cmdline = ' '.join(proc.cmdline())
+                self.detail_cmdline.setText(cmdline)
+            except:
+                self.detail_cmdline.setText("N/A")
+                
+        except psutil.NoSuchProcess:
+            self.clear_detail_info()
+            self.kill_btn.setEnabled(False)
+        except Exception as e:
+            logger.error(f"更新进程详细信息时出错: {e}")
+            self.clear_detail_info()
+    
+    def clear_detail_info(self):
+        """清空详细信息"""
+        self.detail_pid.setText("N/A")
+        self.detail_name.setText("N/A")
+        self.detail_status.setText("N/A")
+        self.detail_cpu.setText("N/A")
+        self.detail_memory.setText("N/A")
+        self.detail_user.setText("N/A")
+        self.detail_create_time.setText("N/A")
+        self.detail_exe.setText("N/A")
+        self.detail_cmdline.setText("N/A")
+    
     def kill_selected_process(self):
         """终止选中的进程"""
-        selected_rows = self.process_table.selectionModel().selectedRows()
-        if not selected_rows:
-            QMessageBox.warning(self, "警告", "请先选择一个进程")
+        if not self.last_selected_pid:
             return
             
-        # 获取选中行的PID
-        row = selected_rows[0].row()
-        pid_item = self.process_table.item(row, 0)  # PID在第0列
-        if not pid_item:
-            return
-            
-        pid = int(pid_item.text())
-        process_name = self.process_table.item(row, 1).text()  # 进程名在第1列
-        
-        # 确认对话框
-        reply = QMessageBox.question(
-            self, 
-            "确认", 
-            f"确定要终止进程 {process_name} (PID: {pid}) 吗？",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.No
-        )
-        
-        if reply == QMessageBox.Yes:
-            try:
-                # 终止进程
-                process = psutil.Process(pid)
-                process.terminate()
-                process.wait(timeout=3)
-                
-                # 发送信号
-                self.process_killed.emit(str(pid))
-                
-                # 刷新列表
-                self.load_process_data()
-                
-                QMessageBox.information(self, "成功", f"进程 {process_name} 已终止")
-                
-            except psutil.NoSuchProcess:
-                QMessageBox.warning(self, "警告", f"进程 {process_name} 不存在")
-            except psutil.AccessDenied:
-                QMessageBox.critical(self, "错误", f"无权限终止进程 {process_name}")
-            except psutil.TimeoutExpired:
-                # 如果进程未在超时时间内终止，尝试强制杀死
-                try:
-                    process.kill()
-                    process.wait(timeout=1)
-                    self.process_killed.emit(str(pid))
-                    self.load_process_data()
-                    QMessageBox.information(self, "成功", f"进程 {process_name} 已强制杀死")
-                except Exception as e:
-                    QMessageBox.critical(self, "错误", f"强制杀死进程 {process_name} 失败: {e}")
-            except Exception as e:
-                QMessageBox.critical(self, "错误", f"终止进程 {process_name} 时出错: {e}")
-                
-    def on_process_selection_changed(self):
-        """进程选择变化事件"""
-        selected_rows = self.process_table.selectionModel().selectedRows()
-        if not selected_rows:
-            return
-            
-        row = selected_rows[0].row()
-        pid = int(self.process_table.item(row, 0).text())  # PID在第0列
-        
+        pid = self.last_selected_pid
         try:
-            # 获取进程详细信息
-            process = psutil.Process(pid)
-            parent_pid = "N/A"
+            proc = psutil.Process(pid)
+            process_name = proc.name()
+            
+            # 确认对话框
+            if getattr(Config, 'CONFIRM_BEFORE_KILL_PROCESS', True):
+                reply = QMessageBox.question(
+                    self, 
+                    "确认终止进程", 
+                    f"确定要终止进程 {process_name} (PID: {pid}) 吗？",
+                    QMessageBox.Yes | QMessageBox.No,
+                    QMessageBox.No
+                )
+                if reply == QMessageBox.No:
+                    return
+            
+            # 终止进程
+            proc.terminate()
             try:
-                parent = process.parent()
-                parent_pid = parent.pid if parent else "N/A"
-            except (psutil.NoSuchProcess, psutil.AccessDenied):
-                parent_pid = "N/A"
-                
-            process_info = {
-                'pid': process.pid,
-                'name': process.name() if hasattr(process, 'name') else 'N/A',
-                'status': process.status() if hasattr(process, 'status') else 'N/A',
-                'cpu_percent': process.cpu_percent() if hasattr(process, 'cpu_percent') else 0.0,
-                'memory_info': process.memory_info() if hasattr(process, 'memory_info') else None,
-                'username': process.username() if hasattr(process, 'username') else 'N/A',
-                'exe': process.exe() if hasattr(process, 'exe') else 'N/A',
-                'cmdline': ' '.join(process.cmdline()) if hasattr(process, 'cmdline') and process.cmdline() else 'N/A',
-                'num_threads': process.num_threads() if hasattr(process, 'num_threads') else 'N/A',
-                'parent': parent_pid
-            }
+                proc.wait(timeout=3)
+            except psutil.TimeoutExpired:
+                proc.kill()
+                proc.wait(timeout=1)
             
-            # 更新详细信息显示
-            self.pid_label.setText(str(process_info['pid']))
-            self.name_label.setText(process_info['name'])
-            self.status_label.setText(process_info['status'])
-            self.cpu_label.setText(f"{process_info['cpu_percent']:.1f}%")
-            if process_info['memory_info']:
-                self.memory_label.setText(f"{process_info['memory_info'].rss / (1024*1024):.1f} MB")
-            else:
-                self.memory_label.setText("N/A")
-            self.user_label.setText(process_info['username'])
-            self.path_label.setText(process_info['exe'])
-            self.cmdline_label.setText(process_info['cmdline'])
-            self.threads_label.setText(str(process_info['num_threads']))
-            self.parent_label.setText(str(process_info['parent']))
+            # 发送信号
+            self.process_killed.emit(f"{process_name} (PID: {pid})")
             
-        except (psutil.NoSuchProcess, psutil.AccessDenied) as e:
-            logger.error(f"获取进程详细信息时出错: {e}")
+            # 刷新列表
+            self.refresh_processes()
+            
             # 清空详细信息
-            self.pid_label.setText("N/A")
-            self.name_label.setText("N/A")
-            self.status_label.setText("N/A")
-            self.cpu_label.setText("N/A")
-            self.memory_label.setText("N/A")
-            self.user_label.setText("N/A")
-            self.path_label.setText("N/A")
-            self.cmdline_label.setText("N/A")
-            self.threads_label.setText("N/A")
-            self.parent_label.setText("N/A")
+            self.clear_detail_info()
+            self.kill_btn.setEnabled(False)
             
-    def refresh_process_list(self):
-        """刷新进程列表"""
-        self.load_process_data()
+            logger.info(f"进程 {process_name} (PID: {pid}) 已终止")
+            
+        except psutil.NoSuchProcess:
+            QMessageBox.warning(self, "进程不存在", f"进程 (PID: {pid}) 不存在或已终止")
+            self.refresh_processes()
+        except psutil.AccessDenied:
+            QMessageBox.critical(self, "权限不足", f"无权限终止进程 (PID: {pid})")
+        except Exception as e:
+            QMessageBox.critical(self, "终止进程失败", f"终止进程时出错: {str(e)}")
+            logger.error(f"终止进程 {pid} 时出错: {e}")
+    
+    def filter_processes(self, text):
+        """过滤进程"""
+        if not self.process_tree:
+            return
+            
+        for i in range(self.process_tree.topLevelItemCount()):
+            item = self.process_tree.topLevelItem(i)
+            self.filter_item(item, text.lower())
+    
+    def filter_item(self, item, text):
+        """过滤单个项"""
+        if not text:
+            item.setHidden(False)
+            # 显示所有子项
+            for i in range(item.childCount()):
+                child = item.child(i)
+                self.filter_item(child, text)
+            return
+            
+        # 检查是否匹配
+        pid = item.text(0).lower()
+        name = item.text(1).lower()
         
-    def update_process_tree(self, processes):
-        """
-        更新进程树状视图
-        :param processes: 进程信息列表
-        """
-        # 总是更新进程树的数据，无论是否可见
-        if hasattr(self, 'process_tree'):
-            self.process_tree.populate_processes(processes)
-            
-    def toggle_view(self):
-        """
-        切换视图显示模式（表格/树状）
-        """
-        if self.process_table.isVisible():
-            # 切换到树状视图
-            self.process_table.hide()
-            self.process_tree.show()
-            # 确保在切换到树状视图时更新数据
-            if hasattr(self, 'current_processes'):
-                self.process_tree.populate_processes(self.current_processes)
-            self.toggle_view_btn.setText('切换到表格视图')
+        match = text in pid or text in name
+        
+        # 如果父项不匹配，检查子项
+        if not match:
+            for i in range(item.childCount()):
+                child = item.child(i)
+                if not self.filter_item(child, text):
+                    match = True  # 如果有任何子项匹配，则父项也应显示
+        
+        item.setHidden(not match)
+        return match
+    
+    def on_header_clicked(self, column):
+        """当表头被点击时"""
+        if column == self.sort_column:
+            # 切换排序顺序
+            self.sort_order = Qt.DescendingOrder if self.sort_order == Qt.AscendingOrder else Qt.AscendingOrder
         else:
-            # 切换到表格视图
-            self.process_tree.hide()
-            self.process_table.show()
-            self.toggle_view_btn.setText('切换到树状视图')
+            # 更改排序列
+            self.sort_column = column
+            self.sort_order = Qt.AscendingOrder
             
+        self.process_tree.sortByColumn(self.sort_column, self.sort_order)
+    
     def get_stylesheet(self):
         """获取样式表"""
         return """
+        QWidget {
+            font-family: "Microsoft YaHei", sans-serif;
+            font-size: 10pt;
+        }
+        
         QGroupBox {
             font-weight: bold;
             border: 1px solid #bdc3c7;
-            border-radius: 6px;
+            border-radius: 4px;
             margin-top: 1ex;
-            padding-top: 15px;
+            padding-top: 10px;
         }
         
         QGroupBox::title {
@@ -600,7 +664,7 @@ class ProcessTab(QWidget):
             background-color: #95a5a6;
         }
         
-        QTableWidget {
+        QTreeWidget {
             border: 1px solid #bdc3c7;
             border-radius: 4px;
             gridline-color: #ecf0f1;
@@ -626,8 +690,3 @@ class ProcessTab(QWidget):
             border-radius: 3px;
         }
         """
-        
-    def cleanup(self):
-        """清理资源"""
-        if hasattr(self, 'refresh_timer'):
-            self.refresh_timer.stop()

@@ -12,6 +12,7 @@ import time
 import logging
 import threading
 import ctypes  # 用于管理员权限检查
+import sys  # 添加sys模块导入
 from typing import Dict, Optional, List, Any
 from pathlib import Path
 from dataclasses import dataclass, asdict
