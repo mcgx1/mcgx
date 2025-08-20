@@ -303,7 +303,8 @@ class MainWindow(QMainWindow):
             QMessageBox.about(self, "关于", 
                             f"{Config.APP_NAME} v{Config.VERSION}\n\n"
                             f"系统安全分析工具\n"
-                            f"帮助用户深入了解系统运行状态，检测恶意软件，优化系统性能")
+                            f"帮助用户深入了解系统运行状态，检测恶意软件，优化系统性能\n\n"
+                            f"QQ群：1056878281")
         except Exception as e:
             logging.error("显示关于对话框时出错: " + str(e))
     
