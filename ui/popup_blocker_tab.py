@@ -90,87 +90,6 @@ class OnlineRuleUpdateWorker(QObject):
             logger.error(f"更新广告拦截规则失败: {e}")
             self.finished.emit(False, f"更新广告拦截规则失败: {str(e)}", None)
     
-    def parse_easylist_rules(self, content):
-        """解析EasyList格式的规则，提取与广告弹窗相关的规则"""
-        patterns = []
-        lines = content.split('\n')
-        
-        # 广告弹窗相关关键词
-        popup_keywords = [
-            'popup', 'popunder', 'pop-up', 'popunder', 
-            'exitpopup', 'exit-pop', 'exitpop',
-            'overlay', 'modal', 'lightbox'
-        ]
-        
-        # 广告相关关键词
-        ad_keywords = [
-            'ad', 'ads', 'advert', 'adserver', 'advertising', 'adx', 
-            'banner', 'doubleclick', 'googlesyndication',
-            'facebook', 'googleads', 'analytics', 'track', 'stat',
-            'taboola', 'outbrain', 'revcontent', 'zemanta', 'sharethrough',
-            'sponsor', 'promo'
-        ]
-        
-        processed_lines = 0
-        matched_rules = 0
-        
-        for line in lines:
-            line = line.strip()
-            processed_lines += 1
-            
-            # 跳过注释和空行
-            if line.startswith('!') or line.startswith('[') or not line:
-                continue
-                
-            # 限制处理行数以提高性能
-            if processed_lines > 10000:
-                break
-                
-            # 检查是否包含弹窗相关关键词
-            line_lower = line.lower()
-            has_popup_keyword = any(keyword in line_lower for keyword in popup_keywords)
-            has_ad_keyword = any(keyword in line_lower for keyword in ad_keywords)
-            
-            # 只有同时包含弹窗和广告相关关键词才认为是广告弹窗规则
-            if has_popup_keyword and has_ad_keyword:
-                # 提取域名或模式
-                try:
-                    if '||' in line and '^' in line:
-                        # 域名规则，如 ||example.com^
-                        parts = line.split('||')
-                        if len(parts) > 1:
-                            domain = parts[1].split('^')[0]
-                            if self._is_valid_domain_pattern(domain):
-                                patterns.append(domain)
-                                matched_rules += 1
-                    elif line.startswith('|http'):
-                        # 完整URL规则
-                        url = line[1:].split('^')[0]
-                        domain = url.split('/')[2] if len(url.split('/')) > 2 else url
-                        if self._is_valid_domain_pattern(domain):
-                            patterns.append(domain)
-                            matched_rules += 1
-                    elif '.' in line and not line.startswith('/') and '|' not in line and '^' in line:
-                        # 简单域名规则，如 example.com^
-                        domain = line.split('^')[0].split('$')[0]
-                        if self._is_valid_domain_pattern(domain):
-                            patterns.append(domain)
-                            matched_rules += 1
-                except Exception as e:
-                    # 忽略解析错误的行
-                    continue
-        
-        # 去重
-        patterns = list(set(patterns))
-        
-        # 限制规则数量以提高性能
-        if len(patterns) > 500:
-            patterns = patterns[:500]
-            logger.warning(f"为避免性能问题，已将规则数量限制为500条")
-        
-        logger.info(f"从EasyList处理了 {processed_lines} 行，解析出 {len(patterns)} 个广告弹窗相关规则")
-        return {"patterns": patterns}
-    
     def _is_valid_domain_pattern(self, pattern):
         """检查是否为有效的域名模式"""
         if not pattern or len(pattern) < 4:  # 至少4个字符
@@ -432,7 +351,23 @@ class PopupBlockerTab(QWidget):
             if hasattr(Config, 'POPUP_RULES_FILE') and Path(Config.POPUP_RULES_FILE).exists():
                 try:
                     with open(Config.POPUP_RULES_FILE, 'r', encoding='utf-8') as f:
-                        rules = json.load(f)
+                        file_content = json.load(f)
+                        # 检查文件内容结构
+                        if isinstance(file_content, dict) and "title_rules" in file_content:
+                            # 新格式规则文件，需要转换为旧格式
+                            rules = []
+                            for rule in file_content["title_rules"]:
+                                rules.append({
+                                    "name": rule.get("description", rule.get("pattern", "")),
+                                    "keyword": rule["pattern"],
+                                    "enabled": rule.get("action", "block") == "block"
+                                })
+                        elif isinstance(file_content, list):
+                            # 旧格式规则文件
+                            rules = file_content
+                        else:
+                            logger.error(f"规则文件格式不正确: {type(file_content)}")
+                            rules = default_rules
                 except Exception as e:
                     logger.error(f"读取规则文件失败: {e}")
                     rules = default_rules
@@ -590,140 +525,70 @@ class PopupBlockerTab(QWidget):
             show_error_message(self, "错误", f"停止监控失败: {str(e)}")
             
     def check_popups(self):
-        """检查弹窗，只拦截本地进程的广告弹窗"""
+        """检查弹窗"""
+        if not self.monitoring:
+            return
+        
         try:
-            if not self.monitoring:
-                return
+            intercepted_count = 0  # 记录本次检查拦截的弹窗数量
             
-            # 枚举所有顶层窗口
-            def enum_windows_callback(hwnd, windows):
-                if win32gui.IsWindowVisible(hwnd) and win32gui.IsWindowEnabled(hwnd):
-                    windows.append(hwnd)
-                return True
-            
-            windows = []
-            win32gui.EnumWindows(enum_windows_callback, windows)
-            
-            # 浏览器进程列表（扩展更多浏览器）
-            browser_processes = [
-                'chrome.exe', 'firefox.exe', 'msedge.exe', 'iexplore.exe', 
-                'opera.exe', 'brave.exe', 'vivaldi.exe', 'waterfox.exe',
-                'tor.exe', 'maxthon.exe', 'seamonkey.exe', 'palemoon.exe',
-                'iridium.exe', 'centbrowser.exe', 'liebao.exe', '360chrome.exe',
-                'ucbrowser.exe', 'sogouexplorer.exe', 'theworld.exe', 'maxthon.exe',
-                '2345explorer.exe', 'baidubrowser.exe', 'qqbrowser.exe', '360se.exe'
-            ]
-            
-            intercepted_count = 0
-            
-            for hwnd in windows:
+            def enum_windows_callback(hwnd, extra):
+                """枚举窗口回调函数"""
+                nonlocal intercepted_count
+                
                 try:
+                    # 检查窗口是否可见且不是最小化的顶层窗口
+                    if (not win32gui.IsWindowVisible(hwnd) or 
+                        win32gui.IsIconic(hwnd) or
+                        not win32gui.GetParent(hwnd) == 0):  # 只处理顶层窗口
+                        return True
+                    
                     # 获取窗口标题
                     window_title = win32gui.GetWindowText(hwnd)
                     if not window_title:
-                        continue
+                        return True
                     
                     # 获取窗口类名
                     window_class = win32gui.GetClassName(hwnd)
                     
-                    # 获取窗口位置和大小
-                    rect = win32gui.GetWindowRect(hwnd)
-                    width = rect[2] - rect[0]
-                    height = rect[3] - rect[1]
+                    # 匹配广告规则
+                    reason = self.match_ad_rules(window_title, window_class)
                     
-                    # 过滤掉过小的窗口
-                    if width < 100 or height < 50:
-                        continue
-                    
-                    # 获取窗口所属进程ID
-                    _, process_id = win32process.GetWindowThreadProcessId(hwnd)
-                    
-                    # 获取进程名和进程路径
-                    process_name = self.get_process_name(process_id)
-                    process_path = self.get_process_path(process_id)
-                    
-                    # 更严格的浏览器进程检测
-                    is_browser_process = False
-                    if process_name:
-                        # 检查是否在浏览器列表中
-                        if process_name.lower() in browser_processes:
-                            is_browser_process = True
-                        # 检查进程路径是否包含浏览器相关目录
-                        elif process_path:
-                            browser_indicators = [
-                                'Google\\Chrome\\', 'Mozilla Firefox\\', 'Microsoft\\Edge\\',
-                                'Opera\\', 'BraveSoftware\\', 'Vivaldi\\', 'Waterfox\\',
-                                'Tor Browser\\', 'Maxthon\\', 'SeaMonkey\\', 'Pale Moon\\'
-                            ]
-                            if any(indicator in process_path for indicator in browser_indicators):
-                                is_browser_process = True
-                    
-                    # 如果是浏览器进程，完全跳过检测
-                    if is_browser_process:
-                        continue
-                    
-                    # 检查是否为弹窗（根据窗口样式）
-                    window_style = win32gui.GetWindowLong(hwnd, win32con.GWL_STYLE)
-                    window_ex_style = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
-                    
-                    # 弹窗特征：弹窗样式且不是工具窗口
-                    is_popup = bool(window_style & win32con.WS_POPUP)
-                    is_tool_window = bool(window_ex_style & win32con.WS_EX_TOOLWINDOW)
-                    is_app_window = bool(window_ex_style & win32con.WS_EX_APPWINDOW)
-                    
-                    # 更严格的弹窗判断逻辑
-                    is_real_popup = False
-                    # 标准弹窗：有弹窗样式且不是工具窗口
-                    if is_popup and not is_tool_window:
-                        is_real_popup = True
-                    # 非标准弹窗：满足特定尺寸和位置条件的顶层窗口
-                    elif not is_app_window and width > 300 and height > 200:
-                        # 进一步检查窗口位置，弹窗通常出现在屏幕中央或特定位置
-                        screen_width = win32api.GetSystemMetrics(win32con.SM_CXSCREEN)
-                        screen_height = win32api.GetSystemMetrics(win32con.SM_CYSCREEN)
+                    if reason:
+                        # 拦截广告弹窗
+                        self.block_popup(hwnd, window_title, reason)
+                        intercepted_count += 1
                         
-                        # 检查窗口是否在屏幕范围内
-                        if (rect[0] >= 0 and rect[1] >= 0 and 
-                            rect[2] <= screen_width and rect[3] <= screen_height):
-                            is_real_popup = True
-                    
-                    # 只有确认是弹窗才进行广告规则匹配
-                    if is_real_popup:
-                        # 检查窗口标题是否匹配广告规则
-                        match_result = self.match_ad_rules(window_title, window_class)
-                        if match_result:
-                            # 拦截广告弹窗
-                            self.block_popup(hwnd, window_title, match_result)
-                            intercepted_count += 1
-                            
-                            # 限制每次检查拦截的弹窗数量，避免性能问题
-                            if intercepted_count >= 5:  # 降低限制到5个
-                                break
+                        # 限制每次检查拦截的弹窗数量，避免性能问题
+                        if intercepted_count >= 10:  # 增加限制到10个
+                            return False  # 停止枚举
                             
                 except Exception as e:
                     # 忽略单个窗口处理错误
-                    continue
+                    logger.debug(f"处理单个窗口时出错: {e}")
+                    return True
                     
+                return True
+            
+            # 枚举所有窗口
+            win32gui.EnumWindows(enum_windows_callback, None)
+            
+            # 更新状态栏信息
+            if intercepted_count > 0:
+                try:
+                    self.status_bar.showMessage(f"本次检查拦截了 {intercepted_count} 个广告弹窗", 3000)
+                except AttributeError:
+                    # 如果没有 status_bar 属性，则尝试通过父窗口访问状态栏
+                    try:
+                        parent = self.parent()
+                        if parent and hasattr(parent, 'statusBar'):
+                            parent.statusBar().showMessage(f"本次检查拦截了 {intercepted_count} 个广告弹窗", 3000)
+                    except Exception:
+                        # 如果仍然无法显示状态栏消息，则只记录到日志
+                        logger.debug("无法访问状态栏，消息仅记录到日志")
+                
         except Exception as e:
             logger.error(f"检查弹窗时出错: {e}")
-    
-    def get_process_name(self, process_id):
-        """获取进程名"""
-        try:
-            import psutil
-            process = psutil.Process(process_id)
-            return process.name()
-        except Exception:
-            return None
-    
-    def get_process_path(self, process_id):
-        """获取进程路径"""
-        try:
-            import psutil
-            process = psutil.Process(process_id)
-            return process.exe()
-        except Exception:
-            return None
     
     def match_ad_rules(self, window_title, window_class):
         """匹配广告规则"""
@@ -734,31 +599,80 @@ class PopupBlockerTab(QWidget):
             # 常见的非广告弹窗关键词（白名单）
             whitelist_keywords = [
                 '保存', '打开', '另存为', '确认', '警告', '错误', '提示',
-                '设置', '选项', '关于', '帮助', '属性', '信息',
+                '设置', '选项', '关于', '帮助', '属性', '信息', '更新',
+                '升级', '安装', '卸载', '配置', '系统', '安全', '搜索',
+                '查找', '替换', '打印', '预览', '登录', '注册', '账户',
+                '密码', '用户', '管理', '控制', '面板', '工具', '编辑',
+                '新建', '删除', '重命名', '移动', '复制', '粘贴', '剪切',
+                '撤销', '恢复', '前进', '后退', '刷新', '加载', '下载',
+                '上传', '发送', '接收', '连接', '断开', '同步', '备份',
+                '还原', '导入', '导出', '发布', '订阅', '分享', '转发',
+                '回复', '评论', '点赞', '关注', '取消', '确定', '同意',
+                '拒绝', '接受', '完成', '继续', '停止', '开始', '暂停',
+                '播放', '停止', '快进', '快退', '音量', '静音', '全屏',
+                '退出', '关闭', '最小化', '最大化', '还原', '锁定',
+                '解锁', '加密', '解密', '压缩', '解压', '提取', '转换',
+                '格式化', '扫描', '修复', '优化', '清理', '加速', '释放',
+                '回收', '删除', '清空', '刷新', '重置', '恢复', '初始化',
                 'update', 'upgrade', 'install', 'setup', 'config', 'setting',
-                'about', 'help', 'property', 'information'
+                'about', 'help', 'property', 'information', 'system', 'security',
+                'search', 'find', 'replace', 'print', 'preview', 'login', 'register',
+                'account', 'password', 'user', 'manage', 'control', 'panel', 'tool',
+                'edit', 'new', 'delete', 'rename', 'move', 'copy', 'paste', 'cut',
+                'undo', 'redo', 'forward', 'back', 'refresh', 'load', 'download',
+                'upload', 'send', 'receive', 'connect', 'disconnect', 'sync', 'backup',
+                'restore', 'import', 'export', 'publish', 'subscribe', 'share', 'forward',
+                'reply', 'comment', 'like', 'follow', 'cancel', 'ok', 'yes', 'no',
+                'accept', 'reject', 'finish', 'continue', 'stop', 'start', 'pause',
+                'play', 'pause', 'stop', 'fast', 'forward', 'rewind', 'volume', 'mute',
+                'full', 'screen', 'exit', 'close', 'minimize', 'maximize', 'restore',
+                'lock', 'unlock', 'encrypt', 'decrypt', 'compress', 'extract', 'convert',
+                'format', 'scan', 'fix', 'optimize', 'clean', 'speed', 'release', 'recycle',
+                'clear', 'reset', 'recover', 'initialize'
             ]
             
             # 检查是否在白名单中
             if any(keyword in title_lower for keyword in whitelist_keywords):
                 return None
             
-            # 广告相关关键词
+            # 广告相关关键词 - 扩展更多广告关键词
             ad_keywords = [
+                # 中文关键词
                 '广告', '弹窗', '促销', '优惠券', '中奖', '免费领取', '限时抢购',
-                '立即购买', '点击抽奖', '注册送', '大促', '秒杀', '特惠',
-                'ad', 'ads', 'popup', 'promotion', 'coupon', 'discount',
-                'free', 'sale', 'offer', 'deal', 'special', 'limited'
+                '立即购买', '点击抽奖', '注册送', '大促', '秒杀', '特惠', '爆款',
+                '清仓', '直降', '立减', '满减', '返现', '返利', '佣金', '红包',
+                '礼包', '福利', '活动', '特价', '折扣', '优惠', '促销', '推广',
+                '营销', '宣传', '招商', '加盟', '代理', '合作', '联营', '合伙',
+                '投资', '理财', '赚钱', '收益', '回报', '利润', '盈利', '创收',
+                '收入', '外快', '兼职', '副业', '创业', '商机', '机会', '机遇',
+                '财富', '金钱', '现金', '奖金', '奖品', '礼品', '奖章', '奖杯',
+                '抽奖', '中奖', '得奖', '获奖', '兑奖', '领奖', '大奖', '小奖',
+                '一等奖', '二等奖', '三等奖', '纪念奖', '参与奖', '幸运奖', '幸运',
+                '恭喜', '祝贺', '庆祝', '喜讯', '好消息', '通知', '公告', '通告',
+                '声明', '启事', '广告', '广告词', '宣传语', '口号', '标语', 'slogan',
+                # 英文关键词
+                'ad', 'ads', 'advert', 'advertisement', 'advertising', 'promo', 'promotion',
+                'promotional', 'coupon', 'discount', 'deal', 'offer', 'sale', 'marketing',
+                'free', 'gift', 'present', 'prize', 'award', 'bonus', 'reward', 'cashback',
+                'rebate', 'commission', 'voucher', 'ticket', 'lottery', 'raffle', 'jackpot',
+                'win', 'winner', 'winning', 'won', 'congratulations', 'lucky', 'fortune',
+                'money', 'cash', 'earn', 'earnings', 'income', 'revenue', 'profit', 'gain',
+                'investment', 'invest', 'business', 'opportunity', 'chance', 'deal', 'bargain',
+                'clearance', 'liquidation', 'wholesale', 'retail', 'shopping', 'shop', 'buy',
+                'purchase', 'order', 'subscribe', 'subscription', 'trial', 'demo', 'sample',
+                'limited', 'special', 'exclusive', 'instant', 'download', 'install', 'popup',
+                'popunder', 'pop-up', 'popunder', 'banner', 'sponsor', 'sponsored', 'affiliate'
             ]
             
-            # 检查标题规则
-            for rule in self.ad_rules:
-                if not rule.get("enabled", True):
-                    continue
-                    
-                keyword = rule.get("keyword", "").lower()
-                if keyword in title_lower or keyword in class_lower:
-                    return rule.get("name", keyword)
+            # 检查标题规则（如果存在自定义规则）
+            if hasattr(self, 'ad_rules') and isinstance(self.ad_rules, list):
+                for rule in self.ad_rules:
+                    if not rule.get("enabled", True):
+                        continue
+                        
+                    keyword = rule.get("keyword", "").lower()
+                    if keyword in title_lower or keyword in class_lower:
+                        return rule.get("name", keyword)
             
             # 如果没有匹配规则，则检查是否包含广告关键词
             if any(keyword in title_lower for keyword in ad_keywords):
@@ -767,10 +681,41 @@ class PopupBlockerTab(QWidget):
                     if keyword in title_lower:
                         return f"包含广告关键词: {keyword}"
             
+            # 检查窗口类名是否为典型的广告弹窗类名
+            ad_window_classes = [
+                "AdsWindow", "Advert", "Advertisement", "Popup", "AdPopup",
+                "BannerAd", "AdBanner", "PromoWindow", "PromotionWindow",
+                "AdWindow", "AdForm", "AdFrame", "AdDialog", "AdBox",
+                "AdContainer", "AdPanel", "AdSpace", "AdUnit", "AdZone"
+            ]
+            
+            if any(ad_class.lower() in class_lower for ad_class in ad_window_classes):
+                return "匹配广告窗口类名"
+            
             return None
         except Exception as e:
             logger.error(f"匹配广告规则时出错: {e}")
             return None
+    
+    def get_process_name(self, process_id):
+        """获取进程名"""
+        try:
+            import psutil
+            process = psutil.Process(process_id)
+            return process.name()
+        except Exception as e:
+            logger.debug(f"获取进程名失败 (PID: {process_id}): {e}")
+            return "未知进程"
+    
+    def get_process_path(self, process_id):
+        """获取进程路径"""
+        try:
+            import psutil
+            process = psutil.Process(process_id)
+            return process.exe()
+        except Exception as e:
+            logger.debug(f"获取进程路径失败 (PID: {process_id}): {e}")
+            return ""
     
     def block_popup(self, hwnd, window_title, reason):
         """拦截弹窗"""
@@ -778,12 +723,14 @@ class PopupBlockerTab(QWidget):
             # 获取窗口所属进程信息
             _, process_id = win32process.GetWindowThreadProcessId(hwnd)
             process_name = self.get_process_name(process_id)
+            process_path = self.get_process_path(process_id)
             
             # 记录拦截的弹窗
             popup_info = {
                 "time": time.strftime("%Y-%m-%d %H:%M:%S"),
                 "title": window_title,
                 "process": process_name if process_name else "Unknown",
+                "process_path": process_path if process_path else "Unknown",
                 "reason": reason
             }
             self.blocked_popups.append(popup_info)
@@ -798,7 +745,7 @@ class PopupBlockerTab(QWidget):
             self.popup_blocked.emit(window_title, reason)
             
             # 记录日志
-            log_msg = f"拦截广告弹窗: {window_title} (进程: {process_name if process_name else 'Unknown'}, 原因: {reason})"
+            log_msg = f"拦截广告弹窗: {window_title} (进程: {process_name if process_name else 'Unknown'}, 路径: {process_path if process_path else 'Unknown'}, 原因: {reason})"
             logger.info(log_msg)
             self.log_message(log_msg)
             
@@ -1021,87 +968,6 @@ class PopupBlockerTab(QWidget):
             logger.error(f"处理在线规则失败: {e}")
             QMessageBox.critical(self, "错误", f"处理在线规则失败: {str(e)}")
 
-    def parse_easylist_rules(self, content):
-        """解析EasyList格式的规则，提取与广告弹窗相关的规则"""
-        patterns = []
-        lines = content.split('\n')
-        
-        # 广告弹窗相关关键词
-        popup_keywords = [
-            'popup', 'popunder', 'pop-up', 'popunder', 
-            'exitpopup', 'exit-pop', 'exitpop',
-            'overlay', 'modal', 'lightbox'
-        ]
-        
-        # 广告相关关键词
-        ad_keywords = [
-            'ad', 'ads', 'advert', 'adserver', 'advertising', 'adx', 
-            'banner', 'doubleclick', 'googlesyndication',
-            'facebook', 'googleads', 'analytics', 'track', 'stat',
-            'taboola', 'outbrain', 'revcontent', 'zemanta', 'sharethrough',
-            'sponsor', 'promo'
-        ]
-        
-        processed_lines = 0
-        matched_rules = 0
-        
-        for line in lines:
-            line = line.strip()
-            processed_lines += 1
-            
-            # 跳过注释和空行
-            if line.startswith('!') or line.startswith('[') or not line:
-                continue
-                
-            # 限制处理行数以提高性能
-            if processed_lines > 10000:
-                break
-                
-            # 检查是否包含弹窗相关关键词
-            line_lower = line.lower()
-            has_popup_keyword = any(keyword in line_lower for keyword in popup_keywords)
-            has_ad_keyword = any(keyword in line_lower for keyword in ad_keywords)
-            
-            # 只有同时包含弹窗和广告相关关键词才认为是广告弹窗规则
-            if has_popup_keyword and has_ad_keyword:
-                # 提取域名或模式
-                try:
-                    if '||' in line and '^' in line:
-                        # 域名规则，如 ||example.com^
-                        parts = line.split('||')
-                        if len(parts) > 1:
-                            domain = parts[1].split('^')[0]
-                            if self._is_valid_domain_pattern(domain):
-                                patterns.append(domain)
-                                matched_rules += 1
-                    elif line.startswith('|http'):
-                        # 完整URL规则
-                        url = line[1:].split('^')[0]
-                        domain = url.split('/')[2] if len(url.split('/')) > 2 else url
-                        if self._is_valid_domain_pattern(domain):
-                            patterns.append(domain)
-                            matched_rules += 1
-                    elif '.' in line and not line.startswith('/') and '|' not in line and '^' in line:
-                        # 简单域名规则，如 example.com^
-                        domain = line.split('^')[0].split('$')[0]
-                        if self._is_valid_domain_pattern(domain):
-                            patterns.append(domain)
-                            matched_rules += 1
-                except Exception as e:
-                    # 忽略解析错误的行
-                    continue
-        
-        # 去重
-        patterns = list(set(patterns))
-        
-        # 限制规则数量以提高性能
-        if len(patterns) > 500:
-            patterns = patterns[:500]
-            logger.warning(f"为避免性能问题，已将规则数量限制为500条")
-        
-        logger.info(f"从EasyList处理了 {processed_lines} 行，解析出 {len(patterns)} 个广告弹窗相关规则")
-        return {"patterns": patterns}
-    
     def _is_likely_ad_domain(self, domain):
         """判断是否为可能的广告域名"""
         # 常见的广告域名关键词
@@ -1158,3 +1024,30 @@ class PopupBlockerTab(QWidget):
             self.log_text.append(log_entry)
         except Exception as e:
             logger.error(f"记录日志消息失败: {e}")
+
+    def get_performance_info(self):
+        """获取性能信息"""
+        try:
+            import psutil
+            import os
+            
+            # 获取当前进程
+            process = psutil.Process(os.getpid())
+            
+            # 获取内存使用情况（MB）
+            memory_info = process.memory_info()
+            memory_mb = memory_info.rss / (1024 * 1024)
+            
+            # 获取CPU使用率
+            cpu_percent = process.cpu_percent()
+            
+            return {
+                'memory_mb': memory_mb,
+                'cpu_percent': cpu_percent
+            }
+        except Exception as e:
+            logger.error(f"获取性能信息失败: {e}")
+            return {
+                'memory_mb': 0,
+                'cpu_percent': 0
+            }

@@ -4,7 +4,10 @@ import os
 import logging
 from pathlib import Path
 import time
-import logging.handlers
+from datetime import datetime
+import subprocess
+from functools import partial
+import gc
 
 # 性能监控
 start_time = time.time()
@@ -51,7 +54,8 @@ print(f"✅ 工作目录已切换到: {os.getcwd()}")
 import_start_time = time.time()
 
 try:
-    from PyQt5.QtWidgets import QApplication
+    from PyQt5.QtWidgets import QApplication, QShortcut
+    from PyQt5.QtCore import Qt
     from ui.main_window import MainWindow
     from config import Config
     print("✅ 所有模块导入成功")
@@ -62,60 +66,72 @@ except ImportError as e:
     print(f"当前sys.path: {sys.path}", file=sys.stderr)
     sys.exit(1)
 
-def setup_logging():
-    """设置日志配置"""
-    # 创建日志目录（如果不存在）
-    log_dir = Path("logs")
-    if not log_dir.exists():
-        log_dir.mkdir(exist_ok=True)
-    
-    # 配置日志格式
-    formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
-    
-    # 创建旋转文件处理器
-    file_handler = logging.handlers.RotatingFileHandler(
-        Config.LOG_FILE,
-        maxBytes=Config.MAX_LOG_FILE_SIZE,
-        backupCount=Config.LOG_BACKUP_COUNT,
-        encoding='utf-8'
-    )
-    file_handler.setFormatter(formatter)
-    
-    # 创建控制台处理器
-    console_handler = logging.StreamHandler()
-    console_handler.setFormatter(formatter)
-    
-    # 配置根日志记录器
-    root_logger = logging.getLogger()
-    root_logger.setLevel(getattr(logging, Config.LOG_LEVEL))
-    root_logger.addHandler(file_handler)
-    root_logger.addHandler(console_handler)
-    
-    return root_logger
-
 # 配置日志
-logger = setup_logging()
+logging.basicConfig(
+    level=getattr(logging, Config.LOG_LEVEL, logging.INFO),
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(Config.LOG_FILE, encoding='utf-8'),
+        logging.StreamHandler()
+    ]
+)
+
+logger = logging.getLogger(__name__)
+
+# 无需替换，保持原样
+
+def run_system_analysis():
+    """一键分析系统功能"""
+    try:
+        import subprocess
+        from datetime import datetime
+        
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] 启动一键分析系统...")
+        
+        # 执行分析脚本
+        analysis_script = os.path.join(os.path.dirname(__file__), "analyze_changes.py")
+        # 修复编码问题：不捕获输出，让子进程直接输出到终端
+        result = subprocess.run([sys.executable, analysis_script], 
+                              capture_output=False)
+        
+        if result.returncode == 0:
+            print("✅ 系统分析完成")
+        else:
+            print("❌ 分析过程出错")
+            
+    except Exception as e:
+        print(f"❌ 分析功能执行出错: {e}")
+        import traceback
+        traceback.print_exc()
 
 def main():
     try:
         app_start_time = time.time()
         app = QApplication(sys.argv)
         window = MainWindow()
+        
+        # 添加F5快捷键触发一键分析
+        run_analysis_shortcut = partial(run_system_analysis)
+        shortcut = QShortcut(Qt.Key_F5, window)
+        shortcut.activated.connect(run_analysis_shortcut)
+        
         window.show()
         
-        # 记录启动完成时间
         total_time = time.time() - start_time
         app_init_time = time.time() - app_start_time
         logger.info(f"应用程序启动完成，总耗时: {total_time:.2f}秒 (应用初始化: {app_init_time:.2f}秒)")
         print(f"✅ 应用程序启动完成，总耗时: {total_time:.2f}秒")
         
         # 运行应用
-        result = app.exec()
+        result = app.exec_()
+        
+        # 清理资源
+        collected = gc.collect()
+        logger.info(f"垃圾回收完成，清理了 {collected} 个对象")
         
         # 记录退出信息
         logger.info("应用程序正常退出")
+        logger.info(f"{Config.APP_NAME} v{Config.VERSION} 正常退出")
         sys.exit(result)
         
     except Exception as e:

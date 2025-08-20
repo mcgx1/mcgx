@@ -1,8 +1,8 @@
 {
-  "rule_version": "2.0",
-  "update_time": "2025-08-18",
-  "description": "专门针对广告弹窗的拦截规则",
-  "block_threshold": 3,
+  "rule_version": "2.1",
+  "update_time": "2025-08-20",
+  "description": "专门针对广告弹窗的拦截规则，增强对本地进程弹窗的检测能力",
+  "block_threshold": 2,
   "check_frequency_ms": 1000,
   "enable_size_detection": true,
   "title_rules": [
@@ -119,60 +119,11 @@
       "description": "包含'恭喜'关键词的窗口"
     },
     {
-      "pattern": "您已",
+      "pattern": "注册送",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'您已'关键词的窗口"
-    },
-    {
-      "pattern": "获得",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'获得'关键词的窗口"
-    },
-    {
-      "pattern": "赢取",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'赢取'关键词的窗口"
-    },
-    {
-      "pattern": "参与",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'参与'关键词的窗口"
-    },
-    {
-      "pattern": "注册",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'注册'关键词的窗口"
-    },
-    {
-      "pattern": "下载",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'下载'关键词的窗口"
-    },
-    {
-      "pattern": "安装",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'安装'关键词的窗口"
-    },
-    {
-      "pattern": "点击",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'点击'关键词的窗口"
+      "description": "包含'注册送'关键词的窗口"
     },
     {
       "pattern": "立即",
@@ -203,13 +154,6 @@
       "description": "包含'今日'关键词的窗口"
     },
     {
-      "pattern": "今日特惠",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'今日特惠'关键词的窗口"
-    },
-    {
       "pattern": "独家",
       "type": "contains",
       "action": "block",
@@ -217,123 +161,60 @@
       "description": "包含'独家'关键词的窗口"
     },
     {
-      "pattern": "Ad",
+      "pattern": "特供",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'Ad'关键词的窗口"
+      "description": "包含'特供'关键词的窗口"
     },
     {
-      "pattern": "Promotion",
+      "pattern": "专供",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'Promotion'关键词的窗口"
+      "description": "包含'专供'关键词的窗口"
     },
     {
-      "pattern": "Offer",
+      "pattern": "热销",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'Offer'关键词的窗口"
+      "description": "包含'热销'关键词的窗口"
     },
     {
-      "pattern": "Deal",
+      "pattern": "爆款",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'Deal'关键词的窗口"
+      "description": "包含'爆款'关键词的窗口"
     },
     {
-      "pattern": "Sale",
+      "pattern": "清仓",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'Sale'关键词的窗口"
+      "description": "包含'清仓'关键词的窗口"
     },
     {
-      "pattern": "Discount",
+      "pattern": "直降",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'Discount'关键词的窗口"
+      "description": "包含'直降'关键词的窗口"
     },
     {
-      "pattern": "Free",
+      "pattern": "立减",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'Free'关键词的窗口"
+      "description": "包含'立减'关键词的窗口"
     },
     {
-      "pattern": "Win",
+      "pattern": "满减",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'Win'关键词的窗口"
-    },
-    {
-      "pattern": "Prize",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'Prize'关键词的窗口"
-    },
-    {
-      "pattern": "Gift",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'Gift'关键词的窗口"
-    },
-    {
-      "pattern": "Bonus",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'Bonus'关键词的窗口"
-    },
-    {
-      "pattern": "Limited",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'Limited'关键词的窗口"
-    },
-    {
-      "pattern": "Special",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'Special'关键词的窗口"
-    },
-    {
-      "pattern": "Exclusive",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'Exclusive'关键词的窗口"
-    },
-    {
-      "pattern": "Instant",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'Instant'关键词的窗口"
-    },
-    {
-      "pattern": "Download",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'Download'关键词的窗口"
-    },
-    {
-      "pattern": "红包",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'红包'关键词的窗口"
+      "description": "包含'满减'关键词的窗口"
     },
     {
       "pattern": "返现",
@@ -343,11 +224,60 @@
       "description": "包含'返现'关键词的窗口"
     },
     {
+      "pattern": "返利",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'返利'关键词的窗口"
+    },
+    {
+      "pattern": "佣金",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'佣金'关键词的窗口"
+    },
+    {
+      "pattern": "红包",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'红包'关键词的窗口"
+    },
+    {
       "pattern": "现金",
       "type": "contains",
       "action": "block",
       "priority": 1,
       "description": "包含'现金'关键词的窗口"
+    },
+    {
+      "pattern": "大奖",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'大奖'关键词的窗口"
+    },
+    {
+      "pattern": "奖品",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'奖品'关键词的窗口"
+    },
+    {
+      "pattern": "礼品",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'礼品'关键词的窗口"
+    },
+    {
+      "pattern": "中奖",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'中奖'关键词的窗口"
     },
     {
       "pattern": "抽奖",
@@ -357,55 +287,260 @@
       "description": "包含'抽奖'关键词的窗口"
     },
     {
-      "pattern": "大促",
+      "pattern": "点击",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'大促'关键词的窗口"
+      "description": "包含'点击'关键词的窗口"
     },
     {
-      "pattern": "狂欢",
+      "pattern": "下载",
       "type": "contains",
       "action": "block",
       "priority": 1,
-      "description": "包含'狂欢'关键词的窗口"
+      "description": "包含'下载'关键词的窗口"
+    },
+    {
+      "pattern": "安装",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'安装'关键词的窗口"
+    },
+    {
+      "pattern": "ad",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'ad'关键词的窗口"
+    },
+    {
+      "pattern": "ads",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'ads'关键词的窗口"
+    },
+    {
+      "pattern": "popup",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'popup'关键词的窗口"
+    },
+    {
+      "pattern": "promotion",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'promotion'关键词的窗口"
+    },
+    {
+      "pattern": "coupon",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'coupon'关键词的窗口"
+    },
+    {
+      "pattern": "discount",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'discount'关键词的窗口"
+    },
+    {
+      "pattern": "free",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'free'关键词的窗口"
+    },
+    {
+      "pattern": "sale",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'sale'关键词的窗口"
+    },
+    {
+      "pattern": "offer",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'offer'关键词的窗口"
+    },
+    {
+      "pattern": "deal",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'deal'关键词的窗口"
+    },
+    {
+      "pattern": "special",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'special'关键词的窗口"
+    },
+    {
+      "pattern": "limited",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'limited'关键词的窗口"
+    },
+    {
+      "pattern": "cashback",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'cashback'关键词的窗口"
+    },
+    {
+      "pattern": "rebate",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'rebate'关键词的窗口"
+    },
+    {
+      "pattern": "commission",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'commission'关键词的窗口"
+    },
+    {
+      "pattern": "bonus",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'bonus'关键词的窗口"
+    },
+    {
+      "pattern": "gift",
+      "type": "contains",
+      "action": "block",
+      "priority": 1,
+      "description": "包含'gift'关键词的窗口"
     }
   ],
   "class_name_rules": [
     {
-      "pattern": "Advertisement",
-      "type": "contains",
+      "pattern": "AdsWindow",
+      "type": "exact",
       "action": "block",
-      "priority": 1,
-      "description": "包含'Advertisement'的窗口类名"
+      "description": "广告窗口类名"
+    },
+    {
+      "pattern": "Advert",
+      "type": "exact",
+      "action": "block",
+      "description": "广告窗口类名"
+    },
+    {
+      "pattern": "Advertisement",
+      "type": "exact",
+      "action": "block",
+      "description": "广告窗口类名"
+    },
+    {
+      "pattern": "Popup",
+      "type": "exact",
+      "action": "block",
+      "description": "弹窗类名"
+    },
+    {
+      "pattern": "AdPopup",
+      "type": "exact",
+      "action": "block",
+      "description": "广告弹窗类名"
+    },
+    {
+      "pattern": "BannerAd",
+      "type": "exact",
+      "action": "block",
+      "description": "横幅广告类名"
+    },
+    {
+      "pattern": "AdBanner",
+      "type": "exact",
+      "action": "block",
+      "description": "广告横幅类名"
+    },
+    {
+      "pattern": "PromoWindow",
+      "type": "exact",
+      "action": "block",
+      "description": "促销窗口类名"
+    },
+    {
+      "pattern": "PromotionWindow",
+      "type": "exact",
+      "action": "block",
+      "description": "推广窗口类名"
     },
     {
       "pattern": "AdWindow",
       "type": "exact",
       "action": "block",
-      "priority": 1,
-      "description": "精确匹配'AdWindow'的窗口类名"
+      "description": "广告窗口类名"
     },
     {
-      "pattern": "AdsWindow",
+      "pattern": "AdForm",
       "type": "exact",
       "action": "block",
-      "priority": 1,
-      "description": "精确匹配'AdsWindow'的窗口类名"
+      "description": "广告表单类名"
     },
     {
-      "pattern": "Popup",
-      "type": "contains",
+      "pattern": "AdFrame",
+      "type": "exact",
       "action": "block",
-      "priority": 1,
-      "description": "包含'Popup'的窗口类名"
+      "description": "广告框架类名"
     },
     {
-      "pattern": "Notification",
-      "type": "contains",
+      "pattern": "AdDialog",
+      "type": "exact",
       "action": "block",
-      "priority": 1,
-      "description": "包含'Notification'的窗口类名"
+      "description": "广告对话框类名"
+    },
+    {
+      "pattern": "AdBox",
+      "type": "exact",
+      "action": "block",
+      "description": "广告框类名"
+    },
+    {
+      "pattern": "AdContainer",
+      "type": "exact",
+      "action": "block",
+      "description": "广告容器类名"
+    },
+    {
+      "pattern": "AdPanel",
+      "type": "exact",
+      "action": "block",
+      "description": "广告面板类名"
+    },
+    {
+      "pattern": "AdSpace",
+      "type": "exact",
+      "action": "block",
+      "description": "广告空间类名"
+    },
+    {
+      "pattern": "AdUnit",
+      "type": "exact",
+      "action": "block",
+      "description": "广告单元类名"
+    },
+    {
+      "pattern": "AdZone",
+      "type": "exact",
+      "action": "block",
+      "description": "广告区域类名"
     }
   ],
   "process_name_rules": [
@@ -413,220 +548,172 @@
       "pattern": "广告",
       "type": "contains",
       "action": "block",
-      "priority": 1,
-      "description": "进程名包含'广告'的程序"
+      "description": "进程名包含'广告'关键词"
     },
     {
       "pattern": "推广",
       "type": "contains",
       "action": "block",
-      "priority": 1,
-      "description": "进程名包含'推广'的程序"
+      "description": "进程名包含'推广'关键词"
     },
     {
-      "pattern": "adware",
+      "pattern": "营销",
       "type": "contains",
       "action": "block",
-      "priority": 1,
-      "description": "进程名包含'adware'的程序"
+      "description": "进程名包含'营销'关键词"
     },
     {
-      "pattern": "popup",
+      "pattern": "宣传",
       "type": "contains",
       "action": "block",
-      "priority": 1,
-      "description": "进程名包含'popup'的程序"
+      "description": "进程名包含'宣传'关键词"
     }
   ],
   "window_size_rules": [
     {
       "width": 300,
       "height": 250,
-      "tolerance": 20,
-      "description": "标准广告尺寸 300x250"
+      "tolerance": 50,
+      "description": "标准中矩形广告尺寸"
     },
     {
       "width": 468,
       "height": 60,
-      "tolerance": 10,
-      "description": "标准横幅广告 468x60"
+      "tolerance": 30,
+      "description": "标准横幅广告尺寸"
     },
     {
       "width": 728,
       "height": 90,
-      "tolerance": 10,
-      "description": "领导者广告 728x90"
+      "tolerance": 50,
+      "description": "领导者广告尺寸"
     },
     {
       "width": 300,
       "height": 600,
-      "tolerance": 20,
-      "description": "大矩形广告 300x600"
+      "tolerance": 50,
+      "description": "大矩形广告尺寸"
     },
     {
       "width": 160,
       "height": 600,
-      "tolerance": 10,
-      "description": "宽 skyscraper 160x600"
+      "tolerance": 30,
+      "description": "宽 skyscraper 广告尺寸"
     },
     {
       "width": 120,
       "height": 600,
-      "tolerance": 10,
-      "description": "skyscraper 120x600"
+      "tolerance": 30,
+      "description": "skyscraper 广告尺寸"
     },
     {
       "width": 300,
       "height": 1050,
+      "tolerance": 50,
+      "description": "半页广告尺寸"
+    },
+    {
+      "width": 970,
+      "height": 90,
+      "tolerance": 50,
+      "description": "大横幅广告尺寸"
+    },
+    {
+      "width": 970,
+      "height": 250,
+      "tolerance": 50,
+      "description": "大矩形广告尺寸"
+    },
+    {
+      "width": 320,
+      "height": 50,
       "tolerance": 30,
-      "description": "半页广告 300x1050"
+      "description": "手机横幅广告尺寸"
+    },
+    {
+      "width": 320,
+      "height": 100,
+      "tolerance": 30,
+      "description": "手机大横幅广告尺寸"
     }
   ],
-  "url_rules": [],
+  "url_rules": [
+    {
+      "pattern": "popup",
+      "type": "contains",
+      "description": "包含popup的URL"
+    }
+  ],
   "ad_keywords": [
-    "广告",
-    "推广",
-    "优惠",
-    "促销",
-    "活动",
-    "特价",
-    "折扣",
-    "秒杀",
-    "抢购",
-    "限时",
-    "免费",
-    "领取",
-    "礼包",
-    "福利",
-    "中奖",
-    "恭喜",
-    "您已",
-    "获得",
-    "赢取",
-    "参与",
-    "注册",
-    "下载",
-    "安装",
-    "点击",
-    "立即",
-    "马上",
-    "现在",
-    "今日",
-    "今日特惠",
-    "独家",
-    "红包",
-    "返现",
-    "现金",
-    "抽奖",
-    "大促",
-    "狂欢",
-    "Ad",
-    "Promotion",
-    "Offer",
-    "Deal",
-    "Sale",
-    "Discount",
-    "Free",
-    "Win",
-    "Prize",
-    "Gift",
-    "Bonus",
-    "Limited",
-    "Special",
-    "Exclusive",
-    "Instant",
-    "Download"
+    "ad", "ads", "advert", "advertisement", "promo", "promotion", 
+    "banner", "popup", "popunder", "sponsor", "sponsored",
+    "广告", "推广", "优惠", "促销", "活动", "特价", "折扣", 
+    "秒杀", "抢购", "限时", "免费", "领取", "礼包", "福利", 
+    "中奖", "恭喜", "注册送", "立即", "马上", "现在", "今日",
+    "独家", "特供", "专供", "热销", "爆款", "清仓", "直降", 
+    "立减", "满减", "返现", "返利", "佣金", "红包", "现金", 
+    "大奖", "奖品", "礼品", "中奖", "抽奖", "点击", "下载", "安装"
   ],
   "whitelist": [
     {
-      "pattern": "Windows",
-      "type": "contains",
-      "description": "系统窗口白名单"
-    },
-    {
-      "pattern": "系统",
-      "type": "contains",
-      "description": "系统相关窗口白名单"
-    },
-    {
-      "pattern": "安全",
-      "type": "contains",
-      "description": "安全相关窗口白名单"
-    },
-    {
-      "pattern": "杀毒",
-      "type": "contains",
-      "description": "杀毒软件窗口白名单"
-    },
-    {
-      "pattern": "防火墙",
-      "type": "contains",
-      "description": "防火墙窗口白名单"
-    },
-    {
-      "pattern": "更新",
-      "type": "contains",
-      "description": "系统更新窗口白名单"
-    },
-    {
-      "pattern": "设置",
-      "type": "contains",
-      "description": "系统设置窗口白名单"
-    },
-    {
-      "pattern": "控制面板",
-      "type": "contains",
-      "description": "控制面板窗口白名单"
-    },
-    {
-      "pattern": "任务管理器",
-      "type": "contains",
-      "description": "任务管理器窗口白名单"
-    },
-    {
-      "pattern": "资源管理器",
-      "type": "contains",
-      "description": "资源管理器窗口白名单"
-    },
-    {
       "pattern": "微信",
       "type": "contains",
-      "description": "微信窗口白名单"
+      "description": "即时通讯软件"
     },
     {
       "pattern": "QQ",
       "type": "contains",
-      "description": "QQ窗口白名单"
+      "description": "即时通讯软件"
     },
     {
       "pattern": "钉钉",
       "type": "contains",
-      "description": "钉钉窗口白名单"
+      "description": "办公软件"
     },
     {
       "pattern": "腾讯会议",
       "type": "contains",
-      "description": "腾讯会议窗口白名单"
+      "description": "会议软件"
     },
     {
       "pattern": "阿里钉",
       "type": "contains",
-      "description": "阿里钉窗口白名单"
+      "description": "办公软件"
     },
     {
-      "pattern": "Microsoft",
+      "pattern": "飞书",
       "type": "contains",
-      "description": "微软软件窗口白名单"
+      "description": "办公软件"
     },
     {
-      "pattern": "Office",
+      "pattern": "企业微信",
       "type": "contains",
-      "description": "Office软件窗口白名单"
+      "description": "办公软件"
     },
     {
-      "pattern": "Adobe",
+      "pattern": "slack",
       "type": "contains",
-      "description": "Adobe软件窗口白名单"
+      "description": "办公软件"
+    },
+    {
+      "pattern": "teams",
+      "type": "contains",
+      "description": "办公软件"
+    },
+    {
+      "pattern": "zoom",
+      "type": "contains",
+      "description": "会议软件"
+    },
+    {
+      "pattern": "skype",
+      "type": "contains",
+      "description": "通讯软件"
+    },
+    {
+      "pattern": "discord",
+      "type": "contains",
+      "description": "通讯软件"
     }
   ]
 }

@@ -8,14 +8,15 @@ from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton,
                             QTableWidget, QTableWidgetItem, QHeaderView, 
                             QTextEdit, QGroupBox, QLabel, QSpinBox, QCheckBox,
                             QSplitter, QLineEdit, QAbstractItemView, QFileDialog, QMessageBox,
-                            QGridLayout)
+                            QGridLayout, QFormLayout)
+from utils.decorators import performance_monitor  # 修复：从utils.decorators导入performance_monitor
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtGui import QColor
 import time
 import os
 
 # 导入项目工具模块
-from utils.common_utils import show_error_message, show_info_message, performance_monitor
+from utils.common_utils import show_error_message, show_info_message, format_bytes
 from sandbox.sandbox_utils import validate_executable_path, format_resource_usage, get_sandbox_status_color
 
 # 设置日志
@@ -50,7 +51,7 @@ class SandboxListWidget(QTableWidget):
             
             # 设置空列表提示
             self.setRowCount(1)
-            empty_item = QTableWidgetItem("尚未创建任何沙箱，请点击\"创建沙箱\"按钮开始分析。")
+            empty_item = QTableWidgetItem("暂无沙箱数据，请创建新的沙箱")
             empty_item.setFlags(empty_item.flags() & ~Qt.ItemIsEditable)
             empty_item.setTextAlignment(Qt.AlignCenter)
             empty_item.setBackground(QColor(248, 249, 250))
@@ -69,13 +70,14 @@ class SandboxListWidget(QTableWidget):
         except Exception as e:
             logger.error(f"初始化沙箱列表UI时出错: {e}")
     
+    @performance_monitor
     def add_sandbox(self, sandbox_info):
         """添加沙箱"""
         try:
             # 如果是第一次添加，清除空列表提示
             if len(self.sandboxes) == 0 and self.rowCount() == 1:
                 item = self.item(0, 0)
-                if item and "尚未创建任何沙箱" in item.text():
+                if item and "暂无沙箱数据" in item.text():
                     self.clearContents()
                     self.setRowCount(0)
             
@@ -126,6 +128,7 @@ class SandboxListWidget(QTableWidget):
         except Exception as e:
             logger.error(f"添加沙箱到列表时出错: {e}")
     
+    @performance_monitor
     def update_sandbox(self, sandbox_id, updates):
         """更新沙箱信息"""
         try:
@@ -192,6 +195,7 @@ class SandboxListWidget(QTableWidget):
         except Exception as e:
             logger.error(f"更新沙箱信息时出错: {e}", exc_info=True)
     
+    @performance_monitor
     def remove_sandbox(self, sandbox_id):
         """移除沙箱"""
         try:
@@ -342,13 +346,15 @@ class SandboxControlPanel(QWidget):
         try:
             main_layout = QVBoxLayout(self)
             main_layout.setContentsMargins(10, 10, 10, 10)
-            main_layout.setSpacing(10)
+            main_layout.setSpacing(12)
             
             # 可执行文件选择区域
             exe_group = QGroupBox("可执行文件")
             exe_layout = QHBoxLayout(exe_group)
-            exe_layout.setSpacing(5)
+            exe_layout.setSpacing(10)
             
+            path_label = QLabel("路径:")
+            path_label.setFixedWidth(40)
             self.exe_path_edit = QLineEdit()
             self.exe_path_edit.setPlaceholderText("请选择要运行的可执行文件...")
             
@@ -356,16 +362,16 @@ class SandboxControlPanel(QWidget):
             self.browse_button.clicked.connect(self.browse_executable)
             self.browse_button.setFixedWidth(80)
             
-            exe_layout.addWidget(QLabel("路径:"), 0)
+            exe_layout.addWidget(path_label)
             exe_layout.addWidget(self.exe_path_edit, 1)
-            exe_layout.addWidget(self.browse_button, 0)
+            exe_layout.addWidget(self.browse_button)
             
             # 配置区域
             config_group = QGroupBox("沙箱配置")
             config_layout = QGridLayout(config_group)
             config_layout.setColumnStretch(1, 1)
             config_layout.setHorizontalSpacing(15)
-            config_layout.setVerticalSpacing(10)
+            config_layout.setVerticalSpacing(12)
             
             # 超时设置
             timeout_label = QLabel("超时时间(秒):")
@@ -403,57 +409,57 @@ class SandboxControlPanel(QWidget):
             
             # 控制按钮区域
             control_group = QGroupBox("沙箱控制")
-            control_layout = QHBoxLayout(control_group)
-            control_layout.setSpacing(10)
+            control_layout = QGridLayout(control_group)
+            control_layout.setHorizontalSpacing(15)
+            control_layout.setVerticalSpacing(10)
             
             self.create_button = QPushButton("创建沙箱")
             self.create_button.clicked.connect(self.on_create_clicked)
-            self.create_button.setFixedSize(90, 30)
+            self.create_button.setFixedSize(100, 35)
             
             self.start_button = QPushButton("启动沙箱")
             self.start_button.clicked.connect(self.on_start_clicked)
             self.start_button.setEnabled(False)
-            self.start_button.setFixedSize(90, 30)
+            self.start_button.setFixedSize(100, 35)
             
             self.stop_button = QPushButton("停止沙箱")
             self.stop_button.clicked.connect(self.on_stop_clicked)
             self.stop_button.setEnabled(False)
-            self.stop_button.setFixedSize(90, 30)
+            self.stop_button.setFixedSize(100, 35)
             
             self.delete_button = QPushButton("删除沙箱")
             self.delete_button.clicked.connect(self.on_delete_clicked)
             self.delete_button.setEnabled(False)
-            self.delete_button.setFixedSize(90, 30)
+            self.delete_button.setFixedSize(100, 35)
             
-            control_layout.addWidget(self.create_button)
-            control_layout.addWidget(self.start_button)
-            control_layout.addWidget(self.stop_button)
-            control_layout.addWidget(self.delete_button)
-            control_layout.addStretch()
+            control_layout.addWidget(self.create_button, 0, 0, Qt.AlignCenter)
+            control_layout.addWidget(self.start_button, 0, 1, Qt.AlignCenter)
+            control_layout.addWidget(self.stop_button, 0, 2, Qt.AlignCenter)
+            control_layout.addWidget(self.delete_button, 0, 3, Qt.AlignCenter)
             
             # 操作按钮区域
             operation_group = QGroupBox("沙箱操作")
-            operation_layout = QHBoxLayout(operation_group)
-            operation_layout.setSpacing(10)
+            operation_layout = QGridLayout(operation_group)
+            operation_layout.setHorizontalSpacing(15)
+            operation_layout.setVerticalSpacing(10)
             
             self.pause_button = QPushButton("暂停沙箱")
             self.pause_button.clicked.connect(self.on_pause_clicked)
             self.pause_button.setEnabled(False)
-            self.pause_button.setFixedSize(90, 30)
+            self.pause_button.setFixedSize(100, 35)
             
             self.resume_button = QPushButton("恢复沙箱")
             self.resume_button.clicked.connect(self.on_resume_clicked)
             self.resume_button.setEnabled(False)
-            self.resume_button.setFixedSize(90, 30)
+            self.resume_button.setFixedSize(100, 35)
             
             self.config_button = QPushButton("配置")
             self.config_button.clicked.connect(self.on_config_clicked)
-            self.config_button.setFixedSize(90, 30)
+            self.config_button.setFixedSize(100, 35)
             
-            operation_layout.addWidget(self.pause_button)
-            operation_layout.addWidget(self.resume_button)
-            operation_layout.addWidget(self.config_button)
-            operation_layout.addStretch()
+            operation_layout.addWidget(self.pause_button, 0, 0, Qt.AlignCenter)
+            operation_layout.addWidget(self.resume_button, 0, 1, Qt.AlignCenter)
+            operation_layout.addWidget(self.config_button, 0, 2, Qt.AlignCenter)
             
             # 创建沙箱列表和详情组件
             self.sandbox_list = SandboxListWidget()

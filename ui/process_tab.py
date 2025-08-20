@@ -19,9 +19,6 @@ if project_root not in sys.path:
 # 导入项目工具模块
 from utils.common_utils import show_error_message, format_bytes, format_duration
 from utils.decorators import performance_monitor
-
-# 修复导入问题：移除相对导入，直接导入
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import Config
 
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QTimer
@@ -300,7 +297,8 @@ class ProcessTab(QWidget):
             # 更新UI
             self.update_process_tree(processes)
             self.process_count_label.setText(f"进程数: {len(processes)}")
-            self.status_label.setText(f"最后刷新: {datetime.now().strftime('%H:%M:%S')}")
+            current_time = datetime.now().strftime('%H:%M:%S')
+            self.status_label.setText(f"最后刷新: {current_time}")
             
             # 发送刷新信号
             self.process_refreshed.emit(len(processes))
@@ -317,9 +315,26 @@ class ProcessTab(QWidget):
         """获取进程信息"""
         processes = []
         try:
+            # 添加System Idle Process (pid=0)的特殊处理
             for proc in psutil.process_iter(['pid', 'name', 'status', 'cpu_percent', 
                                            'memory_info', 'username', 'create_time',
                                            'exe', 'cmdline', 'ppid']):
+                # 特殊处理pid=0的进程(System Idle Process)
+                if proc.info['pid'] == 0:
+                    processes.append({
+                        'pid': 0,
+                        'name': 'System Idle Process',
+                        'status': 'running',
+                        'cpu_percent': 0.0,
+                        'memory_mb': 0.0,
+                        'username': 'SYSTEM',
+                        'create_time': 0,
+                        'exe': '',
+                        'cmdline': '',
+                        'parent_pid': 0
+                    })
+                    continue
+                    
                 try:
                     if not is_valid_process(proc.info['pid']):
                         continue
@@ -446,6 +461,19 @@ class ProcessTab(QWidget):
     def update_detail_info(self, pid, process_name):
         """更新详细信息"""
         try:
+            # 对System Idle Process (pid=0)进行特殊处理
+            if pid == 0:
+                self.detail_pid.setText("0")
+                self.detail_name.setText("System Idle Process")
+                self.detail_status.setText("running")
+                self.detail_cpu.setText("0.0%")
+                self.detail_memory.setText("0.0 MB")
+                self.detail_user.setText("SYSTEM")
+                self.detail_create_time.setText("N/A")
+                self.detail_exe.setText("")
+                self.detail_cmdline.setText("")
+                return
+                
             proc = psutil.Process(pid)
             
             # 更新基本信息
@@ -523,6 +551,12 @@ class ProcessTab(QWidget):
             return
             
         pid = self.last_selected_pid
+        
+        # 禁止终止System Idle Process (pid=0)
+        if pid == 0:
+            QMessageBox.warning(self, "无法终止进程", "无法终止System Idle Process (PID: 0)")
+            return
+            
         try:
             proc = psutil.Process(pid)
             process_name = proc.name()

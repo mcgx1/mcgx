@@ -1,6 +1,9 @@
 import functools
 import logging
 import time
+import psutil
+import os
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -50,22 +53,20 @@ def memoize_with_ttl(ttl_seconds=60):
 def performance_monitor(func):
     """
     性能监控装饰器，用于监控函数执行时间
+    
+    Args:
+        func: 被装饰的函数
     """
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         """
         wrapper函数
         """
-        # 检查是否启用性能监控
-        if not getattr(Config, 'PERFORMANCE_MONITOR_ENABLED', True):
-            return func(*args, **kwargs)
-            
         start_time = time.time()
         try:
             result = func(*args, **kwargs)
             execution_time = time.time() - start_time
-            threshold = getattr(Config, 'PERFORMANCE_MONITOR_THRESHOLD', 0.1)
-            if execution_time > threshold:  # 使用配置的阈值
+            if execution_time > 0.5:  # 如果执行时间超过500ms，记录警告
                 logger.warning(f"{func.__name__} 执行时间: {execution_time:.3f}秒")
             return result
         except Exception as e:
@@ -74,109 +75,35 @@ def performance_monitor(func):
             raise
     return wrapper
 
-"""
-系统工具模块
-提供系统信息获取和操作功能
-"""
-# 标准库导入
-import json
-import os
-import random
-import sys
-from datetime import datetime
-
-# 添加对config模块的导入
-from config import Config
-
-# 第三方库导入
-import psutil
-import platform
-from pathlib import Path
-
-# Windows注册表模块导入
-import winreg
-
-# 添加项目根目录到sys.path
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-
-# 可疑文件模式常量，移到模块级别避免重复创建
-SUSPICIOUS_FILE_PATTERNS = [
-    '.exe', '.dll', '.bat', '.cmd', '.vbs', '.scr', '.com',
-    'temp\\', 'tmp\\', '\\AppData\\Local\\Temp\\',
-    '\\Users\\Public\\', '\\ProgramData\\'
-]
-
-# 全局变量用于存储配置初始化状态
-_config_initialized = False
-
-
-def _init_config():
-    """
-    初始化配置
-    """
-    global _config_initialized
-    _config_initialized = True
-
-
-def _get_config(key, default=None):
-    """
-    获取配置项的值
-    
-    Args:
-        key (str): 配置项键名
-        default: 默认值
-        
-    Returns:
-        配置项的值
-    """
-    # 确保配置已初始化
-    if not _config_initialized:
-        _init_config()
-    
-    # 根据键名返回相应的配置值
-    if key == 'MIN_RANDOM_EVENTS':
-        return getattr(Config, 'MIN_RANDOM_EVENTS', default)
-    elif key == 'MAX_RANDOM_EVENTS':
-        return getattr(Config, 'MAX_RANDOM_EVENTS', default)
-    else:
-        return default
-
-
 class SystemUtils:
-    """系统工具类"""
+    """
+    系统工具类，提供系统信息获取和监控功能
+    """
+    
+    # 可疑文件路径模式
+    SUSPICIOUS_FILE_PATTERNS = [
+        'temp\\', 'tmp\\', 'appdata\\local\\temp',
+        'downloads\\', 'download\\', 'recycle', '$recycle',
+        'programdata\\', 'users\\public\\', 'windows\\temp'
+    ]
     
     @staticmethod
-    @memoize_with_ttl(ttl_seconds=Config.get_cache_ttl('system_info'))
+    @memoize_with_ttl(ttl_seconds=5)
     @performance_monitor
     def get_system_info():
         """
-        获取系统信息（带缓存和性能监控）
+        获取系统基本信息
         """
         try:
-            # 获取磁盘使用情况
-            disk_usage = 0
-            try:
-                if os.name != 'nt':
-                    disk_usage = psutil.disk_usage('/').percent
-                else:
-                    disk_usage = psutil.disk_usage('C:\\').percent
-            except Exception:
-                disk_usage = 0
-            
             info = {
-                'platform': platform.system(),
-                'platform_release': platform.release(),
-                'platform_version': platform.version(),
-                'architecture': platform.machine(),
-                'hostname': platform.node(),
-                'processor': platform.processor(),
-                'ram': psutil.virtual_memory().total / (1024**3),  # GB
                 'cpu_count': psutil.cpu_count(),
                 'cpu_percent': psutil.cpu_percent(interval=1),
-                'disk_usage': disk_usage,
-                'boot_time': datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+                'memory_total': psutil.virtual_memory().total,
+                'memory_available': psutil.virtual_memory().available,
+                'memory_percent': psutil.virtual_memory().percent,
+                'disk_usage': psutil.disk_usage('/').percent if os.name != 'nt' else psutil.disk_usage('C:\\').percent,
+                'boot_time': psutil.boot_time(),
+                'timestamp': time.time()
             }
             return info
         except Exception as e:
@@ -184,362 +111,176 @@ class SystemUtils:
             return {}
     
     @staticmethod
+    @memoize_with_ttl(ttl_seconds=2)
     @performance_monitor
-    def get_cpu_info():
+    def get_processes_info():
         """
-        获取CPU信息
-        """
-        try:
-            cpu_info = {
-                'count': psutil.cpu_count(logical=False),
-                'logical_count': psutil.cpu_count(logical=True),
-                'usage_percent': psutil.cpu_percent(interval=1)
-            }
-            
-            # 获取CPU频率信息
-            try:
-                freq = psutil.cpu_freq()
-                if freq:
-                    cpu_info['freq'] = {
-                        'current': freq.current,
-                        'min': freq.min,
-                        'max': freq.max
-                    }
-            except Exception as e:
-                logger.warning(f"获取CPU频率信息失败: {e}")
-                cpu_info['freq'] = None
-                
-            return cpu_info
-        except Exception as e:
-            logger.error(f"获取CPU信息时出错: {e}")
-            return {'error': str(e)}
-    
-    @staticmethod
-    @memoize_with_ttl(ttl_seconds=Config.get_cache_ttl('process_list'))
-    @performance_monitor
-    def get_process_list():
-        """
-        获取进程列表（带缓存和性能监控）
+        获取进程信息列表
         """
         processes = []
         try:
-            for proc in psutil.process_iter(['pid', 'name', 'status', 'cpu_percent', 'memory_info', 'username', 'create_time']):
+            for proc in psutil.process_iter(['pid', 'name', 'status', 'cpu_percent', 
+                                           'memory_info', 'username', 'create_time']):
                 try:
                     processes.append({
                         'pid': proc.info['pid'],
                         'name': proc.info['name'],
                         'status': proc.info['status'],
                         'cpu_percent': proc.info['cpu_percent'],
-                        'memory_mb': round(proc.info['memory_info'].rss / (1024 * 1024), 2) if proc.info['memory_info'] else 0,
+                        'memory': proc.info['memory_info'].rss if proc.info['memory_info'] else 0,
                         'username': proc.info['username'],
-                        'create_time': proc.info['create_time'],
-                        'exe': proc.exe() if proc.status() != psutil.STATUS_ZOMBIE else '',
-                        'cmdline': ' '.join(proc.cmdline()) if proc.status() != psutil.STATUS_ZOMBIE else ''
+                        'create_time': proc.info['create_time']
                     })
-                except (psutil.NoSuchProcess, psutil.AccessDenied):
-                    # 进程可能已经结束或无权限访问
-                    continue
+                except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
+                    # 忽略无法访问的进程
+                    pass
         except Exception as e:
-            logger.error(f"获取进程列表时出错: {e}")
-        
+            logger.error(f"获取进程信息时出错: {e}")
         return processes
     
     @staticmethod
-    @memoize_with_ttl(ttl_seconds=Config.get_cache_ttl('network_connections'))
+    @memoize_with_ttl(ttl_seconds=5)
     @performance_monitor
     def get_network_connections():
         """
-        获取网络连接信息（带缓存和性能监控）
+        获取网络连接信息
         """
         connections = []
         try:
             for conn in psutil.net_connections(kind='inet'):
                 try:
-                    # 准备连接信息字典
-                    conn_info = {
+                    connections.append({
                         'fd': conn.fd,
                         'family': str(conn.family),
                         'type': str(conn.type),
-                        'laddr': f"{conn.laddr.ip}:{conn.laddr.port}" if conn.laddr else 'N/A',
-                        'raddr': f"{conn.raddr.ip}:{conn.raddr.port}" if conn.raddr else 'N/A',
+                        'laddr': f"{conn.laddr.ip}:{conn.laddr.port}" if conn.laddr else '',
+                        'raddr': f"{conn.raddr.ip}:{conn.raddr.port}" if conn.raddr else '',
                         'status': conn.status,
-                        'pid': conn.pid,
-                    }
-                                    
-                    # 只在非Windows系统上添加uids和gids属性
-                    if os.name != 'nt':
-                        conn_info['uids'] = list(conn.uids) if conn.uids else []
-                        conn_info['gids'] = list(conn.gids) if conn.gids else []
-                    else:
-                        # Windows系统上不支持uids和gids
-                        conn_info['uids'] = []
-                        conn_info['gids'] = []
-                                    
-                    connections.append(conn_info)
+                        'pid': conn.pid
+                    })
                 except Exception as e:
                     logger.warning(f"处理网络连接时出错: {e}")
-                    continue
         except Exception as e:
             logger.error(f"获取网络连接信息时出错: {e}")
-        
         return connections
     
     @staticmethod
-    @memoize_with_ttl(ttl_seconds=Config.get_cache_ttl('startup_items'))
+    @memoize_with_ttl(ttl_seconds=10)
     @performance_monitor
     def get_startup_items():
         """
-        获取启动项信息（带缓存和性能监控）
+        获取启动项信息
         """
         startup_items = []
-        
         try:
-            # 获取启动文件夹中的启动项
+            # 获取当前用户的启动文件夹路径
             startup_folder = os.path.join(os.environ.get('APPDATA', ''), 
-                                        'Microsoft\\Windows\\Start Menu\\Programs\\Startup')
+                                        'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
             
             if os.path.exists(startup_folder):
-                try:
-                    for item in os.listdir(startup_folder):
-                        item_path = os.path.join(startup_folder, item)
-                        if os.path.isfile(item_path):
-                            startup_items.append({
-                                'name': item,
-                                'path': item_path,
-                                'location': 'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\StartupApproved\\Run',
-                                'status': '启用'
-                            })
-                except Exception as e:
-                    logger.error(f"扫描启动文件夹时出错: {e}")
+                for item in os.listdir(startup_folder):
+                    item_path = os.path.join(startup_folder, item)
+                    if os.path.isfile(item_path):
+                        startup_items.append({
+                            'name': item,
+                            'path': item_path,
+                            'type': '用户启动文件夹'
+                        })
             
-            # 获取注册表中的启动项 (HKEY_CURRENT_USER)
-            try:
-                with winreg.OpenKey(winreg.HKEY_CURRENT_USER, 
-                                  r"Software\Microsoft\Windows\CurrentVersion\Run") as key:
-                    i = 0
-                    while True:
-                        try:
-                            name, value, _ = winreg.EnumValue(key, i)
-                            startup_items.append({
-                                'name': name,
-                                'path': value,
-                                'location': 'HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run',
-                                'status': '启用'
-                            })
-                            i += 1
-                        except WindowsError:
-                            break
-            except Exception as e:
-                logger.debug(f"读取HKCU Run启动项时出错: {e}")
+            # 获取系统启动文件夹路径
+            system_startup_folder = os.path.join(os.environ.get('PROGRAMDATA', ''), 
+                                               'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
             
-            # 获取注册表中的启动项 (HKEY_LOCAL_MACHINE)
-            try:
-                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, 
-                                  r"Software\Microsoft\Windows\CurrentVersion\Run") as key:
-                    i = 0
-                    while True:
-                        try:
-                            name, value, _ = winreg.EnumValue(key, i)
-                            startup_items.append({
-                                'name': name,
-                                'path': value,
-                                'location': 'HKLM\\Software\\Microsoft\\Windows\\CurrentVersion\\Run',
-                                'status': '启用'
-                            })
-                            i += 1
-                        except WindowsError:
-                            break
-            except Exception as e:
-                logger.debug(f"读取HKLM Run启动项时出错: {e}")
-                
+            if os.path.exists(system_startup_folder):
+                for item in os.listdir(system_startup_folder):
+                    item_path = os.path.join(system_startup_folder, item)
+                    if os.path.isfile(item_path):
+                        startup_items.append({
+                            'name': item,
+                            'path': item_path,
+                            'type': '系统启动文件夹'
+                        })
         except Exception as e:
             logger.error(f"获取启动项信息时出错: {e}")
-        
         return startup_items
-    
-    @staticmethod
-    @performance_monitor
-    def get_file_events(time_range_minutes=10):
-        """
-        获取文件事件信息（模拟数据）
-        
-        Args:
-            time_range_minutes (int): 时间范围（分钟）
-            
-        Returns:
-            list: 文件事件列表
-        """
-        # 这是一个模拟实现，实际应用中应该使用文件系统监控API
-        events = []
-        try:
-            # 常见的进程列表
-            common_processes = [
-                "explorer.exe", "chrome.exe", "firefox.exe", "svchost.exe", 
-                "winlogon.exe", "services.exe", "lsass.exe", "notepad.exe",
-                "cmd.exe", "powershell.exe", "python.exe", "code.exe",
-                "steam.exe", "discord.exe", "teams.exe", "skype.exe"
-            ]
-            
-            # 常见的文件路径前缀
-            path_prefixes = [
-                "C:\\Windows\\System32\\", 
-                "C:\\Program Files\\", 
-                "C:\\Program Files (x86)\\",
-                "C:\\Users\\User\\Documents\\",
-                "C:\\Users\\User\\Desktop\\",
-                "C:\\Users\\User\\Downloads\\",
-                "C:\\Windows\\Temp\\",
-                "C:\\Users\\User\\AppData\\Local\\Temp\\",
-                "C:\\Users\\User\\AppData\\Roaming\\",
-                "C:\\ProgramData\\"
-            ]
-            
-            # 常见的文件扩展名
-            file_extensions = [
-                ".exe", ".dll", ".txt", ".log", ".tmp", ".ini", ".cfg", ".dat",
-                ".doc", ".docx", ".pdf", ".jpg", ".png", ".zip", ".rar", ".7z",
-                ".bat", ".cmd", ".vbs", ".js", ".ps1", ".py", ".html", ".css"
-            ]
-            
-            # 操作类型及其大致分布比例 (create: 4, modify: 5, delete: 1)
-            operations = ["create", "modify", "modify", "modify", "modify", "delete"]
-            
-            # 生成指定时间范围内的随机事件
-            current_time = time.time()
-            start_time = current_time - (time_range_minutes * 60)
-            
-            # 使用配置文件中的配置项
-            _init_config()
-            min_events = _get_config('MIN_RANDOM_EVENTS', 20)
-            max_events = _get_config('MAX_RANDOM_EVENTS', 50)
-            
-            # 生成随机事件
-            event_count = random.randint(min_events, max_events)
-            
-            for i in range(event_count):
-                # 随机生成事件时间
-                event_time = start_time + random.uniform(0, time_range_minutes * 60)
-                
-                # 随机选择进程
-                process = random.choice(common_processes)
-                
-                # 随机生成文件路径
-                prefix = random.choice(path_prefixes)
-                filename = f"file_{random.randint(1, 1000)}{random.choice(file_extensions)}"
-                file_path = prefix + filename
-                
-                # 随机选择操作类型
-                operation = random.choice(operations)
-                
-                events.append({
-                    'timestamp': event_time,
-                    'type': operation,
-                    'path': file_path,
-                    'process': process
-                })
-                
-            # 添加一些特殊事件以增强分析的真实性
-            # 添加一些可疑事件
-            suspicious_paths = [
-                "C:\\Users\\Public\\malware.exe",
-                "C:\\Windows\\Temp\\suspicious.bat",
-                "C:\\Users\\User\\AppData\\Local\\Temp\\backdoor.dll",
-                "C:\\ProgramData\\hidden.exe",
-                "C:\\Users\\Public\\Downloads\\crack.exe"
-            ]
-            
-            for suspicious_path in suspicious_paths:
-                event_time = start_time + random.uniform(0, time_range_minutes * 60)
-                process = random.choice(["cmd.exe", "powershell.exe", "wscript.exe"])
-                operation = random.choice(["create", "modify"])
-                
-                events.append({
-                    'timestamp': event_time,
-                    'type': operation,
-                    'path': suspicious_path,
-                    'process': process
-                })
-                
-            # 添加一些正常的系统事件
-            system_paths = [
-                "C:\\Windows\\System32\\calc.exe",
-                "C:\\Windows\\System32\\notepad.exe",
-                "C:\\Windows\\System32\\drivers\\etc\\hosts",
-                "C:\\Windows\\Prefetch\\CALC.EXE-12345678.pf"
-            ]
-            
-            for system_path in system_paths:
-                event_time = start_time + random.uniform(0, time_range_minutes * 60)
-                process = random.choice(["explorer.exe", "svchost.exe"])
-                operation = random.choice(["modify", "access"])
-                
-                events.append({
-                    'timestamp': event_time,
-                    'type': operation,
-                    'path': system_path,
-                    'process': process
-                })
-                
-        except Exception as e:
-            logger.error(f"生成文件事件时出错: {e}")
-            
-        return events
     
     @staticmethod
     def is_suspicious_file_event(event):
         """
         检查文件事件是否可疑
-        
-        Args:
-            event (dict): 文件事件
-            
-        Returns:
-            bool: 是否可疑
         """
         try:
-            path_lower = event.get('path', '').lower()
-            return any(pattern in path_lower for pattern in SUSPICIOUS_FILE_PATTERNS)
+            # 检查路径是否可疑
+            path = event.get('path', '').lower()
+            for pattern in SystemUtils.SUSPICIOUS_FILE_PATTERNS:
+                if pattern in path:
+                    return True
+            
+            # 检查文件名是否可疑
+            filename = os.path.basename(path).lower()
+            suspicious_names = ['temp', 'tmp', 'crack', 'keygen', 'patch', 'hack']
+            for name in suspicious_names:
+                if name in filename:
+                    return True
+            
+            # 检查是否在临时目录中创建可执行文件
+            if any(temp_dir in path for temp_dir in ['temp\\', 'tmp\\', 'appdata\\local\\temp']):
+                if path.endswith(('.exe', '.dll', '.sys', '.bat', '.cmd', '.ps1', '.vbs')):
+                    return True
+            
+            return False
         except Exception as e:
             logger.error(f"检查文件事件是否可疑时出错: {e}")
             return False
     
     @staticmethod
-    def kill_process(pid):
+    def get_file_events(minutes=10):
         """
-        终止进程
-        
-        Args:
-            pid (int): 进程ID
+        获取文件事件（模拟数据）
         """
+        events = []
         try:
-            process = psutil.Process(pid)
-            if process.status() == psutil.STATUS_ZOMBIE:
-                logger.warning(f"进程 {pid} 已经是僵尸进程")
-                return True
+            # 生成一些模拟的文件事件数据
+            import random
+            
+            operations = ['create', 'modify', 'delete']
+            extensions = ['.txt', '.log', '.tmp', '.exe', '.dll', '.sys']
+            processes = ['explorer.exe', 'chrome.exe', 'notepad.exe', 'svchost.exe', 'python.exe']
+            paths = [
+                r'C:\Windows\Temp\test.tmp',
+                r'C:\Users\Public\Documents\log.txt',
+                r'C:\ProgramData\test.log',
+                r'C:\Users\Username\AppData\Local\Temp\temp.exe',
+                r'C:\Windows\System32\drivers\test.sys'
+            ]
+            
+            current_time = time.time()
+            for i in range(random.randint(10, 50)):
+                event_time = current_time - random.randint(0, minutes * 60)
+                event = {
+                    'timestamp': event_time,
+                    'type': random.choice(operations),
+                    'path': random.choice(paths) + str(random.randint(1, 1000)) + random.choice(extensions),
+                    'process': random.choice(processes),
+                    'details': '模拟文件事件'
+                }
+                events.append(event)
+            
+            # 添加一些可疑事件
+            for i in range(3):
+                event_time = current_time - random.randint(0, minutes * 60)
+                event = {
+                    'timestamp': event_time,
+                    'type': 'create',
+                    'path': r'C:\Users\Public\Temp\suspicious' + str(random.randint(1, 1000)) + '.exe',
+                    'process': 'unknown.exe',
+                    'details': '可疑的可执行文件创建'
+                }
+                events.append(event)
                 
-            process.terminate()
-            process.wait(timeout=3)
-            logger.info(f"进程 {pid} 已终止")
-            return True
-        except psutil.NoSuchProcess:
-            logger.warning(f"进程 {pid} 不存在")
-            return False
-        except psutil.AccessDenied:
-            logger.error(f"无权限终止进程 {pid}")
-            return False
-        except psutil.TimeoutExpired:
-            logger.warning(f"进程 {pid} 未在超时时间内终止，尝试强制杀死")
-            try:
-                process.kill()
-                process.wait(timeout=1)
-                logger.info(f"进程 {pid} 已强制杀死")
-                return True
-            except Exception as e:
-                logger.error(f"强制杀死进程 {pid} 失败: {e}")
-                return False
         except Exception as e:
-            logger.error(f"终止进程 {pid} 时出错: {e}")
-            return False
+            logger.error(f"生成文件事件时出错: {e}")
+        return events
 
     @staticmethod
     def get_disk_usage():
@@ -547,18 +288,16 @@ class SystemUtils:
         获取磁盘使用情况
         
         Returns:
-            dict: 包含各个分区的使用情况
+            dict: 磁盘使用情况字典
         """
         try:
-            partitions = psutil.disk_partitions()
             disk_usage = {}
+            partitions = psutil.disk_partitions()
             
             for partition in partitions:
                 try:
                     usage = psutil.disk_usage(partition.mountpoint)
                     disk_usage[partition.device] = {
-                        'mountpoint': partition.mountpoint,
-                        'fstype': partition.fstype,
                         'total': usage.total,
                         'used': usage.used,
                         'free': usage.free,
@@ -1306,7 +1045,8 @@ class SystemUtils:
                     disk_usage = psutil.disk_usage('/').percent
                 else:
                     disk_usage = psutil.disk_usage('C:\\').percent
-            except Exception:
+            except Exception as e:
+                logger.warning(f"获取磁盘使用情况失败: {str(e)}")
                 disk_usage = 0
             
             info = {
@@ -1324,7 +1064,7 @@ class SystemUtils:
             }
             return info
         except Exception as e:
-            logger.error(f"获取系统信息时出错: {e}")
+            logger.error(f"获取系统信息时出错: {str(e)}")
             return {}
     
     @staticmethod
@@ -1350,12 +1090,12 @@ class SystemUtils:
                         'max': freq.max
                     }
             except Exception as e:
-                logger.warning(f"获取CPU频率信息失败: {e}")
+                logger.warning(f"获取CPU频率信息失败: {str(e)}")
                 cpu_info['freq'] = None
                 
             return cpu_info
         except Exception as e:
-            logger.error(f"获取CPU信息时出错: {e}")
+            logger.error(f"获取CPU信息时出错: {str(e)}")
             return {'error': str(e)}
     
     @staticmethod
@@ -1594,44 +1334,6 @@ class SystemUtils:
             return any(pattern in path_lower for pattern in SUSPICIOUS_FILE_PATTERNS)
         except Exception as e:
             logger.error(f"检查文件事件是否可疑时出错: {e}")
-            return False
-    
-    @staticmethod
-    def kill_process(pid):
-        """
-        终止进程
-        
-        Args:
-            pid (int): 进程ID
-        """
-        try:
-            process = psutil.Process(pid)
-            if process.status() == psutil.STATUS_ZOMBIE:
-                logger.warning(f"进程 {pid} 已经是僵尸进程")
-                return True
-                
-            process.terminate()
-            process.wait(timeout=3)
-            logger.info(f"进程 {pid} 已终止")
-            return True
-        except psutil.NoSuchProcess:
-            logger.warning(f"进程 {pid} 不存在")
-            return False
-        except psutil.AccessDenied:
-            logger.error(f"无权限终止进程 {pid}")
-            return False
-        except psutil.TimeoutExpired:
-            logger.warning(f"进程 {pid} 未在超时时间内终止，尝试强制杀死")
-            try:
-                process.kill()
-                process.wait(timeout=1)
-                logger.info(f"进程 {pid} 已强制杀死")
-                return True
-            except Exception as e:
-                logger.error(f"强制杀死进程 {pid} 失败: {e}")
-                return False
-        except Exception as e:
-            logger.error(f"终止进程 {pid} 时出错: {e}")
             return False
 
     @staticmethod
@@ -2102,124 +1804,3 @@ class FileMonitor:
             self.logger.error(f"生成文件事件时出错: {e}")
             
         return events
-
-class PEAnalyzer:
-    """
-    PE文件分析器
-    用于分析Windows可执行文件的结构和属性
-    """
-    
-    def __init__(self, file_path=None):
-        """
-        初始化PE分析器
-        
-        Args:
-            file_path (str, optional): 要分析的文件路径
-        """
-        self.file_path = file_path
-        self.logger = logging.getLogger(__name__)
-        self.is_pe = False
-        self.headers = {}
-    
-    def analyze(self, file_path=None):
-        """
-        分析PE文件
-        
-        Args:
-            file_path (str, optional): 要分析的文件路径
-            
-        Returns:
-            dict: 分析结果
-        """
-        if file_path:
-            self.file_path = file_path
-            
-        if not self.file_path or not os.path.exists(self.file_path):
-            return {
-                "is_pe": False,
-                "error": "文件不存在"
-            }
-        
-        try:
-            # 这里应该实现实际的PE分析逻辑
-            # 目前只是一个简化版本
-            result = {
-                "is_pe": True,
-                "file_size": os.path.getsize(self.file_path),
-                "machine_type": "Unknown",
-                "sections": [],
-                "imports": [],
-                "exports": []
-            }
-            
-            self.logger.info(f"分析PE文件: {self.file_path}")
-            return result
-            
-        except Exception as e:
-            self.logger.error(f"分析PE文件时出错: {e}")
-            return {
-                "is_pe": False,
-                "error": str(e)
-            }
-
-
-class FileEntropyAnalyzer:
-    """
-    文件熵分析器
-    用于分析文件的熵值，检测是否可能被加密或压缩
-    """
-    
-    def __init__(self):
-        """
-        初始化文件熵分析器
-        """
-        self.logger = logging.getLogger(__name__)
-    
-    def calculate_entropy(self, file_path):
-        """
-        计算文件熵值
-        
-        Args:
-            file_path (str): 文件路径
-            
-        Returns:
-            float: 熵值 (0-8之间，越高表示越随机)
-        """
-        try:
-            if not os.path.exists(file_path):
-                raise FileNotFoundError(f"文件不存在: {file_path}")
-            
-            # 读取文件内容
-            with open(file_path, 'rb') as f:
-                data = f.read()
-            
-            if not data:
-                return 0.0
-            
-            # 计算熵值
-            import math
-            from collections import Counter
-            
-            # 统计每个字节的出现频率
-            byte_counts = Counter(data)
-            total_bytes = len(data)
-            
-            # 计算熵值
-            entropy = 0.0
-            for count in byte_counts.values():
-                probability = count / total_bytes
-                entropy -= probability * math.log2(probability)
-            
-            self.logger.info(f"文件 {file_path} 的熵值: {entropy:.4f}")
-            return entropy
-            
-        except Exception as e:
-            self.logger.error(f"计算文件熵值时出错: {e}")
-            return -1.0  # 错误值
-
-# 兼容旧代码的别名
-SystemInfo = SystemUtils
-RegistryMonitor = RegistryMonitor
-FileMonitor = FileMonitor
-PEAnalyzer = PEAnalyzer
-FileEntropyAnalyzer = FileEntropyAnalyzer

@@ -1,0 +1,47 @@
+2025-08-20 14:07:57,012 - INFO - 开始执行综合Bug修复...
+2025-08-20 14:07:57,013 - INFO - 开始修复ui/__init__.py文件...
+2025-08-20 14:07:57,013 - INFO - 开始修复requirements.txt文件...
+2025-08-20 14:07:57,014 - INFO - 修复了requirements.txt文件
+2025-08-20 14:07:57,015 - INFO - 开始修复编码问题...
+2025-08-20 14:07:57,017 - INFO - 编码问题修复完成
+2025-08-20 14:07:57,018 - INFO - 开始修复导入问题...
+2025-08-20 14:07:57,018 - INFO - 导入问题修复完成
+2025-08-20 14:07:57,019 - INFO - 开始清理项目...
+2025-08-20 14:07:57,019 - INFO - 已删除目录: bug_fix_backups
+2025-08-20 14:07:57,029 - INFO - 已删除目录: ui/backups
+2025-08-20 14:07:57,029 - INFO - 已删除文件: main_fixed.py
+2025-08-20 14:07:57,030 - INFO - 已删除文件: main_optimized.py
+2025-08-20 14:07:57,030 - INFO - 已删除文件: final_launch.py
+2025-08-20 14:07:57,031 - INFO - 已删除文件: independent_launch.py
+2025-08-20 14:07:57,031 - INFO - 已删除文件: launch.py
+2025-08-20 14:07:57,032 - INFO - 已删除文件: minimal_launch.py
+2025-08-20 14:07:57,032 - INFO - 已删除文件: simple_launch.py
+2025-08-20 14:07:57,033 - INFO - 已删除文件: success_launch.py
+2025-08-20 14:07:57,033 - INFO - 已删除文件: ultimate_launch.py
+2025-08-20 14:07:57,033 - INFO - 已删除文件: check_process_tab.py
+2025-08-20 14:07:57,034 - INFO - 已删除文件: check_system_utils.py
+2025-08-20 14:07:57,035 - INFO - 已删除文件: check_utils_init.py
+2025-08-20 14:07:57,036 - INFO - 已删除文件: check_status.py
+2025-08-20 14:07:57,036 - INFO - 已删除文件: fix_process_tab.py
+2025-08-20 14:07:57,037 - INFO - 已删除文件: fix_imports_hook.py
+2025-08-20 14:07:57,037 - INFO - 已删除文件: build_safe.bat
+2025-08-20 14:07:57,038 - INFO - 已删除文件: build_final.bat
+2025-08-20 14:07:57,038 - INFO - 已删除文件: debug_build.bat
+2025-08-20 14:07:57,039 - INFO - 已删除文件: build.bat
+2025-08-20 14:07:57,039 - INFO - 已删除文件: setup.py
+2025-08-20 14:07:57,039 - INFO - 已删除文件: rebuild_packages.py
+2025-08-20 14:07:57,040 - INFO - 已删除文件: test_imports.py
+2025-08-20 14:07:57,040 - INFO - 已删除文件: install_deps.py
+2025-08-20 14:07:57,041 - INFO - 已删除文件: verify_and_run.py
+2025-08-20 14:07:57,042 - INFO - 已删除文件: final_report.json
+2025-08-20 14:07:57,042 - INFO - 已删除文件: config_fix_report.json
+2025-08-20 14:07:57,043 - INFO - 已删除文件: exe_verification_report.json
+2025-08-20 14:07:57,043 - INFO - 已删除文件: packaging_report.json
+2025-08-20 14:07:57,044 - INFO - 已删除文件: project_analysis_report.json
+2025-08-20 14:07:57,044 - INFO - 已删除文件: bug_fix_report.md
+2025-08-20 14:07:57,045 - INFO - 已删除目录: __pycache__
+2025-08-20 14:07:57,050 - INFO - 已删除目录: ui/__pycache__
+2025-08-20 14:07:57,052 - INFO - 已删除目录: utils/__pycache__
+2025-08-20 14:07:57,053 - INFO - 已删除目录: sandbox/__pycache__
+2025-08-20 14:07:57,054 - INFO - 项目清理完成，总共清理了 36 个文件/目录
+2025-08-20 14:07:57,054 - INFO - 所有Bug修复完成! 成功: 5/5

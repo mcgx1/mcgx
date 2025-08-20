@@ -1,88 +1,62 @@
-{
-  "title_rules": [
-    {
-      "pattern": "限时",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'限时'关键词的窗口"
-    },
-    {
-      "pattern": "免费",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'免费'关键词的窗口"
-    },
-    {
-      "pattern": "领取",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'领取'关键词的窗口"
-    },
-    {
-      "pattern": "礼包",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'礼包'关键词的窗口"
-    },
-    {
-      "pattern": "福利",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'福利'关键词的窗口"
-    },
-    {
-      "pattern": "中奖",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'中奖'关键词的窗口"
-    },
-    {
-      "pattern": "恭喜",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'恭喜'关键词的窗口"
-    },
-    {
-      "pattern": "大促",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'大促'关键词的窗口"
-    },
-    {
-      "pattern": "清仓",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'清仓'关键词的窗口"
-    },
-    {
-      "pattern": "钜惠",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'钜惠'关键词的窗口"
-    },
-    {
-      "pattern": "爆款",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'爆款'关键词的窗口"
-    },
-    {
-      "pattern": "秒杀",
-      "type": "contains",
-      "action": "block",
-      "priority": 1,
-      "description": "包含'秒杀'关键词的窗口"
-    }
-  ]
-}
+[
+  {
+    "name": "包含'限时'关键词的窗口",
+    "keyword": "限时",
+    "enabled": true
+  },
+  {
+    "name": "包含'免费'关键词的窗口",
+    "keyword": "免费",
+    "enabled": true
+  },
+  {
+    "name": "包含'领取'关键词的窗口",
+    "keyword": "领取",
+    "enabled": true
+  },
+  {
+    "name": "包含'礼包'关键词的窗口",
+    "keyword": "礼包",
+    "enabled": true
+  },
+  {
+    "name": "包含'福利'关键词的窗口",
+    "keyword": "福利",
+    "enabled": true
+  },
+  {
+    "name": "包含'中奖'关键词的窗口",
+    "keyword": "中奖",
+    "enabled": true
+  },
+  {
+    "name": "包含'恭喜'关键词的窗口",
+    "keyword": "恭喜",
+    "enabled": true
+  },
+  {
+    "name": "包含'大促'关键词的窗口",
+    "keyword": "大促",
+    "enabled": true
+  },
+  {
+    "name": "包含'清仓'关键词的窗口",
+    "keyword": "清仓",
+    "enabled": true
+  },
+  {
+    "name": "包含'钜惠'关键词的窗口",
+    "keyword": "钜惠",
+    "enabled": true
+  },
+  {
+    "name": "包含'爆款'关键词的窗口",
+    "keyword": "爆款",
+    "enabled": true
+  },
+  {
+    "name": "包含'秒杀'关键词的窗口",
+    "keyword": "秒杀",
+    "enabled": true
+  }
+]

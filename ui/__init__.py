@@ -3,6 +3,8 @@
 UI包初始化文件
 """
 
+__version__ = "1.0.0"
+
 # 导入所有UI模块
 from .main_window import MainWindow
 from .process_tab import ProcessTab

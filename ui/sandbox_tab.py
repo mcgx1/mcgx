@@ -61,17 +61,23 @@ class SandboxTab(QWidget):
         try:
             if not self.is_admin():
                 # 创建一个提示面板
+                permission_container = QWidget()
+                permission_container.setStyleSheet("background-color: #fff3cd; border: 2px solid #ffeaa7; border-radius: 8px;")
+                
+                # 创建水平布局放置警告和按钮
+                warning_layout = QHBoxLayout(permission_container)
+                warning_layout.setContentsMargins(20, 15, 20, 15)
+                warning_layout.setSpacing(25)
+                
                 self.permission_warning = QLabel("⚠️ 当前没有管理员权限，沙箱功能可能受限")
                 self.permission_warning.setStyleSheet("""
                     QLabel {
-                        background-color: #fff3cd;
-                        border: 1px solid #ffeaa7;
-                        border-radius: 4px;
-                        padding: 10px;
                         color: #856404;
                         font-weight: bold;
+                        font-size: 14px;
                     }
                 """)
+                self.permission_warning.setAlignment(Qt.AlignCenter)
                 
                 # 添加重启按钮
                 self.restart_button = QPushButton("以管理员权限重启")
@@ -79,28 +85,31 @@ class SandboxTab(QWidget):
                     QPushButton {
                         background-color: #ffc107;
                         color: #212529;
-                        border: none;
-                        padding: 6px 12px;
-                        border-radius: 4px;
+                        border: 2px solid #e0a800;
+                        padding: 10px 20px;
+                        border-radius: 6px;
                         font-weight: bold;
+                        font-size: 14px;
                     }
                     QPushButton:hover {
                         background-color: #e0a800;
                     }
+                    QPushButton:pressed {
+                        background-color: #d39e00;
+                    }
                 """)
+                self.restart_button.setFixedSize(180, 45)
                 self.restart_button.clicked.connect(self.request_admin_restart)
+                
+                warning_layout.addWidget(self.permission_warning)
+                warning_layout.addWidget(self.restart_button)
+                warning_layout.addStretch()
                 
                 # 插入到布局顶部
                 layout = self.layout()
                 if layout:
-                    # 创建水平布局放置警告和按钮
-                    warning_layout = QHBoxLayout()
-                    warning_layout.addWidget(self.permission_warning)
-                    warning_layout.addWidget(self.restart_button)
-                    warning_layout.addStretch()
-                    
-                    # 插入到布局的顶部
-                    layout.insertLayout(0, warning_layout)
+                    # 在布局顶部插入权限提示区域
+                    layout.insertWidget(0, permission_container)
         except Exception as e:
             logger.error(f"检查管理员权限时出错: {e}")
     
@@ -169,7 +178,7 @@ class SandboxTab(QWidget):
         """初始化UI"""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
-        layout.setSpacing(10)
+        layout.setSpacing(12)
         
         # 创建信息展示面板
         info_panel = QGroupBox("沙箱安全分析功能说明")
@@ -191,22 +200,25 @@ class SandboxTab(QWidget):
         """)
         
         info_layout = QVBoxLayout()
+        info_layout.setSpacing(10)
         
         # 功能描述
         description_label = QLabel("沙箱提供了一个隔离的环境来运行和分析可疑程序，保护您的系统免受潜在威胁。")
         description_label.setWordWrap(True)
-        description_label.setStyleSheet("padding: 5px 0;")
+        description_label.setStyleSheet("padding: 5px 0; font-size: 13px;")
         info_layout.addWidget(description_label)
         
         # 创建网格布局用于功能和建议
         grid_layout = QHBoxLayout()
+        grid_layout.setSpacing(15)
         
         # 功能列表
         features_widget = QWidget()
         features_layout = QVBoxLayout()
+        features_layout.setSpacing(6)
         
         features_title = QLabel("✅ 主要功能")
-        features_title.setStyleSheet("font-weight: bold; padding: 5px 0;")
+        features_title.setStyleSheet("font-weight: bold; padding: 5px 0; font-size: 13px;")
         features_layout.addWidget(features_title)
         
         features = [
@@ -221,6 +233,7 @@ class SandboxTab(QWidget):
         for feature in features:
             label = QLabel(f"• {feature}")
             label.setWordWrap(True)
+            label.setStyleSheet("font-size: 12px; padding: 2px 0;")
             features_layout.addWidget(label)
         
         features_widget.setLayout(features_layout)
@@ -228,9 +241,10 @@ class SandboxTab(QWidget):
         # 使用建议
         tips_widget = QWidget()
         tips_layout = QVBoxLayout()
+        tips_layout.setSpacing(6)
         
         tips_title = QLabel("💡 使用建议")
-        tips_title.setStyleSheet("font-weight: bold; padding: 5px 0;")
+        tips_title.setStyleSheet("font-weight: bold; padding: 5px 0; font-size: 13px;")
         tips_layout.addWidget(tips_title)
         
         tips = [
@@ -243,6 +257,7 @@ class SandboxTab(QWidget):
         for tip in tips:
             label = QLabel(f"• {tip}")
             label.setWordWrap(True)
+            label.setStyleSheet("font-size: 12px; padding: 2px 0;")
             tips_layout.addWidget(label)
         
         tips_widget.setLayout(tips_layout)

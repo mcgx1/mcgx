@@ -11,7 +11,8 @@ from datetime import datetime
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
                              QTableWidget, QTableWidgetItem, QLabel, QMessageBox, 
                              QAbstractItemView, QGroupBox, QFormLayout, QLineEdit,
-                             QTextEdit, QFileDialog, QProgressBar, QComboBox)
+                             QTextEdit, QFileDialog, QProgressBar, QComboBox,
+                             QSplitter)
 from PyQt5.QtCore import QTimer, Qt, QThread, pyqtSignal
 from utils.system_utils import SystemUtils, performance_monitor
 
@@ -32,15 +33,22 @@ class FileBehaviorAnalyzer(QWidget):
     def init_ui(self):
         layout = QVBoxLayout()
         
+        # 使用分割器组织界面
+        splitter = QSplitter(Qt.Vertical)
+        
+        # 上半部分：控制面板
+        control_widget = QWidget()
+        control_layout = QVBoxLayout(control_widget)
+        
         # 分析控制区域
         control_group = QGroupBox("系统文件行为分析")
-        control_layout = QFormLayout()
+        control_layout_group = QFormLayout()
         
         # 分析时间范围选择
         self.time_range_combo = QComboBox()
         self.time_range_combo.addItems(["最近5分钟", "最近10分钟", "最近30分钟", "最近1小时", "最近2小时", "最近24小时"])
         self.time_range_combo.setCurrentText("最近10分钟")
-        control_layout.addRow("分析时间范围:", self.time_range_combo)
+        control_layout_group.addRow("分析时间范围:", self.time_range_combo)
         
         # 控制按钮
         button_layout = QHBoxLayout()
@@ -49,38 +57,23 @@ class FileBehaviorAnalyzer(QWidget):
         self.start_analyze_btn.clicked.connect(self.start_analysis)
         button_layout.addWidget(self.start_analyze_btn)
         
-        self.advanced_analyze_btn = QPushButton("高级分析")
-        self.advanced_analyze_btn.clicked.connect(self.start_advanced_analysis)
-        button_layout.addWidget(self.advanced_analyze_btn)
-        
-        self.auto_analyze_btn = QPushButton("自动分析")
-        self.auto_analyze_btn.setCheckable(True)
-        self.auto_analyze_btn.toggled.connect(self.toggle_auto_analysis)
-        button_layout.addWidget(self.auto_analyze_btn)
-        
         self.export_btn = QPushButton("导出报告")
         self.export_btn.clicked.connect(self.export_report)
         self.export_btn.setEnabled(False)
         button_layout.addWidget(self.export_btn)
         
-        control_layout.addRow(button_layout)
-        control_group.setLayout(control_layout)
-        layout.addWidget(control_group)
+        control_layout_group.addRow(button_layout)
+        control_group.setLayout(control_layout_group)
+        control_layout.addWidget(control_group)
         
         # 进度条
         self.progress_bar = QProgressBar()
         self.progress_bar.setVisible(False)
-        layout.addWidget(self.progress_bar)
+        control_layout.addWidget(self.progress_bar)
         
-        # 分析结果表格
-        self.result_table = QTableWidget()
-        self.result_table.setColumnCount(5)
-        self.result_table.setHorizontalHeaderLabels(['时间', '操作类型', '文件路径', '进程', '详细信息'])
-        self.result_table.setSelectionBehavior(QAbstractItemView.SelectRows)
-        self.result_table.setAlternatingRowColors(True)
-        self.result_table.setSortingEnabled(True)
-        self.result_table.setWordWrap(False)
-        layout.addWidget(self.result_table)
+        # 下半部分：结果显示区域
+        results_widget = QWidget()
+        results_layout = QVBoxLayout(results_widget)
         
         # 统计信息区域
         stats_group = QGroupBox("统计信息")
@@ -89,8 +82,24 @@ class FileBehaviorAnalyzer(QWidget):
         self.stats_text.setReadOnly(True)
         stats_layout.addWidget(self.stats_text)
         stats_group.setLayout(stats_layout)
-        layout.addWidget(stats_group)
+        results_layout.addWidget(stats_group)
         
+        # 分析结果表格
+        self.result_table = QTableWidget()
+        self.result_table.setColumnCount(6)
+        self.result_table.setHorizontalHeaderLabels(['时间', '操作类型', '文件路径', '进程', '详细信息', '风险等级'])
+        self.result_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.result_table.setAlternatingRowColors(True)
+        self.result_table.setSortingEnabled(True)
+        self.result_table.setWordWrap(False)
+        results_layout.addWidget(self.result_table)
+        
+        # 添加到分割器
+        splitter.addWidget(control_widget)
+        splitter.addWidget(results_widget)
+        splitter.setSizes([150, 650])  # 设置初始大小
+        
+        layout.addWidget(splitter)
         self.setLayout(layout)
         
     def start_analysis(self):
@@ -112,7 +121,6 @@ class FileBehaviorAnalyzer(QWidget):
             
             # 禁用开始按钮，显示进度条
             self.start_analyze_btn.setEnabled(False)
-            self.advanced_analyze_btn.setEnabled(False)
             self.export_btn.setEnabled(False)
             self.progress_bar.setVisible(True)
             self.progress_bar.setRange(0, 0)  # 设置为不确定模式
@@ -133,50 +141,6 @@ class FileBehaviorAnalyzer(QWidget):
             logger.error(f"启动系统文件行为分析时出错: {e}", exc_info=True)
             QMessageBox.critical(self, "错误", f"启动系统文件行为分析时出错: {e}")
             self.start_analyze_btn.setEnabled(True)
-            self.advanced_analyze_btn.setEnabled(True)
-            self.progress_bar.setVisible(False)
-    
-    def start_advanced_analysis(self):
-        """
-        开始高级分析系统文件行为
-        """
-        try:
-            # 获取分析时间范围（分钟）
-            time_range_text = self.time_range_combo.currentText()
-            time_ranges = {
-                "最近5分钟": 5,
-                "最近10分钟": 10,
-                "最近30分钟": 30,
-                "最近1小时": 60,
-                "最近2小时": 120,
-                "最近24小时": 1440
-            }
-            minutes = time_ranges.get(time_range_text, 10)
-            
-            # 禁用开始按钮，显示进度条
-            self.start_analyze_btn.setEnabled(False)
-            self.advanced_analyze_btn.setEnabled(False)
-            self.export_btn.setEnabled(False)
-            self.progress_bar.setVisible(True)
-            self.progress_bar.setRange(0, 0)  # 设置为不确定模式
-            
-            # 清空之前的结果
-            self.result_table.setRowCount(0)
-            self.stats_text.clear()
-            
-            # 启动高级分析工作线程
-            self.analyze_worker = AdvancedFileAnalyzeWorker(minutes)
-            self.analyze_worker.analysis_finished.connect(self.on_analysis_finished)
-            self.analyze_worker.analysis_error.connect(self.on_analysis_error)
-            self.analyze_worker.start()
-            
-            logger.info(f"开始高级分析系统文件行为，时间范围: {minutes}分钟")
-            
-        except Exception as e:
-            logger.error(f"启动系统文件行为高级分析时出错: {e}", exc_info=True)
-            QMessageBox.critical(self, "错误", f"启动系统文件行为高级分析时出错: {e}")
-            self.start_analyze_btn.setEnabled(True)
-            self.advanced_analyze_btn.setEnabled(True)
             self.progress_bar.setVisible(False)
     
     def on_analysis_finished(self, results):
@@ -184,39 +148,38 @@ class FileBehaviorAnalyzer(QWidget):
         分析完成回调
         """
         try:
-            # 保存结果供后续使用
+            # 恢复按钮状态
+            self.start_analyze_btn.setEnabled(True)
+            self.export_btn.setEnabled(True)
+            self.progress_bar.setVisible(False)
+            
+            # 保存结果供导出使用
             self.last_analysis_results = results
             
-            # 隐藏进度条，启用开始按钮
-            self.progress_bar.setVisible(False)
-            self.start_analyze_btn.setEnabled(True)
-            self.advanced_analyze_btn.setEnabled(True)
+            # 显示统计信息
+            stats_info = results.get('statistics', {})
+            stats_text = self.format_statistics(stats_info)
+            self.stats_text.setPlainText(stats_text)
             
-            # 显示结果
+            # 显示详细结果
             self.display_results(results)
             
-            # 启用导出按钮
-            self.export_btn.setEnabled(True)
-            
-            # 显示分析类型提示
-            analysis_type = results.get('analysis_type', '基础')
-            logger.info(f"系统文件行为{analysis_type}分析完成")
-            
+            logger.info("系统文件行为分析完成")
         except Exception as e:
             logger.error(f"处理分析结果时出错: {e}", exc_info=True)
             QMessageBox.critical(self, "错误", f"处理分析结果时出错: {e}")
-            self.start_analyze_btn.setEnabled(True)
-            self.advanced_analyze_btn.setEnabled(True)
-            self.progress_bar.setVisible(False)
     
     def on_analysis_error(self, error_msg):
         """
         分析出错回调
         """
+        # 恢复按钮状态
         self.start_analyze_btn.setEnabled(True)
+        self.export_btn.setEnabled(False)
         self.progress_bar.setVisible(False)
-        QMessageBox.critical(self, "分析错误", error_msg)
+        
         logger.error(f"系统文件行为分析出错: {error_msg}")
+        QMessageBox.critical(self, "错误", f"系统文件行为分析出错:\n{error_msg}")
     
     def display_results(self, results):
         """
@@ -369,7 +332,29 @@ class FileBehaviorAnalyzer(QWidget):
                         for behavior, count in list(behaviors.items())[:3]:  # 仅显示前3种行为
                             stats_text += f"    {behavior}: {count} 次\n"
                     stats_text += "\n"
-            
+            # 基础分析的统计信息格式化
+            else:
+                # 可疑行为检测
+                suspicious_operations = stats_info.get('suspicious_operations', [])
+                if suspicious_operations:
+                    stats_text += "可疑行为检测:\n"
+                    for operation in suspicious_operations[:10]:  # 只显示前10个
+                        stats_text += f"  [{operation.get('time', '')}] {operation.get('process', '')} {operation.get('operation', '')} {operation.get('path', '')}\n"
+                    
+                    if len(suspicious_operations) > 10:
+                        stats_text += f"  ... 还有 {len(suspicious_operations) - 10} 个可疑操作\n"
+                    stats_text += "\n"
+                
+                # 临时目录操作
+                temp_operations = stats_info.get('temp_dir_operations', [])
+                if temp_operations:
+                    stats_text += "临时目录操作:\n"
+                    for operation in temp_operations[:10]:  # 只显示前10个
+                        stats_text += f"  [{operation.get('time', '')}] {operation.get('process', '')} {operation.get('operation', '')} {operation.get('path', '')}\n"
+                    
+                    if len(temp_operations) > 10:
+                        stats_text += f"  ... 还有 {len(temp_operations) - 10} 个临时目录操作\n"
+                    stats_text += "\n"
             return stats_text
             
         except Exception as e:

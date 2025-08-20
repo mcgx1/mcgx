@@ -72,3 +72,58 @@ class ConfigManager:
         else:
             logger.warning(f"配置文件 {filename} 不存在")
             return {}
+    
+    def get_optimization_config(self, key_path, default=None):
+        """
+        获取优化配置
+        
+        Args:
+            key_path (str): 配置项路径，如 'performance.cache_ttl.system_info'
+            default (any): 默认值
+            
+        Returns:
+            any: 配置值
+        """
+        try:
+            keys = key_path.split('.')
+            value = self.config_data.get('optimization', {})
+            
+            for key in keys:
+                if isinstance(value, dict) and key in value:
+                    value = value[key]
+                else:
+                    return default
+            
+            return value
+        except Exception as e:
+            logger.warning(f"获取优化配置项 {key_path} 失败: {e}")
+            return default
+    
+    def get_sandbox_config(self, key_path, default=None):
+        """
+        获取沙箱配置
+        
+        Args:
+            key_path (str): 配置项路径
+            default (any): 默认值
+            
+        Returns:
+            any: 配置值
+        """
+        try:
+            keys = key_path.split('.')
+            value = self.config_data.get('sandbox', {})
+            
+            for key in keys:
+                if isinstance(value, dict) and key in value:
+                    value = value[key]
+                else:
+                    return default
+            
+            return value
+        except Exception as e:
+            logger.warning(f"获取沙箱配置项 {key_path} 失败: {e}")
+            return default
+
+# 创建全局配置管理器实例
+config_manager = ConfigManager()
